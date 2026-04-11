@@ -1,14 +1,18 @@
 ;; Scopes
 ;; ======
 
-;; Function scope (parameters defined here are visible in the body)
+;; Function and call definition scopes
+(function_definition) @local.scope
+(call_definition) @local.scope
+
+;; Function body scope
 (function_definition
   body: (compound_statement) @local.scope)
 
 (call_definition
   body: (compound_statement) @local.scope)
 
-;; Block scopes (these create new variable scopes)
+;; Block scopes
 (compound_statement) @local.scope
 
 ;; Loops and conditionals
@@ -28,6 +32,10 @@
 ;; Definitions
 ;; ===========
 
+;; Function name definition
+(function_definition
+  name: (identifier) @local.definition)
+
 ;; Function parameters
 (function_definition
   parameters: (parameter_list
@@ -41,22 +49,20 @@
       declarator: (array_declarator
         declarator: (identifier) @local.definition))))
 
+;; Call parameters
 (call_definition
   parameters: (parameter_list
     (parameter_declaration
       declarator: (identifier) @local.definition)))
 
+;; Call parameters (array)
 (call_definition
   parameters: (parameter_list
     (parameter_declaration
       declarator: (array_declarator
         declarator: (identifier) @local.definition))))
 
-;; Function definitions
-(function_definition
-  name: (identifier) @local.definition)
-
-;; Local variables
+;; Local variables (with storage specifier)
 (declaration
   (storage_class_specifier)
   declarator: (identifier) @local.definition)
@@ -68,50 +74,5 @@
 ;; References
 ;; ==========
 
-;; Any identifiers that are not part of declarations
-(identifier) @local.reference
-
-;; Exclude certain kinds of identifiers from being treated as references
-;; For example, field names or type names
-;; ((field_expression
-;;   field: (field_identifier)) @_field
-;;  (#set! "local.reference" ""))
-
-;; ((type_specifier
-;;   (identifier)) @_type
-;;  (#set! "local.reference" ""))
- ;; Exclude field names
-((field_expression
-  field: (field_identifier)) @_field
- (#set! @_field "local.reference" false))
-
-;; Exclude type names
-((type_specifier
-  (identifier)) @_type
- (#set! @_type "local.reference" false))
-
- ;; Scopes
-(function_definition) @local.scope
-(call_definition) @local.scope
-
-;; Regular parameter definitions
-(function_definition
-  parameters: (parameter_list
-    (parameter_declaration
-      declarator: (identifier) @local.definition)))
-
-;; Array parameter definitions
-(function_definition
-  parameters: (parameter_list
-    (parameter_declaration
-      declarator: (array_declarator
-        declarator: (identifier) @local.definition))))
-
-;; Call parameter definitions
-(call_definition
-  parameters: (parameter_list
-    (parameter_declaration
-      declarator: (identifier) @local.definition)))
-
-;; References
+;; Any identifier that is not part of a declaration is a reference
 (identifier) @local.reference

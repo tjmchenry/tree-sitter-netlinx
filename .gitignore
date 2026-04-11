@@ -49,6 +49,9 @@ zig-out/
 # Local History
 .history/
 
+# Editor settings
+.zed/
+
 # NetLinx specific
 *.tkn
 *.tko

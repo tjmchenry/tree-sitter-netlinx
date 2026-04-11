@@ -111,19 +111,27 @@ module.exports = grammar({
 
         _top_level_item: ($) =>
             choice(
-                // Sections
+                // Sections (each wraps its keyword + body)
                 $.section,
 
                 // Headers
                 $.program_name,
                 $.module_name,
 
+                // Items that may appear outside any section
+                $._section_body_item,
+            ),
+
+        // Items that can appear inside a DEFINE_* section body.
+        // Kept as a hidden rule so it doesn't create extra nodes.
+        _section_body_item: ($) =>
+            choice(
                 // Functions, Calls, and Modules Definitions
                 $.define_function,
                 $.define_call,
                 $.define_module,
 
-                // Top-Level Declarations
+                // Declarations
                 $.declaration,
                 $.type_definition,
                 $.event_definition,
@@ -317,20 +325,32 @@ module.exports = grammar({
                 $.define_program_section,
             ),
 
-        define_device_section: ($) => $.define_device_keyword,
-        define_combine_section: ($) => $.define_combine_keyword,
-        define_connect_level_section: ($) => $.define_connect_level_keyword,
-        define_constant_section: ($) => $.define_constant_keyword,
-        define_type_section: ($) => $.define_type_keyword,
+        define_device_section: ($) =>
+            prec.right(seq($.define_device_keyword, repeat($._section_body_item))),
+        define_combine_section: ($) =>
+            prec.right(seq($.define_combine_keyword, repeat($._section_body_item))),
+        define_connect_level_section: ($) =>
+            prec.right(seq($.define_connect_level_keyword, repeat($._section_body_item))),
+        define_constant_section: ($) =>
+            prec.right(seq($.define_constant_keyword, repeat($._section_body_item))),
+        define_type_section: ($) =>
+            prec.right(seq($.define_type_keyword, repeat($._section_body_item))),
         define_mutually_exclusive_section: ($) =>
-            $.define_mutually_exclusive_keyword,
-        define_latching_section: ($) => $.define_latching_keyword,
-        define_toggling_section: ($) => $.define_toggling_keyword,
-        define_variable_section: ($) => $.define_variable_keyword,
-        define_system_variable_section: ($) => $.define_system_variable_keyword,
-        define_event_section: ($) => $.define_event_keyword,
-        define_start_section: ($) => $.define_start_keyword,
-        define_program_section: ($) => $.define_program_keyword,
+            prec.right(seq($.define_mutually_exclusive_keyword, repeat($._section_body_item))),
+        define_latching_section: ($) =>
+            prec.right(seq($.define_latching_keyword, repeat($._section_body_item))),
+        define_toggling_section: ($) =>
+            prec.right(seq($.define_toggling_keyword, repeat($._section_body_item))),
+        define_variable_section: ($) =>
+            prec.right(seq($.define_variable_keyword, repeat($._section_body_item))),
+        define_system_variable_section: ($) =>
+            prec.right(seq($.define_system_variable_keyword, repeat($._section_body_item))),
+        define_event_section: ($) =>
+            prec.right(seq($.define_event_keyword, repeat($._section_body_item))),
+        define_start_section: ($) =>
+            prec.right(seq($.define_start_keyword, repeat($._section_body_item))),
+        define_program_section: ($) =>
+            prec.right(seq($.define_program_keyword, repeat($._section_body_item))),
 
         define_function: ($) =>
             choice(

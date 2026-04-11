@@ -1,49 +1,52 @@
 ;; ============================================================================
-;; BASIC BLOCKS
+;; DEFINE_* SECTIONS
 ;; ============================================================================
-;; Compound statements/blocks
-(compound_statement) @fold
+(define_variable_section) @fold
+(define_constant_section) @fold
+(define_type_section) @fold
+(define_start_section) @fold
+(define_event_section) @fold
+(define_program_section) @fold
+(define_device_section) @fold
+(define_mutually_exclusive_section) @fold
+(define_latching_section) @fold
+(define_toggling_section) @fold
+(define_combine_section) @fold
+(define_connect_level_section) @fold
+(define_system_variable_section) @fold
 
 ;; ============================================================================
 ;; STRUCTURES
 ;; ============================================================================
-;; Struct definitions
 (struct_specifier
   body: (field_declaration_list) @fold)
 
 ;; ============================================================================
 ;; FUNCTIONS AND CALLS
 ;; ============================================================================
-;; Function definitions
 (function_definition
   body: (compound_statement) @fold)
 
-;; Call definitions
 (call_definition
   body: (compound_statement) @fold)
 
 ;; ============================================================================
 ;; EVENT HANDLERS
 ;; ============================================================================
-;; Event handlers
 (button_event_block) @fold
 (channel_event_block) @fold
 (data_event_block) @fold
 
-;; Custom events and timeline events
 (custom_event_definition
   body: (compound_statement) @fold)
 (timeline_event_definition
   body: (compound_statement) @fold)
-
-;; Level events
 (level_event_definition
   body: (compound_statement) @fold)
 
 ;; ============================================================================
 ;; CONTROL FLOW
 ;; ============================================================================
-;; Control flow statements
 (if_statement
   consequence: (compound_statement) @fold
   alternative: (else_clause (compound_statement) @fold)?)
@@ -58,10 +61,14 @@
   body: (compound_statement) @fold)
 
 ;; ============================================================================
+;; PREPROCESSOR CONDITIONALS
+;; ============================================================================
+(preproc_if_defined) @fold
+(preproc_if_not_defined) @fold
+
+;; ============================================================================
 ;; MISCELLANEOUS
 ;; ============================================================================
-;; Initializer lists
+(compound_statement) @fold
 (initializer_list) @fold
-
-;; Comments (only multi-line)
 (comment) @fold

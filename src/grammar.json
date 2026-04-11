@@ -27,6 +27,15 @@
         },
         {
           "type": "SYMBOL",
+          "name": "_section_body_item"
+        }
+      ]
+    },
+    "_section_body_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
           "name": "define_function"
         },
         {
@@ -6779,56 +6788,264 @@
       ]
     },
     "define_device_section": {
-      "type": "SYMBOL",
-      "name": "define_device_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_device_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_combine_section": {
-      "type": "SYMBOL",
-      "name": "define_combine_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_combine_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_connect_level_section": {
-      "type": "SYMBOL",
-      "name": "define_connect_level_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_connect_level_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_constant_section": {
-      "type": "SYMBOL",
-      "name": "define_constant_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_constant_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_type_section": {
-      "type": "SYMBOL",
-      "name": "define_type_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_type_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_mutually_exclusive_section": {
-      "type": "SYMBOL",
-      "name": "define_mutually_exclusive_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_mutually_exclusive_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_latching_section": {
-      "type": "SYMBOL",
-      "name": "define_latching_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_latching_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_toggling_section": {
-      "type": "SYMBOL",
-      "name": "define_toggling_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_toggling_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_variable_section": {
-      "type": "SYMBOL",
-      "name": "define_variable_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_variable_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_system_variable_section": {
-      "type": "SYMBOL",
-      "name": "define_system_variable_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_system_variable_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_event_section": {
-      "type": "SYMBOL",
-      "name": "define_event_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_event_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_start_section": {
-      "type": "SYMBOL",
-      "name": "define_start_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_start_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_program_section": {
-      "type": "SYMBOL",
-      "name": "define_program_keyword"
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "define_program_keyword"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_section_body_item"
+            }
+          }
+        ]
+      }
     },
     "define_function": {
       "type": "CHOICE",
