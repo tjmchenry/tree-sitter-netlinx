@@ -55,7 +55,8 @@ button_event[DVA_DEVCHAN[1]] {
       (button_event_declarator
         (button_event_keyword)
         devchan: (button_event_devchan_reference
-          (identifier)))
+          (devchan_expression
+            devchan: (identifier))))
       (button_event_declarator
         (button_event_keyword)
         devchan: (button_event_devchan_reference
@@ -68,9 +69,10 @@ button_event[DVA_DEVCHAN[1]] {
       (button_event_declarator
         (button_event_keyword)
         devchan: (button_event_devchan_reference
-          (subscript_expression
-            argument: (identifier)
-            index: (number_literal))))
+          (devchan_expression
+            devchan: (subscript_expression
+              argument: (identifier)
+              index: (number_literal)))))
       body: (button_event_block
         (button_event_handler
           type: (button_event_type
@@ -139,7 +141,8 @@ channel_event[DVA_DEVCHAN[1]] {
       (channel_event_declarator
         (channel_event_keyword)
         devchan: (channel_event_devchan_reference
-          (identifier)))
+          (devchan_expression
+            devchan: (identifier))))
       body: (channel_event_block
         (channel_event_handler
           type: (channel_event_type
@@ -154,7 +157,8 @@ channel_event[DVA_DEVCHAN[1]] {
       (channel_event_declarator
         (channel_event_keyword)
         devchan: (channel_event_devchan_reference
-          (identifier)))
+          (devchan_expression
+            devchan: (identifier))))
       (channel_event_declarator
         (channel_event_keyword)
         devchan: (channel_event_devchan_reference
@@ -167,9 +171,10 @@ channel_event[DVA_DEVCHAN[1]] {
       (channel_event_declarator
         (channel_event_keyword)
         devchan: (channel_event_devchan_reference
-          (subscript_expression
-            argument: (identifier)
-            index: (number_literal))))
+          (devchan_expression
+            devchan: (subscript_expression
+              argument: (identifier)
+              index: (number_literal)))))
       body: (channel_event_block
         (channel_event_handler
           type: (channel_event_type
@@ -513,7 +518,8 @@ push[DVA_DEVCHAN[1]] {}
       (push_event_declarator
         (push_keyword)
         (push_event_devchan_reference
-          (identifier)))
+          (devchan_expression
+            (identifier))))
       (push_event_declarator
         (push_keyword)
         (push_event_devchan_reference
@@ -526,9 +532,10 @@ push[DVA_DEVCHAN[1]] {}
       (push_event_declarator
         (push_keyword)
         (push_event_devchan_reference
-          (subscript_expression
-            (identifier)
-            (number_literal))))
+          (devchan_expression
+            (subscript_expression
+              (identifier)
+              (number_literal)))))
       (compound_statement))))
 
 ================================
@@ -558,7 +565,8 @@ RELEASE[DVA_DEVCHAN[1]] {}
       (release_event_declarator
         (release_keyword)
         (release_event_devchan_reference
-          (identifier)))
+          (devchan_expression
+            (identifier))))
       (release_event_declarator
         (release_keyword)
         (release_event_devchan_reference
@@ -571,7 +579,8 @@ RELEASE[DVA_DEVCHAN[1]] {}
       (release_event_declarator
         (release_keyword)
         (release_event_devchan_reference
-          (subscript_expression
-            (identifier)
-            (number_literal))))
+          (devchan_expression
+            (subscript_expression
+              (identifier)
+              (number_literal)))))
       (compound_statement))))

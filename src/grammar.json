@@ -14603,24 +14603,42 @@
             }
           },
           {
-            "type": "FIELD",
-            "name": "device",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          },
-          {
-            "type": "STRING",
-            "value": ","
-          },
-          {
-            "type": "FIELD",
-            "name": "channel",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "FIELD",
+                    "name": "device",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    }
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "channel",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "FIELD",
+                "name": "devchan",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              }
+            ]
           },
           {
             "type": "STRING",
@@ -15220,6 +15238,22 @@
     ],
     [
       "device_literal"
+    ],
+    [
+      "button_event_devchan_reference",
+      "devchan_expression"
+    ],
+    [
+      "channel_event_devchan_reference",
+      "devchan_expression"
+    ],
+    [
+      "push_event_devchan_reference",
+      "devchan_expression"
+    ],
+    [
+      "release_event_devchan_reference",
+      "devchan_expression"
     ],
     [
       "initializer_list"

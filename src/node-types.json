@@ -4031,7 +4031,17 @@
     "fields": {
       "channel": {
         "multiple": false,
-        "required": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "devchan": {
+        "multiple": false,
+        "required": false,
         "types": [
           {
             "type": "expression",
@@ -4041,7 +4051,7 @@
       },
       "device": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "expression",

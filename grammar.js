@@ -45,6 +45,10 @@ module.exports = grammar({
         [$.string_expression],
         [$.type_specifier, $._top_level_expression_statement],
         [$.device_literal],
+        [$.button_event_devchan_reference, $.devchan_expression],
+        [$.channel_event_devchan_reference, $.devchan_expression],
+        [$.push_event_devchan_reference, $.devchan_expression],
+        [$.release_event_devchan_reference, $.devchan_expression],
         [$.initializer_list],
         [
             $.preproc_if_defined_in_initializer_list,
@@ -2259,9 +2263,14 @@ module.exports = grammar({
                 PREC.FIELD + 12,
                 seq(
                     token("["),
-                    field("device", $.expression),
-                    ",",
-                    field("channel", $.expression),
+                    choice(
+                        seq(
+                            field("device", $.expression),
+                            ",",
+                            field("channel", $.expression),
+                        ),
+                        field("devchan", $.expression),
+                    ),
                     "]",
                 ),
             ),
