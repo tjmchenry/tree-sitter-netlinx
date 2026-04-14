@@ -1868,6 +1868,21 @@
     }
   },
   {
+    "type": "define_call_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "define_call",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "define_combine_section",
     "named": true,
     "fields": {},
@@ -1932,19 +1947,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
           "type": "define_combine_keyword",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2103,19 +2106,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
           "type": "define_connect_level_keyword",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2274,19 +2265,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
           "type": "define_constant_keyword",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2445,19 +2424,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
           "type": "define_device_keyword",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2616,19 +2583,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
           "type": "define_event_keyword",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2750,6 +2705,21 @@
     }
   },
   {
+    "type": "define_function_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "define_function",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "define_latching_section",
     "named": true,
     "fields": {},
@@ -2814,19 +2784,7 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
           "type": "define_latching_keyword",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -2940,6 +2898,21 @@
     }
   },
   {
+    "type": "define_module_section",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "define_module",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "define_mutually_exclusive_section",
     "named": true,
     "fields": {},
@@ -3001,18 +2974,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -3175,18 +3136,6 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
-          "named": true
-        },
-        {
           "type": "define_program_keyword",
           "named": true
         },
@@ -3343,18 +3292,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -3517,18 +3454,6 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
-          "named": true
-        },
-        {
           "type": "define_system_variable_keyword",
           "named": true
         },
@@ -3685,18 +3610,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -3859,18 +3772,6 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
-          "named": true
-        },
-        {
           "type": "define_type_keyword",
           "named": true
         },
@@ -4027,18 +3928,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -5379,18 +5268,6 @@
           "named": true
         },
         {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
-          "named": true
-        },
-        {
           "type": "devchan_operation_statement",
           "named": true
         },
@@ -5636,18 +5513,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -5900,18 +5765,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -6377,6 +6230,10 @@
       "required": true,
       "types": [
         {
+          "type": "define_call_section",
+          "named": true
+        },
+        {
           "type": "define_combine_section",
           "named": true
         },
@@ -6397,7 +6254,15 @@
           "named": true
         },
         {
+          "type": "define_function_section",
+          "named": true
+        },
+        {
           "type": "define_latching_section",
+          "named": true
+        },
+        {
+          "type": "define_module_section",
           "named": true
         },
         {
@@ -6638,18 +6503,6 @@
         },
         {
           "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "define_call",
-          "named": true
-        },
-        {
-          "type": "define_function",
-          "named": true
-        },
-        {
-          "type": "define_module",
           "named": true
         },
         {
@@ -8814,6 +8667,16 @@
     "type": "wait_statement",
     "named": true,
     "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "compound_statement",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": false,
@@ -8850,6 +8713,16 @@
     "type": "wait_until_statement",
     "named": true,
     "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "compound_statement",
+            "named": true
+          }
+        ]
+      },
       "condition": {
         "multiple": false,
         "required": true,

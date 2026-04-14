@@ -1312,17 +1312,19 @@ DEFINE_MODULE 'User''s Authentication Module' AuthModule(vdvAuth, dvTP)
       (escape_sequence)
       (string_content)))
   (comment)
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content))
-      (identifier)
-      (argument_list
-        (identifier)
-        (identifier)))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content)
+            (escape_sequence)
+            (string_content))
+          (identifier)
+          (argument_list
+            (identifier)
+            (identifier)))))))
 
 ===============================
 String Literals with Edge Cases

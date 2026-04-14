@@ -126,11 +126,6 @@ module.exports = grammar({
         // Kept as a hidden rule so it doesn't create extra nodes.
         _section_body_item: ($) =>
             choice(
-                // Functions, Calls, and Modules Definitions
-                $.define_function,
-                $.define_call,
-                $.define_module,
-
                 // Declarations
                 $.declaration,
                 $.type_definition,
@@ -323,6 +318,9 @@ module.exports = grammar({
                 $.define_start_section,
                 $.define_event_section,
                 $.define_program_section,
+                $.define_function_section,
+                $.define_call_section,
+                $.define_module_section,
             ),
 
         define_device_section: ($) =>
@@ -351,6 +349,15 @@ module.exports = grammar({
             prec.right(seq($.define_start_keyword, repeat($._section_body_item))),
         define_program_section: ($) =>
             prec.right(seq($.define_program_keyword, repeat($._section_body_item))),
+
+        define_function_section: ($) =>
+            prec.right($.define_function),
+
+        define_call_section: ($) =>
+            prec.right($.define_call),
+
+        define_module_section: ($) =>
+            prec.right($.define_module),
 
         define_function: ($) =>
             choice(
@@ -1486,7 +1493,10 @@ module.exports = grammar({
                     $.wait_keyword,
                     field("time", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional($._semicolon),
+                    optional(choice(
+                        field("body", $.compound_statement),
+                        $._semicolon,
+                    )),
                 ),
             ),
 
@@ -1496,7 +1506,10 @@ module.exports = grammar({
                     $.wait_until_keyword,
                     field("condition", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional($._semicolon),
+                    optional(choice(
+                        field("body", $.compound_statement),
+                        $._semicolon,
+                    )),
                 ),
             ),
 

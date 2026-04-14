@@ -303,7 +303,6 @@ long_while (x)
     body: (compound_statement
       (comment))))
 
-
 ==================
 Select Statement
 ==================
@@ -848,12 +847,12 @@ wait (timeout * 10) 'Timeout' {
       arguments: (argument_list)))
   (wait_statement
     (wait_keyword)
-    time: (number_literal))
-  (compound_statement
-    (expression_statement
-      (call_expression
-        function: (identifier)
-        arguments: (argument_list))))
+    time: (number_literal)
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
   (wait_statement
     (wait_keyword)
     time: (parenthesized_expression
@@ -861,12 +860,12 @@ wait (timeout * 10) 'Timeout' {
         left: (identifier)
         right: (number_literal)))
     name: (string_literal
-      (string_content)))
-  (compound_statement
-    (expression_statement
-      (call_expression
-        function: (identifier)
-        arguments: (argument_list)))))
+      (string_content))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list))))))
 
 ====================
 Wait Until
@@ -901,12 +900,12 @@ wait_until (volume > 50) 'VolumeWait' {
       (binary_expression
         left: (identifier)
         right: (system_constant
-          (false)))))
-  (compound_statement
-    (expression_statement
-      (call_expression
-        function: (identifier)
-        arguments: (argument_list))))
+          (false))))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
   (wait_until_statement
     (wait_until_keyword)
     condition: (parenthesized_expression
@@ -914,12 +913,44 @@ wait_until (volume > 50) 'VolumeWait' {
         left: (identifier)
         right: (number_literal)))
     name: (string_literal
+      (string_content))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list))))))
+
+====================
+Wait Standalone
+====================
+
+wait 1
+wait 2
+wait 1 'MyWait'
+wait (timeout * 10) 'Timeout'
+
+---
+
+(source_file
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal))
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal))
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal)
+    name: (string_literal
       (string_content)))
-  (compound_statement
-    (expression_statement
-      (call_expression
-        function: (identifier)
-        arguments: (argument_list)))))
+  (wait_statement
+    (wait_keyword)
+    time: (parenthesized_expression
+      (binary_expression
+        left: (identifier)
+        right: (number_literal)))
+    name: (string_literal
+      (string_content))))
 
 ====================
 Combine
@@ -1040,62 +1071,74 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
 ---
 
 (source_file
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list
-        (identifier)
-        (identifier))))
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list
-        (identifier))))
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list)))
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list
-        (subscript_expression
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
           (identifier)
-          (number_literal))
-        (identifier))))
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list
-        (identifier)
-        (identifier)
-        (identifier))))
-  (define_module
-    (define_module_keyword)
-    (module_definition
-      (string_literal
-        (string_content))
-      (identifier)
-      (argument_list
-        (identifier)
-        (identifier)
-        (identifier)
-        (identifier)))))
+          (argument_list
+            (identifier)
+            (identifier))))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list
+            (identifier))))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list)))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list
+            (subscript_expression
+              (identifier)
+              (number_literal))
+            (identifier))))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list
+            (identifier)
+            (identifier)
+            (identifier))))))
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list
+            (identifier)
+            (identifier)
+            (identifier)
+            (identifier)))))))
 
 =======================
 Mutually Exclusive

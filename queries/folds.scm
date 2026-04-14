@@ -14,6 +14,9 @@
 (define_combine_section) @fold
 (define_connect_level_section) @fold
 (define_system_variable_section) @fold
+(define_function_section) @fold
+(define_call_section) @fold
+(define_module_section) @fold
 
 ;; ============================================================================
 ;; STRUCTURES
@@ -58,6 +61,10 @@
 (while_statement
   body: (compound_statement) @fold)
 (for_statement
+  body: (compound_statement) @fold)
+(wait_statement
+  body: (compound_statement) @fold)
+(wait_until_statement
   body: (compound_statement) @fold)
 
 ;; ============================================================================
