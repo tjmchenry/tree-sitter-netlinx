@@ -835,6 +835,16 @@ wait (timeout * 10) 'Timeout' {
     baz()
 }
 
+wait 10
+{
+    qux()
+}
+
+wait 50 'DelayedAction'
+{
+    quux()
+}
+
 ---
 
 (source_file
@@ -865,6 +875,24 @@ wait (timeout * 10) 'Timeout' {
       (expression_statement
         (call_expression
           function: (identifier)
+          arguments: (argument_list)))))
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal)
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal)
+    name: (string_literal
+      (string_content))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
           arguments: (argument_list))))))
 
 ====================
@@ -878,6 +906,11 @@ wait_until (bar == false) {
 
 wait_until (volume > 50) 'VolumeWait' {
     foo()
+}
+
+wait_until (ready)
+{
+    startup()
 }
 
 ---
@@ -914,6 +947,15 @@ wait_until (volume > 50) 'VolumeWait' {
         right: (number_literal)))
     name: (string_literal
       (string_content))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
+  (wait_until_statement
+    (wait_until_keyword)
+    condition: (parenthesized_expression
+      (identifier))
     body: (compound_statement
       (expression_statement
         (call_expression

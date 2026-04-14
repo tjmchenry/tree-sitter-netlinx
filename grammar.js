@@ -1493,10 +1493,7 @@ module.exports = grammar({
                     $.wait_keyword,
                     field("time", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional(choice(
-                        field("body", $.compound_statement),
-                        $._semicolon,
-                    )),
+                    optional(field("body", $.compound_statement)),
                 ),
             ),
 
@@ -1506,10 +1503,7 @@ module.exports = grammar({
                     $.wait_until_keyword,
                     field("condition", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional(choice(
-                        field("body", $.compound_statement),
-                        $._semicolon,
-                    )),
+                    optional(field("body", $.compound_statement)),
                 ),
             ),
 
