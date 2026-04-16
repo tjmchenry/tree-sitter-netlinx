@@ -66,6 +66,8 @@
   body: (compound_statement) @fold)
 (wait_until_statement
   body: (compound_statement) @fold)
+(timed_wait_until_statement
+  body: (compound_statement) @fold)
 
 ;; ============================================================================
 ;; PREPROCESSOR CONDITIONALS

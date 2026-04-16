@@ -184,6 +184,10 @@
         "named": true
       },
       {
+        "type": "create_level_statement",
+        "named": true
+      },
+      {
         "type": "create_multi_buffer_statement",
         "named": true
       },
@@ -201,6 +205,22 @@
       },
       {
         "type": "if_statement",
+        "named": true
+      },
+      {
+        "type": "pause_all_wait_statement",
+        "named": true
+      },
+      {
+        "type": "pause_wait_statement",
+        "named": true
+      },
+      {
+        "type": "restart_all_wait_statement",
+        "named": true
+      },
+      {
+        "type": "restart_wait_statement",
         "named": true
       },
       {
@@ -229,6 +249,10 @@
       },
       {
         "type": "system_call_statement",
+        "named": true
+      },
+      {
+        "type": "timed_wait_until_statement",
         "named": true
       },
       {
@@ -547,6 +571,10 @@
             "named": false
           },
           {
+            "type": "^^",
+            "named": false
+          },
+          {
             "type": "and",
             "named": true
           },
@@ -564,6 +592,10 @@
           },
           {
             "type": "lshift",
+            "named": true
+          },
+          {
+            "type": "mod",
             "named": true
           },
           {
@@ -1078,6 +1110,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -1106,6 +1142,22 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
+          "named": true
+        },
+        {
           "type": "return_statement",
           "named": true
         },
@@ -1131,6 +1183,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -1457,6 +1513,25 @@
         },
         {
           "type": "create_buffer_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "create_level_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comma_expression",
+          "named": true
+        },
+        {
+          "type": "create_level_keyword",
           "named": true
         }
       ]
@@ -1939,6 +2014,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -1971,6 +2050,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -1992,6 +2079,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2020,6 +2115,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2098,6 +2197,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -2130,6 +2233,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -2151,6 +2262,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2179,6 +2298,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2257,6 +2380,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -2289,6 +2416,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -2310,6 +2445,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2338,6 +2481,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2416,6 +2563,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -2448,6 +2599,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -2469,6 +2628,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2497,6 +2664,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2575,6 +2746,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -2607,6 +2782,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -2628,6 +2811,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2656,6 +2847,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2776,6 +2971,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -2808,6 +3007,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -2829,6 +3036,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -2857,6 +3072,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -2969,6 +3188,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3001,6 +3224,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3022,6 +3253,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3050,6 +3289,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3128,6 +3371,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3160,6 +3407,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3181,6 +3436,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3209,6 +3472,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3287,6 +3554,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3319,6 +3590,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3340,6 +3619,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3368,6 +3655,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3446,6 +3737,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3478,6 +3773,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3499,6 +3802,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3527,6 +3838,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3605,6 +3920,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3637,6 +3956,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3658,6 +3985,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3686,6 +4021,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3764,6 +4103,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3796,6 +4139,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3817,6 +4168,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -3845,6 +4204,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -3923,6 +4286,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -3955,6 +4322,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -3976,6 +4351,14 @@
         },
         {
           "type": "preproc_warn",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -4004,6 +4387,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -5124,6 +5511,47 @@
     }
   },
   {
+    "type": "pause_all_wait_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "pause_all_wait_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pause_wait_statement",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "pause_wait_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "preproc_define",
     "named": true,
     "fields": {
@@ -5258,6 +5686,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -5318,6 +5750,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -5358,6 +5798,14 @@
           "named": true
         },
         {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
+          "named": true
+        },
+        {
           "type": "return_statement",
           "named": true
         },
@@ -5387,6 +5835,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -5506,6 +5958,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -5566,6 +6022,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -5610,6 +6074,14 @@
           "named": true
         },
         {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
+          "named": true
+        },
+        {
           "type": "return_statement",
           "named": true
         },
@@ -5639,6 +6111,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -5758,6 +6234,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -5818,6 +6298,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -5862,6 +6350,14 @@
           "named": true
         },
         {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
+          "named": true
+        },
+        {
           "type": "return_statement",
           "named": true
         },
@@ -5891,6 +6387,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -6205,6 +6705,47 @@
     }
   },
   {
+    "type": "restart_all_wait_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "restart_all_wait_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "restart_wait_statement",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "restart_wait_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "return_statement",
     "named": true,
     "fields": {},
@@ -6508,6 +7049,10 @@
           "named": true
         },
         {
+          "type": "create_level_statement",
+          "named": true
+        },
+        {
           "type": "create_multi_buffer_statement",
           "named": true
         },
@@ -6540,6 +7085,14 @@
           "named": true
         },
         {
+          "type": "pause_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "pause_wait_statement",
+          "named": true
+        },
+        {
           "type": "preproc_define",
           "named": true
         },
@@ -6565,6 +7118,14 @@
         },
         {
           "type": "program_name",
+          "named": true
+        },
+        {
+          "type": "restart_all_wait_statement",
+          "named": true
+        },
+        {
+          "type": "restart_wait_statement",
           "named": true
         },
         {
@@ -6597,6 +7158,10 @@
         },
         {
           "type": "system_call_statement",
+          "named": true
+        },
+        {
+          "type": "timed_wait_until_statement",
           "named": true
         },
         {
@@ -6816,6 +7381,16 @@
         "types": [
           {
             "type": "string_literal",
+            "named": true
+          }
+        ]
+      },
+      "instance": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
             "named": true
           }
         ]
@@ -8473,6 +9048,62 @@
     }
   },
   {
+    "type": "timed_wait_until_statement",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "compound_statement",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "string_literal",
+            "named": true
+          }
+        ]
+      },
+      "timeout": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "timed_wait_until_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "timeline_event_declarator",
     "named": true,
     "fields": {
@@ -8799,6 +9430,10 @@
           "named": true
         },
         {
+          "type": "medium_while_keyword",
+          "named": true
+        },
+        {
           "type": "while_keyword",
           "named": true
         }
@@ -8931,6 +9566,10 @@
   },
   {
     "type": "^",
+    "named": false
+  },
+  {
+    "type": "^^",
     "named": false
   },
   {
@@ -9188,6 +9827,10 @@
   },
   {
     "type": "create_buffer_keyword",
+    "named": true
+  },
+  {
+    "type": "create_level_keyword",
     "named": true
   },
   {
@@ -10247,11 +10890,19 @@
     "named": true
   },
   {
+    "type": "medium_while_keyword",
+    "named": true
+  },
+  {
     "type": "mid_string",
     "named": true
   },
   {
     "type": "min_value",
+    "named": true
+  },
+  {
+    "type": "mod",
     "named": true
   },
   {
@@ -10316,6 +10967,14 @@
   },
   {
     "type": "or",
+    "named": true
+  },
+  {
+    "type": "pause_all_wait_keyword",
+    "named": true
+  },
+  {
+    "type": "pause_wait_keyword",
     "named": true
   },
   {
@@ -10440,6 +11099,14 @@
   },
   {
     "type": "repeat_keyword",
+    "named": true
+  },
+  {
+    "type": "restart_all_wait_keyword",
+    "named": true
+  },
+  {
+    "type": "restart_wait_keyword",
     "named": true
   },
   {
@@ -10728,6 +11395,10 @@
   },
   {
     "type": "time_to_second",
+    "named": true
+  },
+  {
+    "type": "timed_wait_until_keyword",
     "named": true
   },
   {

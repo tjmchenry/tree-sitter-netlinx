@@ -1538,3 +1538,151 @@ system_call 'MyFunction'
     (system_call_keyword)
     (string_literal
       (string_content))))
+
+==================
+System Call with Instance
+==================
+
+system_call[1] 'COSX'(45)
+system_call[2] 'COSX'(60)
+SYSTEM_CALL[3] 'ModuleFunc'
+
+---
+
+(source_file
+  (system_call_statement
+    (system_call_keyword)
+    instance: (number_literal)
+    call: (string_literal
+      (string_content))
+    arguments: (argument_list
+      (number_literal)))
+  (system_call_statement
+    (system_call_keyword)
+    instance: (number_literal)
+    call: (string_literal
+      (string_content))
+    arguments: (argument_list
+      (number_literal)))
+  (system_call_statement
+    (system_call_keyword)
+    instance: (number_literal)
+    call: (string_literal
+      (string_content))))
+
+==================
+Wait Control Statements
+==================
+
+PAUSE_WAIT 'MyWait'
+PAUSE_ALL_WAIT
+RESTART_WAIT 'MyWait'
+RESTART_ALL_WAIT
+
+---
+
+(source_file
+  (pause_wait_statement
+    (pause_wait_keyword)
+    name: (string_literal
+      (string_content)))
+  (pause_all_wait_statement
+    (pause_all_wait_keyword))
+  (restart_wait_statement
+    (restart_wait_keyword)
+    name: (string_literal
+      (string_content)))
+  (restart_all_wait_statement
+    (restart_all_wait_keyword)))
+
+==================
+Timed Wait Until
+==================
+
+TIMED_WAIT_UNTIL (ready) 500
+{
+    startup()
+}
+
+TIMED_WAIT_UNTIL (volume > 50) 1000 'VolumeWait'
+{
+    adjustVolume()
+}
+
+TIMED_WAIT_UNTIL (powerState) 100 'PowerWait'
+
+---
+
+(source_file
+  (timed_wait_until_statement
+    (timed_wait_until_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    timeout: (number_literal)
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
+  (timed_wait_until_statement
+    (timed_wait_until_keyword)
+    condition: (parenthesized_expression
+      (binary_expression
+        left: (identifier)
+        right: (number_literal)))
+    timeout: (number_literal)
+    name: (string_literal
+      (string_content))
+    body: (compound_statement
+      (expression_statement
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list)))))
+  (timed_wait_until_statement
+    (timed_wait_until_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    timeout: (number_literal)
+    name: (string_literal
+      (string_content))))
+
+==================
+Create Level
+==================
+
+CREATE_LEVEL dvTP, 1, nVolume
+
+---
+
+(source_file
+  (create_level_statement
+    (create_level_keyword)
+    (comma_expression
+      (identifier)
+      (comma_expression
+        (number_literal)
+        (identifier)))))
+
+==================
+Medium While
+==================
+
+MEDIUM_WHILE (x)
+{
+    x = x - 1
+}
+
+---
+
+(source_file
+  (while_statement
+    (medium_while_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    body: (compound_statement
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (binary_expression
+            left: (identifier)
+            right: (number_literal)))))))

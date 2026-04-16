@@ -70,6 +70,7 @@ module.exports = {
     default_keyword: (_) => keywords.default,
     while_keyword: (_) => keywords.while,
     long_while_keyword: (_) => keywords.long_while,
+    medium_while_keyword: (_) => keywords.medium_while,
     for_keyword: (_) => keywords.for,
     break_keyword: (_) => keywords.break,
     continue_keyword: (_) => keywords.continue,
@@ -117,6 +118,7 @@ module.exports = {
     clear_buffer_keyword: (_) => keywords.clear_buffer,
     create_buffer_keyword: (_) => keywords.create_buffer,
     create_multi_buffer_keyword: (_) => keywords.create_multi_buffer,
+    create_level_keyword: (_) => keywords.create_level,
     call_keyword: (_) => keywords.call,
     system_call_keyword: (_) => keywords.system_call,
 
@@ -135,6 +137,14 @@ module.exports = {
     cancel_wait_until_keyword: (_) => keywords.cancel_wait_until,
     cancel_all_wait_keyword: (_) => keywords.cancel_all_wait,
     cancel_all_wait_until_keyword: (_) => keywords.cancel_all_wait_until,
+    timed_wait_until_keyword: (_) => keywords.timed_wait_until,
+    pause_wait_keyword: (_) => keywords.pause_wait,
+    pause_all_wait_keyword: (_) => keywords.pause_all_wait,
+    restart_wait_keyword: (_) => keywords.restart_wait,
+    restart_all_wait_keyword: (_) => keywords.restart_all_wait,
+
+    // Arithmetic keywords
+    mod: (_) => keywords.mod,
 
     // Logical keywords
     and: (_) => keywords.and,

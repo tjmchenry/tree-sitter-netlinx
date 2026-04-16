@@ -1282,6 +1282,12 @@ module.exports = grammar({
                 $.cancel_all_wait_until_statement,
                 $.cancel_wait_statement,
                 $.cancel_wait_until_statement,
+                $.timed_wait_until_statement,
+                $.pause_wait_statement,
+                $.pause_all_wait_statement,
+                $.restart_wait_statement,
+                $.restart_all_wait_statement,
+                $.create_level_statement,
                 $.call_statement,
                 $.system_call_statement,
             ),
@@ -1313,6 +1319,12 @@ module.exports = grammar({
                 $.cancel_all_wait_until_statement,
                 $.cancel_wait_statement,
                 $.cancel_wait_until_statement,
+                $.timed_wait_until_statement,
+                $.pause_wait_statement,
+                $.pause_all_wait_statement,
+                $.restart_wait_statement,
+                $.restart_all_wait_statement,
+                $.create_level_statement,
                 $.call_statement,
                 $.system_call_statement,
             ),
@@ -1359,6 +1371,7 @@ module.exports = grammar({
                 choice(
                   $.while_keyword,
                   $.long_while_keyword,
+                  $.medium_while_keyword,
                 ),
                 field("condition", $.parenthesized_expression),
                 field("body", $.statement),
@@ -1530,6 +1543,40 @@ module.exports = grammar({
                 $._semicolon,
             ),
 
+        timed_wait_until_statement: ($) =>
+            prec.right(
+                seq(
+                    $.timed_wait_until_keyword,
+                    field("condition", $.parenthesized_expression),
+                    field("timeout", $.expression),
+                    optional(field("name", $.string_literal)),
+                    optional(field("body", $.compound_statement)),
+                ),
+            ),
+
+        pause_wait_statement: ($) =>
+            seq(
+                $.pause_wait_keyword,
+                field("name", $.string_literal),
+                $._semicolon,
+            ),
+
+        pause_all_wait_statement: ($) =>
+            seq($.pause_all_wait_keyword, $._semicolon),
+
+        restart_wait_statement: ($) =>
+            seq(
+                $.restart_wait_keyword,
+                field("name", $.string_literal),
+                $._semicolon,
+            ),
+
+        restart_all_wait_statement: ($) =>
+            seq($.restart_all_wait_keyword, $._semicolon),
+
+        create_level_statement: ($) =>
+            seq($.create_level_keyword, $.comma_expression, $._semicolon),
+
         // This is for invoking NetLinx's legacy DEFINE_CALL function.
         // These cannot be used in or as expressions.
         // Think of them like simple macros.
@@ -1545,6 +1592,9 @@ module.exports = grammar({
         system_call_statement: ($) =>
             seq(
                 $.system_call_keyword,
+                optional(
+                    seq("[", field("instance", $.expression), "]"),
+                ),
                 field("call", $.string_literal),
                 optional(field("arguments", $.argument_list)),
                 $._semicolon,
@@ -2142,6 +2192,7 @@ module.exports = grammar({
                 ["*", PREC.MULTIPLY],
                 ["/", PREC.MULTIPLY],
                 ["%", PREC.MULTIPLY],
+                [$.mod, PREC.MULTIPLY],
                 ["||", PREC.LOGICAL_OR],
                 ["&&", PREC.LOGICAL_AND],
                 ["|", PREC.INCLUSIVE_OR],
@@ -2163,7 +2214,8 @@ module.exports = grammar({
                 [$.rshift, PREC.SHIFT],
                 [$.and, PREC.LOGICAL_AND],
                 [$.or, PREC.LOGICAL_OR],
-                [$.xor, PREC.EXCLUSIVE_OR],
+                [$.xor, PREC.LOGICAL_OR],
+                ["^^", PREC.LOGICAL_OR],
             ];
 
             return choice(

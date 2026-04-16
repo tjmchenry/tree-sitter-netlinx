@@ -59,6 +59,8 @@
     (case_keyword)
     (default_keyword)
     (while_keyword)
+    (long_while_keyword)
+    (medium_while_keyword)
     (for_keyword)
     (break_keyword)
     (continue_keyword)
@@ -88,6 +90,7 @@
     (clear_buffer_keyword)
     (create_buffer_keyword)
     (create_multi_buffer_keyword)
+    (create_level_keyword)
     (call_keyword)
     (system_call_keyword)
 
@@ -103,6 +106,11 @@
     (cancel_wait_keyword)
     (cancel_wait_until_keyword)
     (cancel_all_wait_keyword)
+    (timed_wait_until_keyword)
+    (pause_wait_keyword)
+    (pause_all_wait_keyword)
+    (restart_wait_keyword)
+    (restart_all_wait_keyword)
     (cancel_all_wait_until_keyword)
 
     (button_event_keyword)
@@ -114,6 +122,8 @@
 
     (struct_keyword)
     (structure_keyword)
+
+    (mod)
 
     (band)
     (bor)

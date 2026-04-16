@@ -354,6 +354,11 @@
       "value": "long_while",
       "flags": "i"
     },
+    "medium_while_keyword": {
+      "type": "PATTERN",
+      "value": "medium_while",
+      "flags": "i"
+    },
     "for_keyword": {
       "type": "PATTERN",
       "value": "for",
@@ -519,6 +524,11 @@
       "value": "create_multi_buffer",
       "flags": "i"
     },
+    "create_level_keyword": {
+      "type": "PATTERN",
+      "value": "create_level",
+      "flags": "i"
+    },
     "call_keyword": {
       "type": "PATTERN",
       "value": "call",
@@ -587,6 +597,36 @@
     "cancel_all_wait_until_keyword": {
       "type": "PATTERN",
       "value": "cancel_all_wait_until",
+      "flags": "i"
+    },
+    "timed_wait_until_keyword": {
+      "type": "PATTERN",
+      "value": "timed_wait_until",
+      "flags": "i"
+    },
+    "pause_wait_keyword": {
+      "type": "PATTERN",
+      "value": "pause_wait",
+      "flags": "i"
+    },
+    "pause_all_wait_keyword": {
+      "type": "PATTERN",
+      "value": "pause_all_wait",
+      "flags": "i"
+    },
+    "restart_wait_keyword": {
+      "type": "PATTERN",
+      "value": "restart_wait",
+      "flags": "i"
+    },
+    "restart_all_wait_keyword": {
+      "type": "PATTERN",
+      "value": "restart_all_wait",
+      "flags": "i"
+    },
+    "mod": {
+      "type": "PATTERN",
+      "value": "mod",
       "flags": "i"
     },
     "and": {
@@ -10315,6 +10355,30 @@
         },
         {
           "type": "SYMBOL",
+          "name": "timed_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_level_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "call_statement"
         },
         {
@@ -10425,6 +10489,30 @@
         {
           "type": "SYMBOL",
           "name": "cancel_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "timed_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_level_statement"
         },
         {
           "type": "SYMBOL",
@@ -10627,6 +10715,10 @@
             {
               "type": "SYMBOL",
               "name": "long_while_keyword"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "medium_while_keyword"
             }
           ]
         },
@@ -11288,6 +11380,152 @@
         }
       ]
     },
+    "timed_wait_until_statement": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "timed_wait_until_keyword"
+          },
+          {
+            "type": "FIELD",
+            "name": "condition",
+            "content": {
+              "type": "SYMBOL",
+              "name": "parenthesized_expression"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "timeout",
+            "content": {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "name",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "string_literal"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "compound_statement"
+                }
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "pause_wait_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pause_wait_keyword"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string_literal"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
+    "pause_all_wait_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pause_all_wait_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
+    "restart_wait_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "restart_wait_keyword"
+        },
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string_literal"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
+    "restart_all_wait_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "restart_all_wait_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
+    "create_level_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "create_level_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comma_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
     "call_statement": {
       "type": "SEQ",
       "members": [
@@ -11331,6 +11569,35 @@
         {
           "type": "SYMBOL",
           "name": "system_call_keyword"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "["
+                },
+                {
+                  "type": "FIELD",
+                  "name": "instance",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "expression"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": "]"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -13501,6 +13768,39 @@
         },
         {
           "type": "PREC_LEFT",
+          "value": 11,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "mod"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
           "value": 1,
           "content": {
             "type": "SEQ",
@@ -14194,7 +14494,7 @@
         },
         {
           "type": "PREC_LEFT",
-          "value": 4,
+          "value": 1,
           "content": {
             "type": "SEQ",
             "members": [
@@ -14212,6 +14512,39 @@
                 "content": {
                   "type": "SYMBOL",
                   "name": "xor"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "right",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_LEFT",
+          "value": 1,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "left",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              },
+              {
+                "type": "FIELD",
+                "name": "operator",
+                "content": {
+                  "type": "STRING",
+                  "value": "^^"
                 }
               },
               {

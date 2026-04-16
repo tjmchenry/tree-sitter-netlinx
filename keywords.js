@@ -57,6 +57,7 @@ module.exports = {
     default: /default/i,
     while: /while/i,
     long_while: /long_while/i,
+    medium_while: /medium_while/i,
     for: /for/i,
     break: /break/i,
     continue: /continue/i,
@@ -98,6 +99,7 @@ module.exports = {
     clear_buffer: /clear_buffer/i,
     create_buffer: /create_buffer/i,
     create_multi_buffer: /create_multi_buffer/i,
+    create_level: /create_level/i,
     call: /call/i,
     system_call: /system_call/i,
 
@@ -147,6 +149,14 @@ module.exports = {
     cancel_wait_until: /cancel_wait_until/i,
     cancel_all_wait: /cancel_all_wait/i,
     cancel_all_wait_until: /cancel_all_wait_until/i,
+    timed_wait_until: /timed_wait_until/i,
+    pause_wait: /pause_wait/i,
+    pause_all_wait: /pause_all_wait/i,
+    restart_wait: /restart_wait/i,
+    restart_all_wait: /restart_all_wait/i,
+
+    // Arithmetic
+    mod: /mod/i,
 
     // Logical
     and: /and/i,

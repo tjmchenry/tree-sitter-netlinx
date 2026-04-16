@@ -2781,3 +2781,57 @@ chained2 = w and x and y and z
           (identifier))
         (and)
         (identifier)))))
+
+===================================
+Modulo Word Operator
+===================================
+
+result = 10 MOD 3
+r2 = x mod y
+
+---
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (mod)
+        (number_literal))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (mod)
+        (identifier)))))
+
+===================================
+Logical XOR Symbol Operator
+===================================
+
+result1 = a ^^ b
+result2 = (x > 5) ^^ (y < 10)
+
+---
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (number_literal)))
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (number_literal)))))))
