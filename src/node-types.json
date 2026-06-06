@@ -778,7 +778,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -1335,7 +1335,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -1591,7 +1591,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -1811,7 +1811,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -5277,7 +5277,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -6915,7 +6915,17 @@
     "fields": {
       "device": {
         "multiple": false,
-        "required": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "devlev": {
+        "multiple": false,
+        "required": false,
         "types": [
           {
             "type": "expression",
@@ -6925,7 +6935,7 @@
       },
       "level": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "expression",
@@ -9056,7 +9066,131 @@
         "required": false,
         "types": [
           {
+            "type": "active_statement",
+            "named": true
+          },
+          {
+            "type": "break_statement",
+            "named": true
+          },
+          {
+            "type": "call_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "clear_buffer_statement",
+            "named": true
+          },
+          {
             "type": "compound_statement",
+            "named": true
+          },
+          {
+            "type": "continue_statement",
+            "named": true
+          },
+          {
+            "type": "create_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "create_level_statement",
+            "named": true
+          },
+          {
+            "type": "create_multi_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "devchan_operation_statement",
+            "named": true
+          },
+          {
+            "type": "expression_statement",
+            "named": true
+          },
+          {
+            "type": "for_statement",
+            "named": true
+          },
+          {
+            "type": "if_statement",
+            "named": true
+          },
+          {
+            "type": "pause_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "pause_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_wait_statement",
+            "named": true
+          },
+          {
+            "type": "return_statement",
+            "named": true
+          },
+          {
+            "type": "select_statement",
+            "named": true
+          },
+          {
+            "type": "send_command_statement",
+            "named": true
+          },
+          {
+            "type": "send_level_statement",
+            "named": true
+          },
+          {
+            "type": "send_string_statement",
+            "named": true
+          },
+          {
+            "type": "switch_statement",
+            "named": true
+          },
+          {
+            "type": "system_call_statement",
+            "named": true
+          },
+          {
+            "type": "timed_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "wait_statement",
+            "named": true
+          },
+          {
+            "type": "wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "while_statement",
             "named": true
           }
         ]
@@ -9138,7 +9272,7 @@
         "required": true,
         "types": [
           {
-            "type": "compound_statement",
+            "type": "statement",
             "named": true
           }
         ]
@@ -9313,7 +9447,131 @@
         "required": false,
         "types": [
           {
+            "type": "active_statement",
+            "named": true
+          },
+          {
+            "type": "break_statement",
+            "named": true
+          },
+          {
+            "type": "call_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "clear_buffer_statement",
+            "named": true
+          },
+          {
             "type": "compound_statement",
+            "named": true
+          },
+          {
+            "type": "continue_statement",
+            "named": true
+          },
+          {
+            "type": "create_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "create_level_statement",
+            "named": true
+          },
+          {
+            "type": "create_multi_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "devchan_operation_statement",
+            "named": true
+          },
+          {
+            "type": "expression_statement",
+            "named": true
+          },
+          {
+            "type": "for_statement",
+            "named": true
+          },
+          {
+            "type": "if_statement",
+            "named": true
+          },
+          {
+            "type": "pause_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "pause_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_wait_statement",
+            "named": true
+          },
+          {
+            "type": "return_statement",
+            "named": true
+          },
+          {
+            "type": "select_statement",
+            "named": true
+          },
+          {
+            "type": "send_command_statement",
+            "named": true
+          },
+          {
+            "type": "send_level_statement",
+            "named": true
+          },
+          {
+            "type": "send_string_statement",
+            "named": true
+          },
+          {
+            "type": "switch_statement",
+            "named": true
+          },
+          {
+            "type": "system_call_statement",
+            "named": true
+          },
+          {
+            "type": "timed_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "wait_statement",
+            "named": true
+          },
+          {
+            "type": "wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "while_statement",
             "named": true
           }
         ]
@@ -9359,7 +9617,131 @@
         "required": false,
         "types": [
           {
+            "type": "active_statement",
+            "named": true
+          },
+          {
+            "type": "break_statement",
+            "named": true
+          },
+          {
+            "type": "call_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_all_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_statement",
+            "named": true
+          },
+          {
+            "type": "cancel_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "clear_buffer_statement",
+            "named": true
+          },
+          {
             "type": "compound_statement",
+            "named": true
+          },
+          {
+            "type": "continue_statement",
+            "named": true
+          },
+          {
+            "type": "create_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "create_level_statement",
+            "named": true
+          },
+          {
+            "type": "create_multi_buffer_statement",
+            "named": true
+          },
+          {
+            "type": "devchan_operation_statement",
+            "named": true
+          },
+          {
+            "type": "expression_statement",
+            "named": true
+          },
+          {
+            "type": "for_statement",
+            "named": true
+          },
+          {
+            "type": "if_statement",
+            "named": true
+          },
+          {
+            "type": "pause_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "pause_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_all_wait_statement",
+            "named": true
+          },
+          {
+            "type": "restart_wait_statement",
+            "named": true
+          },
+          {
+            "type": "return_statement",
+            "named": true
+          },
+          {
+            "type": "select_statement",
+            "named": true
+          },
+          {
+            "type": "send_command_statement",
+            "named": true
+          },
+          {
+            "type": "send_level_statement",
+            "named": true
+          },
+          {
+            "type": "send_string_statement",
+            "named": true
+          },
+          {
+            "type": "switch_statement",
+            "named": true
+          },
+          {
+            "type": "system_call_statement",
+            "named": true
+          },
+          {
+            "type": "timed_wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "wait_statement",
+            "named": true
+          },
+          {
+            "type": "wait_until_statement",
+            "named": true
+          },
+          {
+            "type": "while_statement",
             "named": true
           }
         ]

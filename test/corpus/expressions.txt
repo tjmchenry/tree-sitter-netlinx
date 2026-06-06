@@ -2835,3 +2835,19 @@ result2 = (x > 5) ^^ (y < 10)
           (binary_expression
             (identifier)
             (number_literal)))))))
+
+===================================
+Multi-line Single-Quoted String
+===================================
+
+x = 'line one
+line two'
+
+---
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (string_literal
+        (string_content)))))

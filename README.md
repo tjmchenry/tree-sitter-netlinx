@@ -149,6 +149,10 @@
 
 ## Known Limitations :warning:
 
+### Multi-line Single-quoted Strings
+
+Single-quoted string literals may span multiple lines — NetLinx permits this and the grammar honours it.  The accepted tradeoff is that an **unterminated** single-quoted string will greedily consume input up to the next single-quote character or end of file, producing degraded error recovery rather than a hard parse failure.  If your file produces unexpected parse errors, check for an unclosed `'` string.
+
 ### Preprocessor Directives in Expressions
 
 The NetLinx language allows preprocessor directives to be used within expressions, like:

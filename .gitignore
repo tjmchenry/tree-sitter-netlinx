@@ -55,6 +55,7 @@ zig-out/
 # NetLinx specific
 *.tkn
 *.tko
+*.src
 *.mf
 
 # Parse logs

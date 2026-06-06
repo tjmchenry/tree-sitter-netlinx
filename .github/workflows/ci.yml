@@ -61,6 +61,22 @@ jobs:
         run: pnpm test-node
 
       - name: Parse examples
-        uses: tree-sitter/parse-action@v4
+        uses: tree-sitter/parse-action@f44ffa94f802024f27e821a72e6f2f3efc5dd521 # v4
         with:
           files: examples/*
+
+      - name: Assert parse gate fails on errors (guard)
+        shell: bash
+        run: |
+          # The examples gate only catches regressions if the grammar still emits
+          # ERROR nodes for invalid input. Assert that an (ERROR ...) node is
+          # actually present for a deliberately-broken file. Checking for the
+          # token (not just a non-zero exit) also fails loudly if tree-sitter is
+          # missing/crashes, instead of passing vacuously.
+          out=$(tree-sitter parse test/gate-guard/seeded-error.axs 2>&1) || true
+          if ! grep -q "ERROR" <<<"$out"; then
+            echo "Gate guard FAILED: expected an (ERROR) node for seeded-error.axs; got:" >&2
+            echo "$out" >&2
+            exit 1
+          fi
+          echo "Gate guard OK: seeded error correctly produces an (ERROR) node"

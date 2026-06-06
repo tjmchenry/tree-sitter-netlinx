@@ -7419,7 +7419,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -7469,7 +7469,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -7745,7 +7745,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -7835,7 +7835,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -8120,7 +8120,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -8150,7 +8150,7 @@
           "name": "body",
           "content": {
             "type": "SYMBOL",
-            "name": "compound_statement"
+            "name": "statement"
           }
         }
       ]
@@ -11111,47 +11111,85 @@
       ]
     },
     "send_level_statement": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "send_level_keyword"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "send_level_keyword"
+            },
+            {
+              "type": "FIELD",
+              "name": "device",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "level",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "value",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_semicolon"
+            }
+          ]
         },
         {
-          "type": "FIELD",
-          "name": "device",
-          "content": {
-            "type": "SYMBOL",
-            "name": "expression"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": ","
-        },
-        {
-          "type": "FIELD",
-          "name": "level",
-          "content": {
-            "type": "SYMBOL",
-            "name": "expression"
-          }
-        },
-        {
-          "type": "STRING",
-          "value": ","
-        },
-        {
-          "type": "FIELD",
-          "name": "value",
-          "content": {
-            "type": "SYMBOL",
-            "name": "expression"
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_semicolon"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "send_level_keyword"
+            },
+            {
+              "type": "FIELD",
+              "name": "devlev",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "FIELD",
+              "name": "value",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_semicolon"
+            }
+          ]
         }
       ]
     },
@@ -11206,6 +11244,170 @@
         }
       ]
     },
+    "_wait_bare_expression_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "call_expression"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "assignment_expression"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "update_expression"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_semicolon"
+        }
+      ]
+    },
+    "_wait_body": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "compound_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "if_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "switch_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "select_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "active_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "while_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "for_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "return_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "break_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "continue_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "devchan_operation_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "send_string_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "send_command_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "send_level_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_buffer_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_multi_buffer_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "clear_buffer_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cancel_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cancel_all_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cancel_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "cancel_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "timed_wait_until_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "pause_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "restart_all_wait_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "create_level_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "call_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "system_call_statement"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_wait_bare_expression_statement"
+          },
+          "named": true,
+          "value": "expression_statement"
+        }
+      ]
+    },
     "wait_statement": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -11248,7 +11450,7 @@
                 "name": "body",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "compound_statement"
+                  "name": "_wait_body"
                 }
               },
               {
@@ -11301,7 +11503,7 @@
                 "name": "body",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "compound_statement"
+                  "name": "_wait_body"
                 }
               },
               {
@@ -11430,7 +11632,7 @@
                 "name": "body",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "compound_statement"
+                  "name": "_wait_body"
                 }
               },
               {
@@ -15289,7 +15491,7 @@
                     "value": 1,
                     "content": {
                       "type": "PATTERN",
-                      "value": "[^'\\n]+"
+                      "value": "[^']+"
                     }
                   }
                 },
@@ -15668,6 +15870,30 @@
     ],
     [
       "preproc_else_in_release_event_declarator"
+    ],
+    [
+      "wait_statement",
+      "expression"
+    ],
+    [
+      "wait_until_statement",
+      "expression"
+    ],
+    [
+      "timed_wait_until_statement",
+      "expression"
+    ],
+    [
+      "subscript_expression",
+      "devchan_expression"
+    ],
+    [
+      "argument_list",
+      "parenthesized_expression"
+    ],
+    [
+      "comma_expression",
+      "argument_list"
     ]
   ],
   "precedences": [],
@@ -15682,6 +15908,7 @@
     "_field_identifier",
     "_statement_identifier",
     "_non_case_statement",
+    "_wait_body",
     "_assignment_left_expression",
     "_expression_not_binary",
     "_semicolon"

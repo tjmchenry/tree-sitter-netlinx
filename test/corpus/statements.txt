@@ -777,6 +777,27 @@ send_level dvTP, 2, (255 - 10)
         left: (number_literal)
         right: (number_literal)))))
 
+===================
+Send Level 2-arg (DEVLEV)
+===================
+
+send_level dvLev, 174
+send_level DLS_FDIN[nIndex], 174
+
+---
+
+(source_file
+  (send_level_statement
+    (send_level_keyword)
+    devlev: (identifier)
+    value: (number_literal))
+  (send_level_statement
+    (send_level_keyword)
+    devlev: (subscript_expression
+      argument: (identifier)
+      index: (identifier))
+    value: (number_literal)))
+
 ==================
 Create Buffer
 ==================
@@ -845,16 +866,18 @@ wait 50 'DelayedAction'
     quux()
 }
 
+wait 30 'NamedBare' corge()
+
 ---
 
 (source_file
   (wait_statement
     (wait_keyword)
-    time: (number_literal))
-  (expression_statement
-    (call_expression
-      function: (identifier)
-      arguments: (argument_list)))
+    time: (number_literal)
+    body: (expression_statement
+      (call_expression
+        function: (identifier)
+        arguments: (argument_list))))
   (wait_statement
     (wait_keyword)
     time: (number_literal)
@@ -893,7 +916,16 @@ wait 50 'DelayedAction'
       (expression_statement
         (call_expression
           function: (identifier)
-          arguments: (argument_list))))))
+          arguments: (argument_list)))))
+  (wait_statement
+    (wait_keyword)
+    time: (number_literal)
+    name: (string_literal
+      (string_content))
+    body: (expression_statement
+      (call_expression
+        function: (identifier)
+        arguments: (argument_list)))))
 
 ====================
 Wait Until
@@ -922,11 +954,11 @@ wait_until (ready)
       (binary_expression
         left: (identifier)
         right: (system_constant
-          (true)))))
-  (expression_statement
-    (call_expression
-      function: (identifier)
-      arguments: (argument_list)))
+          (true))))
+    body: (expression_statement
+      (call_expression
+        function: (identifier)
+        arguments: (argument_list))))
   (wait_until_statement
     (wait_until_keyword)
     condition: (parenthesized_expression
@@ -963,7 +995,7 @@ wait_until (ready)
           arguments: (argument_list))))))
 
 ====================
-Wait Standalone
+Wait chaining (implicit bare bodies)
 ====================
 
 wait 1
@@ -976,23 +1008,23 @@ wait (timeout * 10) 'Timeout'
 (source_file
   (wait_statement
     (wait_keyword)
-    time: (number_literal))
-  (wait_statement
-    (wait_keyword)
-    time: (number_literal))
-  (wait_statement
-    (wait_keyword)
     time: (number_literal)
-    name: (string_literal
-      (string_content)))
-  (wait_statement
-    (wait_keyword)
-    time: (parenthesized_expression
-      (binary_expression
-        left: (identifier)
-        right: (number_literal)))
-    name: (string_literal
-      (string_content))))
+    body: (wait_statement
+      (wait_keyword)
+      time: (number_literal)
+      body: (wait_statement
+        (wait_keyword)
+        time: (number_literal)
+        name: (string_literal
+          (string_content))
+        body: (wait_statement
+          (wait_keyword)
+          time: (parenthesized_expression
+            (binary_expression
+              left: (identifier)
+              right: (number_literal)))
+          name: (string_literal
+            (string_content)))))))
 
 ====================
 Combine
@@ -1311,23 +1343,23 @@ CANCEL_WAIT 'DynamicWait'
   (comment)
   (wait_statement
     (wait_keyword)
-    (number_literal)
-    (string_literal
-      (string_content)))
-  (wait_until_statement
-    (wait_until_keyword)
-    (parenthesized_expression
-      (identifier))
-    (string_literal
-      (string_content)))
-  (comment)
-  (cancel_wait_statement
-    (cancel_wait_keyword)
-    (string_literal
-      (string_content)))
+    time: (number_literal)
+    name: (string_literal
+      (string_content))
+    body: (wait_until_statement
+      (wait_until_keyword)
+      condition: (parenthesized_expression
+        (identifier))
+      name: (string_literal
+        (string_content))
+      (comment)
+      body: (cancel_wait_statement
+        (cancel_wait_keyword)
+        name: (string_literal
+          (string_content)))))
   (cancel_wait_until_statement
     (cancel_wait_until_keyword)
-    (string_literal
+    name: (string_literal
       (string_content)))
   (comment)
   (cancel_all_wait_statement
@@ -1337,15 +1369,15 @@ CANCEL_WAIT 'DynamicWait'
   (comment)
   (wait_statement
     (wait_keyword)
-    (binary_expression
-      (identifier)
-      (identifier))
-    (string_literal
-      (string_content)))
-  (cancel_wait_statement
-    (cancel_wait_keyword)
-    (string_literal
-      (string_content))))
+    time: (binary_expression
+      left: (identifier)
+      right: (identifier))
+    name: (string_literal
+      (string_content))
+    body: (cancel_wait_statement
+      (cancel_wait_keyword)
+      name: (string_literal
+        (string_content)))))
 
 =================================
 DevChan Range in Operations

@@ -84,6 +84,12 @@ module.exports = grammar({
         [$.preproc_else_in_push_event_declarator],
         [$.preproc_if_defined_in_release_event_declarator],
         [$.preproc_else_in_release_event_declarator],
+        [$.wait_statement, $.expression],
+        [$.wait_until_statement, $.expression],
+        [$.timed_wait_until_statement, $.expression],
+        [$.subscript_expression, $.devchan_expression],
+        [$.argument_list, $.parenthesized_expression],
+        [$.comma_expression, $.argument_list],
     ],
 
     extras: ($) => [/\s/, $.comment],
@@ -93,6 +99,7 @@ module.exports = grammar({
         $._field_identifier,
         $._statement_identifier,
         $._non_case_statement,
+        $._wait_body,
         $._assignment_left_expression,
         $._expression_not_binary,
         $._semicolon,
@@ -450,7 +457,7 @@ module.exports = grammar({
             seq(
                 field("type", $.data_event_type),
                 ":",
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         data_event_type: ($) =>
@@ -467,7 +474,7 @@ module.exports = grammar({
         timeline_event_definition: ($) =>
             seq(
                 $._timeline_event_declarator_list,
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         _timeline_event_declarator_list: ($) =>
@@ -557,7 +564,7 @@ module.exports = grammar({
             seq(
                 field("type", $.button_event_type),
                 ":",
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         button_event_type: ($) =>
@@ -583,7 +590,7 @@ module.exports = grammar({
         level_event_definition: ($) =>
             seq(
                 $._level_event_declarator_list,
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         _level_event_declarator_list: ($) =>
@@ -674,7 +681,7 @@ module.exports = grammar({
             seq(
                 field("type", $.channel_event_type),
                 ":",
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         channel_event_type: ($) => choice($.on_keyword, $.off_keyword),
@@ -682,7 +689,7 @@ module.exports = grammar({
         custom_event_definition: ($) =>
             seq(
                 $._custom_event_declarator_list,
-                field("body", $.compound_statement),
+                field("body", $.statement),
             ),
 
         _custom_event_declarator_list: ($) =>
@@ -1481,14 +1488,23 @@ module.exports = grammar({
             ),
 
         send_level_statement: ($) =>
-            seq(
-                $.send_level_keyword,
-                field("device", $.expression),
-                ",",
-                field("level", $.expression),
-                ",",
-                field("value", $.expression),
-                $._semicolon,
+            choice(
+                seq(
+                    $.send_level_keyword,
+                    field("device", $.expression),
+                    ",",
+                    field("level", $.expression),
+                    ",",
+                    field("value", $.expression),
+                    $._semicolon,
+                ),
+                seq(
+                    $.send_level_keyword,
+                    field("devlev", $.expression),
+                    ",",
+                    field("value", $.expression),
+                    $._semicolon,
+                ),
             ),
 
         create_buffer_statement: ($) =>
@@ -1504,13 +1520,81 @@ module.exports = grammar({
         clear_buffer_statement: ($) =>
             seq($.clear_buffer_keyword, $.expression, $._semicolon),
 
+        // Private rule used to build expression_statement-shaped nodes for WAIT bare bodies.
+        // Aliasing this dedicated rule (rather than an inline seq) to expression_statement
+        // keeps the inner call/assignment/update as a proper named child of the wrapper
+        // and avoids the trailing `;` leaking up as a second body node.
+        _wait_bare_expression_statement: ($) =>
+            seq(
+                choice(
+                    $.call_expression,
+                    $.assignment_expression,
+                    $.update_expression,
+                ),
+                $._semicolon,
+            ),
+
+        // Allowlist of legal WAIT body forms.
+        //
+        // A leading string_literal is always the wait NAME (e.g. WAIT 10 'myname' ...),
+        // so string_literal is deliberately excluded here.
+        //
+        // The bare-expression alternatives are intentionally narrow: only call_expression,
+        // assignment_expression, and update_expression are legal as standalone WAIT bodies
+        // in NLRC (confirmed by compilation probes). Broader expression kinds
+        // (subscript_expression, devchan_expression, parenthesized_expression, identifier,
+        // number_literal, unary_expression, field_expression) produce C10201 syntax errors
+        // in NLRC and including them forces over-broad global conflict entries.
+        _wait_body: ($) =>
+            choice(
+                $.compound_statement,
+                $.if_statement,
+                $.switch_statement,
+                $.select_statement,
+                $.active_statement,
+                $.while_statement,
+                $.for_statement,
+                $.return_statement,
+                $.break_statement,
+                $.continue_statement,
+                $.devchan_operation_statement,
+                $.send_string_statement,
+                $.send_command_statement,
+                $.send_level_statement,
+                $.create_buffer_statement,
+                $.create_multi_buffer_statement,
+                $.clear_buffer_statement,
+                $.wait_statement,
+                $.wait_until_statement,
+                $.cancel_all_wait_statement,
+                $.cancel_all_wait_until_statement,
+                $.cancel_wait_statement,
+                $.cancel_wait_until_statement,
+                $.timed_wait_until_statement,
+                $.pause_wait_statement,
+                $.pause_all_wait_statement,
+                $.restart_wait_statement,
+                $.restart_all_wait_statement,
+                $.create_level_statement,
+                $.call_statement,
+                $.system_call_statement,
+                // Bare-expression bodies: only the NLRC-legal subset (calls, assignments, updates).
+                // Wrapped in expression_statement for a uniform AST (matches every other body form).
+                // Using a dedicated private rule aliased to expression_statement so the
+                // call/assignment/update node stays as a named child inside the wrapper.
+                alias(
+                    $._wait_bare_expression_statement,
+                    $.expression_statement,
+                ),
+            ),
+
         wait_statement: ($) =>
             prec.right(
                 seq(
                     $.wait_keyword,
                     field("time", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional(field("body", $.compound_statement)),
+                    optional(field("body", $._wait_body)),
                 ),
             ),
 
@@ -1520,7 +1604,7 @@ module.exports = grammar({
                     $.wait_until_keyword,
                     field("condition", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional(field("body", $.compound_statement)),
+                    optional(field("body", $._wait_body)),
                 ),
             ),
 
@@ -1550,7 +1634,7 @@ module.exports = grammar({
                     field("condition", $.parenthesized_expression),
                     field("timeout", $.expression),
                     optional(field("name", $.string_literal)),
-                    optional(field("body", $.compound_statement)),
+                    optional(field("body", $._wait_body)),
                 ),
             ),
 
@@ -2409,7 +2493,12 @@ module.exports = grammar({
                 repeat(
                     choice(
                         alias(
-                            token.immediate(prec(1, /[^'\n]+/)),
+                            // Newlines are intentionally permitted so single-quoted strings may
+                            // span multiple lines (NetLinx allows this).  The accepted tradeoff:
+                            // an UNTERMINATED string will greedily consume input up to the next
+                            // single-quote or EOF, giving degraded (but non-crashing) error
+                            // recovery rather than a hard parse failure.
+                            token.immediate(prec(1, /[^']+/)),
                             $.string_content,
                         ),
                         $.escape_sequence,

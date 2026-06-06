@@ -584,3 +584,192 @@ RELEASE[DVA_DEVCHAN[1]] {}
               (identifier)
               (number_literal)))))
       (compound_statement))))
+
+==================
+Button handler bare body
+==================
+
+BUTTON_EVENT[dvTP, 1] {
+    PUSH: do_push(dvTP, 1)
+    RELEASE: { do_push(dvTP, 1) }
+    HOLD[t]: do_push(dvTP, 2)
+}
+
+---
+
+(source_file
+  (event_definition
+    (button_event_definition
+      (button_event_declarator
+        (button_event_keyword)
+        devchan: (button_event_devchan_reference
+          (devchan_expression
+            device: (identifier)
+            channel: (number_literal))))
+      body: (button_event_block
+        (button_event_handler
+          type: (button_event_type
+            (push_keyword))
+          body: (expression_statement
+            (call_expression
+              function: (system_function
+                (do_push))
+              arguments: (argument_list
+                (identifier)
+                (number_literal)))))
+        (button_event_handler
+          type: (button_event_type
+            (release_keyword))
+          body: (compound_statement
+            (expression_statement
+              (call_expression
+                function: (system_function
+                  (do_push))
+                arguments: (argument_list
+                  (identifier)
+                  (number_literal))))))
+        (button_event_handler
+          type: (button_event_type
+            (hold_keyword)
+            time: (identifier))
+          body: (expression_statement
+            (call_expression
+              function: (system_function
+                (do_push))
+              arguments: (argument_list
+                (identifier)
+                (number_literal)))))))))
+
+==================
+Channel handler bare body
+==================
+
+CHANNEL_EVENT[dvRELAY, 1] {
+    ON:  on[dvTP, 7]
+    OFF: off[dvTP, 7]
+}
+
+---
+
+(source_file
+  (event_definition
+    (channel_event_definition
+      (channel_event_declarator
+        (channel_event_keyword)
+        devchan: (channel_event_devchan_reference
+          (devchan_expression
+            device: (identifier)
+            channel: (number_literal))))
+      body: (channel_event_block
+        (channel_event_handler
+          type: (channel_event_type
+            (on_keyword))
+          body: (devchan_operation_statement
+            operation: (devchan_operation
+              (devchan_on_keyword))
+            target: (devchan_expression
+              device: (identifier)
+              channel: (number_literal))))
+        (channel_event_handler
+          type: (channel_event_type
+            (off_keyword))
+          body: (devchan_operation_statement
+            operation: (devchan_operation
+              (devchan_off_keyword))
+            target: (devchan_expression
+              device: (identifier)
+              channel: (number_literal))))))))
+
+==================
+Data handler bare body
+==================
+
+DATA_EVENT[dvTP] {
+    ONLINE: send_command dvTP, 'X'
+}
+
+---
+
+(source_file
+  (event_definition
+    (data_event_definition
+      (data_event_declarator
+        (data_event_keyword)
+        device: (data_event_device_reference
+          (identifier)))
+      body: (data_event_block
+        (data_event_handler
+          type: (data_event_type
+            (online_keyword))
+          body: (send_command_statement
+            (send_command_keyword)
+            device: (identifier)
+            value: (string_literal
+              (string_content))))))))
+
+==================
+Level event bare body
+==================
+
+LEVEL_EVENT[dvTP, 1] nLvl = 1
+
+---
+
+(source_file
+  (event_definition
+    (level_event_definition
+      (level_event_declarator
+        (level_event_keyword)
+        devlev: (level_event_devlev_reference
+          (devlev_expression
+            device: (identifier)
+            level: (number_literal))))
+      body: (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================
+Custom event bare body
+==================
+
+CUSTOM_EVENT[dvTP, 1, 1] nLvl = 1
+
+---
+
+(source_file
+  (event_definition
+    (custom_event_definition
+      (custom_event_declarator
+        (custom_event_keyword)
+        reference: (custom_event_reference
+          device: (identifier)
+          id: (number_literal)
+          type: (number_literal)))
+      body: (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================
+Timeline event bare body
+==================
+
+TIMELINE_EVENT[1] do_push(dvTP, 1)
+
+---
+
+(source_file
+  (event_definition
+    (timeline_event_definition
+      (timeline_event_declarator
+        (timeline_event_keyword)
+        id: (timeline_event_id_reference
+          (number_literal)))
+      body: (expression_statement
+        (call_expression
+          function: (system_function
+            (do_push))
+          arguments: (argument_list
+            (identifier)
+            (number_literal)))))))
