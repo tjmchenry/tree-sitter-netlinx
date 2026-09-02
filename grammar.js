@@ -20,21 +20,26 @@ const PREC = {
     ASSIGNMENT: 0,
     CONDITIONAL: -1,
     DEFAULT: 0,
-    LOGICAL_OR: 1,
-    LOGICAL_AND: 2,
-    INCLUSIVE_OR: 3,
-    EXCLUSIVE_OR: 4,
-    BITWISE_AND: 5,
+    // The nine binary/unary levels below are what NLRC's emitted code does, not what the
+    // AMX reference table prints: that table contradicts the compiler on the shift, the
+    // bitwise and the `!` rows, so it must never be used to "correct" this order. `<<`
+    // and `>>` bind tighter than all arithmetic and sit on separate levels; `& | ^`
+    // share one level above arithmetic; `!` binds looser than `& | ^`; `~` binds
+    // tighter than everything.
+    LOGICAL: 1,
     // NetLinx puts `<` `<=` `>` `>=` `=` `==` `<>` on ONE left-to-right level, so
     // `nX = 1 > 5` is `(nX == 1) > 5`. `=` and `==` are the same operator, and
     // rewriting one to the other must never reshape the tree.
-    COMPARISON: 6,
-    OFFSETOF: 8,
-    SHIFT: 9,
-    ADD: 10,
-    MULTIPLY: 11,
-    CAST: 12,
-    UNARY: 14,
+    COMPARISON: 2,
+    ADD: 3,
+    MULTIPLY: 4,
+    NOT: 5,
+    BITWISE: 6,
+    LSHIFT: 7,
+    RSHIFT: 8,
+    UNARY: 9,
+    OFFSETOF: 10,
+    CAST: 11,
     CALL: 15,
     FIELD: 16,
     SUBSCRIPT: 17,
@@ -2290,15 +2295,24 @@ module.exports = grammar({
                 alias($.system_variable, $.identifier),
             ),
 
+        // Two levels, not one: NLRC gives `~` the tightest binding of any operator while
+        // `!` and unary `-`/`+` bind LOOSER than `& | ^`, so `~nA & nB` is `(~nA) & nB`
+        // but `!nA & nB` is `!(nA & nB)`.
         unary_expression: ($) =>
-            prec.right(
-                PREC.UNARY,
-                seq(
-                    field(
-                        "operator",
-                        choice("!", "~", "-", "+", $.bnot, $.not),
+            choice(
+                prec.right(
+                    PREC.UNARY,
+                    seq(
+                        field("operator", choice("~", $.bnot)),
+                        field("argument", $.expression),
                     ),
-                    field("argument", $.expression),
+                ),
+                prec.right(
+                    PREC.NOT,
+                    seq(
+                        field("operator", choice("!", "-", "+", $.not)),
+                        field("argument", $.expression),
+                    ),
                 ),
             ),
 
@@ -2310,11 +2324,11 @@ module.exports = grammar({
                 ["/", PREC.MULTIPLY],
                 ["%", PREC.MULTIPLY],
                 [$.mod, PREC.MULTIPLY],
-                ["||", PREC.LOGICAL_OR],
-                ["&&", PREC.LOGICAL_AND],
-                ["|", PREC.INCLUSIVE_OR],
-                ["^", PREC.EXCLUSIVE_OR],
-                ["&", PREC.BITWISE_AND],
+                ["||", PREC.LOGICAL],
+                ["&&", PREC.LOGICAL],
+                ["|", PREC.BITWISE],
+                ["^", PREC.BITWISE],
+                ["&", PREC.BITWISE],
                 ["=", PREC.COMPARISON],
                 ["==", PREC.COMPARISON],
                 ["!=", PREC.COMPARISON],
@@ -2323,17 +2337,17 @@ module.exports = grammar({
                 [">=", PREC.COMPARISON],
                 ["<=", PREC.COMPARISON],
                 ["<", PREC.COMPARISON],
-                ["<<", PREC.SHIFT],
-                [">>", PREC.SHIFT],
-                [$.band, PREC.BITWISE_AND],
-                [$.bor, PREC.INCLUSIVE_OR],
-                [$.bxor, PREC.EXCLUSIVE_OR],
-                [$.lshift, PREC.SHIFT],
-                [$.rshift, PREC.SHIFT],
-                [$.and, PREC.LOGICAL_AND],
-                [$.or, PREC.LOGICAL_OR],
-                [$.xor, PREC.LOGICAL_OR],
-                ["^^", PREC.LOGICAL_OR],
+                ["<<", PREC.LSHIFT],
+                [">>", PREC.RSHIFT],
+                [$.band, PREC.BITWISE],
+                [$.bor, PREC.BITWISE],
+                [$.bxor, PREC.BITWISE],
+                [$.lshift, PREC.LSHIFT],
+                [$.rshift, PREC.RSHIFT],
+                [$.and, PREC.LOGICAL],
+                [$.or, PREC.LOGICAL],
+                [$.xor, PREC.LOGICAL],
+                ["^^", PREC.LOGICAL],
             ];
 
             return choice(
@@ -2396,9 +2410,10 @@ module.exports = grammar({
 
         // `=` is an assignment only where a statement is expected; wherever a value is
         // expected it is the equality operator, and `expression` cannot reach
-        // assignment_expression at all. Every statement-shaped rule that admits an
-        // assignment goes through _statement_expression; an expression-position rule
-        // (a condition, an argument, a parenthesized expression) must not.
+        // assignment_expression at all. An expression-position rule (a condition, an
+        // argument, a parenthesized expression) must never reach an assignment.
+        // COUPLING: _wait_bare_expression_statement admits assignments without going
+        // through here, deliberately — it is a narrower allowlist, not this rule.
         _statement_expression: ($) =>
             choice(
                 $.expression,

@@ -2515,7 +2515,7 @@ result2 = a and b
 result3 = c xor d
 result4 = not e
 
-// Complex logical word expressions
+// Complex logical word expressions. and/or/xor are ONE level L-to-R, so complex3 is ((a and b) or c) and d — NLRC probe s49.
 complex1 = (a or b) and not c
 complex2 = not (x and y) or z
 complex3 = a and b or c and d
@@ -2604,14 +2604,14 @@ chained2 = w and x and y and z
       (identifier)
       (binary_expression
         (binary_expression
-          (identifier)
-          (and)
+          (binary_expression
+            (identifier)
+            (and)
+            (identifier))
+          (or)
           (identifier))
-        (or)
-        (binary_expression
-          (identifier)
-          (and)
-          (identifier)))))
+        (and)
+        (identifier))))
   (comment)
   (expression_statement
     (assignment_expression
@@ -2904,3 +2904,246 @@ b = x = y == z
           left: (identifier)
           right: (identifier))
         right: (identifier)))))
+
+===================================
+Shift Binds Tighter Than Arithmetic
+===================================
+
+// NLRC probes s4/s5, s9/s10, s11, s30, s31, s32
+nX = a + b LSHIFT c
+nX = a * b LSHIFT c
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (lshift)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (lshift)
+          (identifier))))))
+
+===================================
+Right Shift Binds Tighter Than Left Shift
+===================================
+
+// NLRC probes s34, s36
+nX = a LSHIFT b RSHIFT c
+nX = a RSHIFT b LSHIFT c
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (lshift)
+        (binary_expression
+          (identifier)
+          (rshift)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (rshift)
+          (identifier))
+        (lshift)
+        (identifier)))))
+
+===================================
+Bitwise Operators Share One Level
+===================================
+
+// NLRC probes s12/s13, s18/s19, s37, s38, s39
+nX = a BOR b BAND c
+nX = a BXOR b BAND c
+nX = a BOR b BXOR c
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (bor)
+          (identifier))
+        (band)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (bxor)
+          (identifier))
+        (band)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (bor)
+          (identifier))
+        (bxor)
+        (identifier)))))
+
+===================================
+Bitwise Binds Tighter Than Arithmetic And Comparison
+===================================
+
+// NLRC probes s20/s21, s22, s24/s25, s40, s41, s42
+nX = a * b BAND c
+nX = a + b BAND c
+nX = a < b BAND c
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (band)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (band)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (band)
+          (identifier))))))
+
+===================================
+Logical Operators Share One Level
+===================================
+
+// NLRC probes s49, s50, s51
+nX = a OR b AND c
+nX = a XOR b AND c
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (or)
+          (identifier))
+        (and)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (identifier)
+          (xor)
+          (identifier))
+        (and)
+        (identifier)))))
+
+===================================
+NOT And Unary Minus Bind Looser Than Bitwise
+===================================
+
+// NLRC probes s53, s55, s56
+nX = NOT a BAND b
+nX = -a BAND b
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (not)
+        (binary_expression
+          (identifier)
+          (band)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (binary_expression
+          (identifier)
+          (band)
+          (identifier))))))
+
+===================================
+BNOT Binds Tighter Than Bitwise And Shift
+===================================
+
+// NLRC probe s54
+nX = BNOT a BAND b
+nX = BNOT a RSHIFT b
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (unary_expression
+          (bnot)
+          (identifier))
+        (band)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (unary_expression
+          (bnot)
+          (identifier))
+        (rshift)
+        (identifier)))))
