@@ -58,10 +58,6 @@
     "named": true,
     "subtypes": [
       {
-        "type": "assignment_expression",
-        "named": true
-      },
-      {
         "type": "binary_expression",
         "named": true
       },
@@ -548,6 +544,10 @@
           },
           {
             "type": "<>",
+            "named": false
+          },
+          {
+            "type": "=",
             "named": false
           },
           {
@@ -1399,6 +1399,10 @@
         "required": true,
         "types": [
           {
+            "type": "assignment_expression",
+            "named": true
+          },
+          {
             "type": "expression",
             "named": true
           }
@@ -1408,6 +1412,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "assignment_expression",
+            "named": true
+          },
           {
             "type": "comma_expression",
             "named": true
@@ -4692,6 +4700,10 @@
       "required": true,
       "types": [
         {
+          "type": "assignment_expression",
+          "named": true
+        },
+        {
           "type": "comma_expression",
           "named": true
         },
@@ -4846,6 +4858,10 @@
         "required": false,
         "types": [
           {
+            "type": "assignment_expression",
+            "named": true
+          },
+          {
             "type": "comma_expression",
             "named": true
           },
@@ -4859,6 +4875,10 @@
         "multiple": false,
         "required": false,
         "types": [
+          {
+            "type": "assignment_expression",
+            "named": true
+          },
           {
             "type": "comma_expression",
             "named": true

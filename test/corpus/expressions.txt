@@ -2851,3 +2851,56 @@ line two'
       (identifier)
       (string_literal
         (string_content)))))
+
+===================================
+Equality = In Value Positions
+===================================
+
+fEcho(x = 7)
+y = arr[i = 1]
+
+---
+
+(source_file
+  (expression_statement
+    (call_expression
+      function: (identifier)
+      arguments: (argument_list
+        (binary_expression
+          left: (identifier)
+          right: (number_literal)))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (subscript_expression
+        argument: (identifier)
+        index: (binary_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===================================
+Comparison Operators Share One Precedence Level
+===================================
+
+a = x = 1 > 5
+b = x = y == z
+
+---
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (number_literal))
+        right: (number_literal))))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (binary_expression
+        left: (binary_expression
+          left: (identifier)
+          right: (identifier))
+        right: (identifier)))))

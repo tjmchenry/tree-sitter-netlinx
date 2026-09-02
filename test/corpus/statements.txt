@@ -1718,3 +1718,106 @@ MEDIUM_WHILE (x)
           right: (binary_expression
             left: (identifier)
             right: (number_literal)))))))
+
+==================
+Assignment Is Statement Position Only
+==================
+
+x = 7
+
+IF (x = 7)
+{
+    y = 1
+}
+
+WHILE (x = 7)
+{
+    BREAK
+}
+
+---
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (number_literal)))
+  (if_statement
+    (if_keyword)
+    condition: (parenthesized_expression
+      (binary_expression
+        left: (identifier)
+        right: (number_literal)))
+    consequence: (compound_statement
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))))
+  (while_statement
+    (while_keyword)
+    condition: (parenthesized_expression
+      (binary_expression
+        left: (identifier)
+        right: (number_literal)))
+    body: (compound_statement
+      (break_statement
+        (break_keyword)))))
+
+==================
+Non-lvalue Left Operand In A Condition
+==================
+
+IF (7 = x)
+{
+    y = 1
+}
+
+---
+
+(source_file
+  (if_statement
+    (if_keyword)
+    condition: (parenthesized_expression
+      (binary_expression
+        left: (number_literal)
+        right: (identifier)))
+    consequence: (compound_statement
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================
+For Clause Assignments
+==================
+
+FOR (i = 1, j = 31; i <= 3; i++, j--)
+{
+    y = i
+}
+
+---
+
+(source_file
+  (for_statement
+    (for_keyword)
+    initializer: (comma_expression
+      left: (assignment_expression
+        left: (identifier)
+        right: (number_literal))
+      right: (assignment_expression
+        left: (identifier)
+        right: (number_literal)))
+    condition: (binary_expression
+      left: (identifier)
+      right: (number_literal))
+    update: (comma_expression
+      left: (update_expression
+        argument: (identifier))
+      right: (update_expression
+        argument: (identifier)))
+    body: (compound_statement
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (identifier))))))

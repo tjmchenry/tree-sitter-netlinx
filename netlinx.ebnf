@@ -510,8 +510,17 @@ top_level_expression_statement =
     semicolon;
 
 expression_statement =
-    (expression | comma_expression),
+    statement_expression,
     semicolon;
+
+(* Statement position, the only place "=" is an assignment. *)
+statement_expression =
+    (expression | assignment_expression | statement_comma_expression);
+
+statement_comma_expression =
+    (expression | assignment_expression),
+    ",",
+    (expression | assignment_expression | statement_comma_expression);
 
 compound_statement =
     "{",
@@ -552,11 +561,11 @@ for_statement =
     statement;
 
 for_statement_body =
-    [(expression | comma_expression)],
+    [statement_expression],
     ";",
     [(expression | comma_expression)],
     ";",
-    [(expression | comma_expression)];
+    [statement_expression];
 
 select_statement =
     select_keyword,
@@ -667,9 +676,10 @@ call_statement =
 (* Expressions *)
 expression = expression_not_binary | binary_expression;
 
+(* assignment_expression is deliberately absent: "=" is an assignment only in
+   statement position, and an equality comparison wherever a value is expected. *)
 expression_not_binary =
-    assignment_expression
-    | unary_expression
+    unary_expression
     | update_expression
     | call_expression
     | field_expression
@@ -710,8 +720,7 @@ binary_expression =
     | expression, "|", expression
     | expression, "^", expression
     | expression, "&", expression
-    | expression, "==" | "!=" | "<>", expression
-    | expression, ">" | ">=" | "<=" | "<", expression
+    | expression, "=" | "==" | "!=" | "<>" | ">" | ">=" | "<=" | "<", expression
     | expression, "<<" | ">>", expression
     | expression, band, expression
     | expression, bor, expression

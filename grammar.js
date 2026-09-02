@@ -12,7 +12,12 @@ const netlinx = require("./netlinx-nodes");
 
 const PREC = {
     PAREN_DECLARATOR: -10,
-    ASSIGNMENT: -2,
+    // Statement-position `=` is ambiguous with the equality binary_expression and is
+    // resolved by GLR (see conflicts) plus STATEMENT_ASSIGNMENT below, not by static
+    // precedence — so this must TIE with the bare `expression` reduction that starts
+    // the binary reading, and stay below every binary operator so the assignment's
+    // whole right-hand side still binds into it.
+    ASSIGNMENT: 0,
     CONDITIONAL: -1,
     DEFAULT: 0,
     LOGICAL_OR: 1,
@@ -20,8 +25,10 @@ const PREC = {
     INCLUSIVE_OR: 3,
     EXCLUSIVE_OR: 4,
     BITWISE_AND: 5,
-    EQUAL: 6,
-    RELATIONAL: 7,
+    // NetLinx puts `<` `<=` `>` `>=` `=` `==` `<>` on ONE left-to-right level, so
+    // `nX = 1 > 5` is `(nX == 1) > 5`. `=` and `==` are the same operator, and
+    // rewriting one to the other must never reshape the tree.
+    COMPARISON: 6,
     OFFSETOF: 8,
     SHIFT: 9,
     ADD: 10,
@@ -33,6 +40,11 @@ const PREC = {
     SUBSCRIPT: 17,
     DIRECTIVE: 20,
     SECTION_DEFINITION: 110,
+    // Dynamic, not static: `nX = 7` in statement position is viable both as an
+    // assignment and as an equality binary_expression, and only the runtime GLR
+    // choice can prefer the assignment without giving `=` a static precedence that
+    // would also bind its right operand too tightly.
+    STATEMENT_ASSIGNMENT: 1,
 };
 
 module.exports = grammar({
@@ -41,6 +53,7 @@ module.exports = grammar({
     externals: ($) => [$._automatic_semicolon],
 
     conflicts: ($) => [
+        [$.assignment_expression, $.expression],
         [$.type_specifier, $.expression],
         [$.string_expression],
         [$.type_specifier, $._top_level_expression_statement],
@@ -335,40 +348,72 @@ module.exports = grammar({
             ),
 
         define_device_section: ($) =>
-            prec.right(seq($.define_device_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_device_keyword, repeat($._section_body_item)),
+            ),
         define_combine_section: ($) =>
-            prec.right(seq($.define_combine_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_combine_keyword, repeat($._section_body_item)),
+            ),
         define_connect_level_section: ($) =>
-            prec.right(seq($.define_connect_level_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq(
+                    $.define_connect_level_keyword,
+                    repeat($._section_body_item),
+                ),
+            ),
         define_constant_section: ($) =>
-            prec.right(seq($.define_constant_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_constant_keyword, repeat($._section_body_item)),
+            ),
         define_type_section: ($) =>
-            prec.right(seq($.define_type_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_type_keyword, repeat($._section_body_item)),
+            ),
         define_mutually_exclusive_section: ($) =>
-            prec.right(seq($.define_mutually_exclusive_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq(
+                    $.define_mutually_exclusive_keyword,
+                    repeat($._section_body_item),
+                ),
+            ),
         define_latching_section: ($) =>
-            prec.right(seq($.define_latching_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_latching_keyword, repeat($._section_body_item)),
+            ),
         define_toggling_section: ($) =>
-            prec.right(seq($.define_toggling_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_toggling_keyword, repeat($._section_body_item)),
+            ),
         define_variable_section: ($) =>
-            prec.right(seq($.define_variable_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_variable_keyword, repeat($._section_body_item)),
+            ),
         define_system_variable_section: ($) =>
-            prec.right(seq($.define_system_variable_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq(
+                    $.define_system_variable_keyword,
+                    repeat($._section_body_item),
+                ),
+            ),
         define_event_section: ($) =>
-            prec.right(seq($.define_event_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_event_keyword, repeat($._section_body_item)),
+            ),
         define_start_section: ($) =>
-            prec.right(seq($.define_start_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_start_keyword, repeat($._section_body_item)),
+            ),
         define_program_section: ($) =>
-            prec.right(seq($.define_program_keyword, repeat($._section_body_item))),
+            prec.right(
+                seq($.define_program_keyword, repeat($._section_body_item)),
+            ),
 
-        define_function_section: ($) =>
-            prec.right($.define_function),
+        define_function_section: ($) => prec.right($.define_function),
 
-        define_call_section: ($) =>
-            prec.right($.define_call),
+        define_call_section: ($) => prec.right($.define_call),
 
-        define_module_section: ($) =>
-            prec.right($.define_module),
+        define_module_section: ($) => prec.right($.define_module),
 
         define_function: ($) =>
             choice(
@@ -472,10 +517,7 @@ module.exports = grammar({
             ),
 
         timeline_event_definition: ($) =>
-            seq(
-                $._timeline_event_declarator_list,
-                field("body", $.statement),
-            ),
+            seq($._timeline_event_declarator_list, field("body", $.statement)),
 
         _timeline_event_declarator_list: ($) =>
             seq(
@@ -588,10 +630,7 @@ module.exports = grammar({
         button_event_hold_repeat: ($) => $.repeat_keyword,
 
         level_event_definition: ($) =>
-            seq(
-                $._level_event_declarator_list,
-                field("body", $.statement),
-            ),
+            seq($._level_event_declarator_list, field("body", $.statement)),
 
         _level_event_declarator_list: ($) =>
             seq(
@@ -687,10 +726,7 @@ module.exports = grammar({
         channel_event_type: ($) => choice($.on_keyword, $.off_keyword),
 
         custom_event_definition: ($) =>
-            seq(
-                $._custom_event_declarator_list,
-                field("body", $.statement),
-            ),
+            seq($._custom_event_declarator_list, field("body", $.statement)),
 
         _custom_event_declarator_list: ($) =>
             seq(
@@ -1340,7 +1376,7 @@ module.exports = grammar({
             seq($._expression_not_binary, $._semicolon),
 
         expression_statement: ($) =>
-            choice(seq(choice($.expression, $.comma_expression), $._semicolon)),
+            choice(seq($._statement_expression, $._semicolon)),
 
         if_statement: ($) =>
             prec.right(
@@ -1376,9 +1412,9 @@ module.exports = grammar({
         while_statement: ($) =>
             seq(
                 choice(
-                  $.while_keyword,
-                  $.long_while_keyword,
-                  $.medium_while_keyword,
+                    $.while_keyword,
+                    $.long_while_keyword,
+                    $.medium_while_keyword,
                 ),
                 field("condition", $.parenthesized_expression),
                 field("body", $.statement),
@@ -1397,10 +1433,7 @@ module.exports = grammar({
             seq(
                 choice(
                     seq(
-                        field(
-                            "initializer",
-                            optional(choice($.expression, $.comma_expression)),
-                        ),
+                        field("initializer", optional($._statement_expression)),
                         ";",
                     ),
                 ),
@@ -1409,10 +1442,7 @@ module.exports = grammar({
                     optional(choice($.expression, $.comma_expression)),
                 ),
                 ";",
-                field(
-                    "update",
-                    optional(choice($.expression, $.comma_expression)),
-                ),
+                field("update", optional($._statement_expression)),
             ),
 
         select_statement: ($) =>
@@ -1676,9 +1706,7 @@ module.exports = grammar({
         system_call_statement: ($) =>
             seq(
                 $.system_call_keyword,
-                optional(
-                    seq("[", field("instance", $.expression), "]"),
-                ),
+                optional(seq("[", field("instance", $.expression), "]")),
                 field("call", $.string_literal),
                 optional(field("arguments", $.argument_list)),
                 $._semicolon,
@@ -1693,7 +1721,6 @@ module.exports = grammar({
 
         _expression_not_binary: ($) =>
             choice(
-                $.assignment_expression,
                 $.unary_expression,
                 $.update_expression,
                 $.call_expression,
@@ -2237,12 +2264,18 @@ module.exports = grammar({
             ),
 
         assignment_expression: ($) =>
-            prec.right(
-                PREC.ASSIGNMENT,
-                seq(
-                    field("left", $._assignment_left_expression),
-                    field("operator", "="),
-                    field("right", choice($.initializer_list, $.expression)),
+            prec.dynamic(
+                PREC.STATEMENT_ASSIGNMENT,
+                prec.right(
+                    PREC.ASSIGNMENT,
+                    seq(
+                        field("left", $._assignment_left_expression),
+                        field("operator", "="),
+                        field(
+                            "right",
+                            choice($.initializer_list, $.expression),
+                        ),
+                    ),
                 ),
             ),
 
@@ -2282,13 +2315,14 @@ module.exports = grammar({
                 ["|", PREC.INCLUSIVE_OR],
                 ["^", PREC.EXCLUSIVE_OR],
                 ["&", PREC.BITWISE_AND],
-                ["==", PREC.EQUAL],
-                ["!=", PREC.EQUAL],
-                ["<>", PREC.EQUAL],
-                [">", PREC.RELATIONAL],
-                [">=", PREC.RELATIONAL],
-                ["<=", PREC.RELATIONAL],
-                ["<", PREC.RELATIONAL],
+                ["=", PREC.COMPARISON],
+                ["==", PREC.COMPARISON],
+                ["!=", PREC.COMPARISON],
+                ["<>", PREC.COMPARISON],
+                [">", PREC.COMPARISON],
+                [">=", PREC.COMPARISON],
+                ["<=", PREC.COMPARISON],
+                ["<", PREC.COMPARISON],
                 ["<<", PREC.SHIFT],
                 [">>", PREC.SHIFT],
                 [$.band, PREC.BITWISE_AND],
@@ -2357,6 +2391,41 @@ module.exports = grammar({
                     field("left", $.expression),
                     ",",
                     field("right", choice($.expression, $.comma_expression)),
+                ),
+            ),
+
+        // `=` is an assignment only where a statement is expected; wherever a value is
+        // expected it is the equality operator, and `expression` cannot reach
+        // assignment_expression at all. Every statement-shaped rule that admits an
+        // assignment goes through _statement_expression; an expression-position rule
+        // (a condition, an argument, a parenthesized expression) must not.
+        _statement_expression: ($) =>
+            choice(
+                $.expression,
+                $.assignment_expression,
+                alias($._statement_comma_expression, $.comma_expression),
+            ),
+
+        _statement_comma_expression: ($) =>
+            prec.right(
+                PREC.DEFAULT,
+                seq(
+                    field(
+                        "left",
+                        choice($.expression, $.assignment_expression),
+                    ),
+                    ",",
+                    field(
+                        "right",
+                        choice(
+                            $.expression,
+                            $.assignment_expression,
+                            alias(
+                                $._statement_comma_expression,
+                                $.comma_expression,
+                            ),
+                        ),
+                    ),
                 ),
             ),
 
