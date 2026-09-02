@@ -20,11 +20,12 @@ const PREC = {
     ASSIGNMENT: 0,
     CONDITIONAL: -1,
     DEFAULT: 0,
-    // The nine binary/unary levels below are what NLRC's emitted code does, not what the
+    // The ten binary/unary levels below are what NLRC's emitted code does, not what the
     // AMX reference table prints: that table contradicts the compiler on the shift, the
     // bitwise and the `!` rows, so it must never be used to "correct" this order. `<<`
     // and `>>` bind tighter than all arithmetic and sit on separate levels; `& | ^`
-    // share one level above arithmetic; `!` binds looser than `& | ^`; `~` binds
+    // share one level above arithmetic; `!` binds looser than `& | ^`; unary `-` sits on
+    // a level of its own, looser than `* / %` and tighter than binary `+ -`; `~` binds
     // tighter than everything.
     LOGICAL: 1,
     // NetLinx puts `<` `<=` `>` `>=` `=` `==` `<>` on ONE left-to-right level, so
@@ -32,14 +33,13 @@ const PREC = {
     // rewriting one to the other must never reshape the tree.
     COMPARISON: 2,
     ADD: 3,
-    MULTIPLY: 4,
-    NOT: 5,
-    BITWISE: 6,
-    LSHIFT: 7,
-    RSHIFT: 8,
-    UNARY: 9,
-    OFFSETOF: 10,
-    CAST: 11,
+    NEGATE: 4,
+    MULTIPLY: 5,
+    NOT: 6,
+    BITWISE: 7,
+    LSHIFT: 8,
+    RSHIFT: 9,
+    UNARY: 10,
     CALL: 15,
     FIELD: 16,
     SUBSCRIPT: 17,
@@ -2295,9 +2295,11 @@ module.exports = grammar({
                 alias($.system_variable, $.identifier),
             ),
 
-        // Two levels, not one: NLRC gives `~` the tightest binding of any operator while
-        // `!` and unary `-`/`+` bind LOOSER than `& | ^`, so `~nA & nB` is `(~nA) & nB`
-        // but `!nA & nB` is `!(nA & nB)`.
+        // Three levels, not one: NLRC gives `~` the tightest binding of any operator,
+        // `!` binds LOOSER than `& | ^` but tighter than `*`, and unary `-` binds looser
+        // than `*` again — so `~nA & nB` is `(~nA) & nB`, `!nA & nB` is `!(nA & nB)` and
+        // `-nA * nB` is `-(nA * nB)`. There is no unary `+` in the language: NLRC answers
+        // C10201 to `nX = +nA`, so admitting it here would parse what cannot compile.
         unary_expression: ($) =>
             choice(
                 prec.right(
@@ -2310,7 +2312,14 @@ module.exports = grammar({
                 prec.right(
                     PREC.NOT,
                     seq(
-                        field("operator", choice("!", "-", "+", $.not)),
+                        field("operator", choice("!", $.not)),
+                        field("argument", $.expression),
+                    ),
+                ),
+                prec.right(
+                    PREC.NEGATE,
+                    seq(
+                        field("operator", "-"),
                         field("argument", $.expression),
                     ),
                 ),
@@ -2601,14 +2610,31 @@ module.exports = grammar({
 
                     // Floating point with scientific notation
                     seq(
-                        optional(/[-+]/),
+                        // A sign here belongs to the literal token, never to a unary
+                        // operator: `- 5` is unary minus but `+ 5.5` is C10201, so a
+                        // detached `+` is nothing at all. NLRC takes a leading `+` only
+                        // on a literal written with a decimal point — `+5.5`, `+.5` and
+                        // `+5.5e3` compile while `+5` and `+$05` are C10201 whatever the
+                        // target type (probes s116, s117, s126-s133).
                         choice(
-                            // Format: digits.digits
-                            seq(/\d+/, ".", optional(/\d+/)),
-                            // Format: .digits
-                            seq(".", /\d+/),
-                            // Format: digits (integers)
-                            /\d+/,
+                            seq(
+                                "+",
+                                choice(
+                                    seq(/\d+/, ".", optional(/\d+/)),
+                                    seq(".", /\d+/),
+                                ),
+                            ),
+                            seq(
+                                optional("-"),
+                                choice(
+                                    // Format: digits.digits
+                                    seq(/\d+/, ".", optional(/\d+/)),
+                                    // Format: .digits
+                                    seq(".", /\d+/),
+                                    // Format: digits (integers)
+                                    /\d+/,
+                                ),
+                            ),
                         ),
                         // Optional scientific notation
                         optional(seq(/[eE]/, optional(/[-+]/), /\d+/)),

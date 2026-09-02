@@ -709,7 +709,7 @@ assignment_left_expression =
     | devchan_expression;
 
 unary_expression =
-    ("!" | "~" | "-" | "+" | bnot),
+    ("!" | "~" | "-" | bnot),
     expression;
 
 binary_expression =
@@ -816,11 +816,18 @@ string_content = ? any character except single quote or newline ?;
 
 number_literal =
     "$", ? hexadecimal digits ?
-    | ["-" | "+"],
-      (
-          (? digits ?, ".", [? digits ?])
-          | (".", ? digits ?)
-          | ? digits ?
+    | (
+          "+",
+          (
+              (? digits ?, ".", [? digits ?])
+              | (".", ? digits ?)
+          )
+          | ["-"],
+            (
+                (? digits ?, ".", [? digits ?])
+                | (".", ? digits ?)
+                | ? digits ?
+            )
       ),
       ["e" | "E", ["-" | "+"], ? digits ?];
 

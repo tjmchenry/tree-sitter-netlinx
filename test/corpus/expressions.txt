@@ -161,14 +161,18 @@ i--, j--;
 Unary
 ==================
 
+// No unary `+`; a leading `+` signs a decimal-point literal only — NLRC probes s116, s117, s119, s126, s127, s133
 negated = -5
 bitwise_not = ~mask
 positive = +value
+positive_int = +5
+signed_fraction = +5.5
 not_flag = !condition
 
 ---
 
 (source_file
+  (comment)
   (expression_statement
     (assignment_expression
       (identifier)
@@ -181,8 +185,17 @@ not_flag = !condition
   (expression_statement
     (assignment_expression
       (identifier)
-      (unary_expression
-        (identifier))))
+      (ERROR)
+      (identifier)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ERROR)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -3116,6 +3129,61 @@ nX = -a BAND b
           (identifier)
           (band)
           (identifier))))))
+
+===================================
+Unary Minus Binds Looser Than Multiplicative
+===================================
+
+// NLRC probes s77, s78, s79, s80
+nX = -a * b
+nX = -a MOD b
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (binary_expression
+          (identifier)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (binary_expression
+          (identifier)
+          (mod)
+          (identifier))))))
+
+===================================
+Unary Minus Binds Tighter Than Additive
+===================================
+
+// NLRC probes s83, s84
+nX = -a + b
+nX = -a - b
+
+---
+
+(source_file
+  (comment)
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (unary_expression
+          (identifier))
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (unary_expression
+          (identifier))
+        (identifier)))))
 
 ===================================
 BNOT Binds Tighter Than Bitwise And Shift
