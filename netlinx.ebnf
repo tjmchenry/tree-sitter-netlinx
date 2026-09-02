@@ -822,8 +822,7 @@ number_literal =
               (? digits ?, ".", [? digits ?])
               | (".", ? digits ?)
           )
-          | ["-"],
-            (
+          | (
                 (? digits ?, ".", [? digits ?])
                 | (".", ? digits ?)
                 | ? digits ?

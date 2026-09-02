@@ -2610,12 +2610,14 @@ module.exports = grammar({
 
                     // Floating point with scientific notation
                     seq(
-                        // A sign here belongs to the literal token, never to a unary
-                        // operator: `- 5` is unary minus but `+ 5.5` is C10201, so a
-                        // detached `+` is nothing at all. NLRC takes a leading `+` only
-                        // on a literal written with a decimal point — `+5.5`, `+.5` and
-                        // `+5.5e3` compile while `+5` and `+$05` are C10201 whatever the
-                        // target type (probes s116, s117, s126-s133).
+                        // A leading `-` is NEVER part of the literal: NLRC binds it as the
+                        // unary-minus operator at PREC.NEGATE, so `-1 & nB` is `-(1 & nB)`
+                        // and `-7 MOD 3` is `-(7 MOD 3)`. Absorbing it here would hide the
+                        // operator from every consumer that reasons about operand shape.
+                        // A leading `+` is different and does belong to the token: NLRC
+                        // takes it only on a literal written with a decimal point — `+5.5`,
+                        // `+.5` and `+5.5e3` compile while `+5` and `+$05` are C10201
+                        // whatever the target type (probes s116, s117, s126-s133).
                         choice(
                             seq(
                                 "+",
@@ -2624,16 +2626,13 @@ module.exports = grammar({
                                     seq(".", /\d+/),
                                 ),
                             ),
-                            seq(
-                                optional("-"),
-                                choice(
-                                    // Format: digits.digits
-                                    seq(/\d+/, ".", optional(/\d+/)),
-                                    // Format: .digits
-                                    seq(".", /\d+/),
-                                    // Format: digits (integers)
-                                    /\d+/,
-                                ),
+                            choice(
+                                // Format: digits.digits
+                                seq(/\d+/, ".", optional(/\d+/)),
+                                // Format: .digits
+                                seq(".", /\d+/),
+                                // Format: digits (integers)
+                                /\d+/,
                             ),
                         ),
                         // Optional scientific notation

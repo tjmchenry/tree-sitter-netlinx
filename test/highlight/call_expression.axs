@@ -194,7 +194,8 @@ abs = ABS_VALUE(-42)
 //  ^ operator
 //    ^ function.builtin
 //             ^ punctuation.bracket
-//              ^ number
+//              ^ operator
+//               ^ number
 //                 ^ punctuation.bracket
 
 max = MAX_VALUE(10, 20)

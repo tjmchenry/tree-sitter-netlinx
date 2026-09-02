@@ -176,7 +176,8 @@ not_flag = !condition
   (expression_statement
     (assignment_expression
       (identifier)
-      (number_literal)))
+      (unary_expression
+        (number_literal))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -1474,7 +1475,8 @@ float values[] = {1.1, 2.2, 3.3, 4.4}
   (expression_statement
     (assignment_expression
       (identifier)
-      (number_literal)))
+      (unary_expression
+        (number_literal))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -1518,7 +1520,8 @@ float values[] = {1.1, 2.2, 3.3, 4.4}
   (expression_statement
     (assignment_expression
       (identifier)
-      (number_literal)))
+      (unary_expression
+        (number_literal))))
   (comment)
   (expression_statement
     (assignment_expression
@@ -1563,7 +1566,8 @@ float values[] = {1.1, 2.2, 3.3, 4.4}
       (identifier)
       (argument_list
         (identifier)
-        (number_literal))))
+        (unary_expression
+          (number_literal)))))
   (expression_statement
     (call_expression
       (identifier)
@@ -2417,7 +2421,8 @@ build = GET_MASTER_BUILD()
         (system_function
           (abs_value))
         (argument_list
-          (number_literal)))))
+          (unary_expression
+            (number_literal))))))
   (expression_statement
     (assignment_expression
       (identifier)
