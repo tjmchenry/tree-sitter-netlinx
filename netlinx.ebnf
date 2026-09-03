@@ -678,7 +678,9 @@ expression = expression_not_binary | binary_expression;
 
 (* assignment_expression is deliberately absent: "=" is an assignment only in
    statement position, and an equality comparison wherever a value is expected. *)
-expression_not_binary =
+expression_not_binary = number_literal | expression_not_binary_or_number;
+
+expression_not_binary_or_number =
     unary_expression
     | update_expression
     | call_expression
@@ -686,7 +688,6 @@ expression_not_binary =
     | subscript_expression
     | string_expression
     | identifier
-    | number_literal
     | string_literal
     | true
     | false
@@ -745,8 +746,13 @@ comma_expression =
     ",",
     (expression | comma_expression);
 
+(* The object of a member access is neither a bare number_literal nor a bare
+   binary_expression: "5.e3" is the C10201 of probe s141, not a field read on "5", and "."
+   binds tighter than every binary operator, so an unparenthesised binary could only reach
+   this position by absorbing the operator the literal was meant to end. A parenthesised
+   binary is still legal — it arrives as parenthesized_expression. *)
 field_expression =
-    expression,
+    expression_not_binary_or_number,
     ".",
     field_identifier;
 
