@@ -4798,7 +4798,63 @@
         "required": true,
         "types": [
           {
-            "type": "expression",
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "compiler_variable",
+            "named": true
+          },
+          {
+            "type": "devchan_expression",
+            "named": true
+          },
+          {
+            "type": "devchan_range_expression",
+            "named": true
+          },
+          {
+            "type": "device_literal",
+            "named": true
+          },
+          {
+            "type": "field_expression",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "string_expression",
+            "named": true
+          },
+          {
+            "type": "string_literal",
+            "named": true
+          },
+          {
+            "type": "subscript_expression",
+            "named": true
+          },
+          {
+            "type": "system_constant",
+            "named": true
+          },
+          {
+            "type": "system_variable",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "update_expression",
             "named": true
           }
         ]

@@ -816,19 +816,15 @@ string_content = ? any character except single quote or newline ?;
 
 number_literal =
     "$", ? hexadecimal digits ?
+    | ? digits ?
     | (
-          "+",
+          ["+"],
           (
-              (? digits ?, ".", [? digits ?])
+              (? digits ?, ".", ? digits ?)
               | (".", ? digits ?)
-          )
-          | (
-                (? digits ?, ".", [? digits ?])
-                | (".", ? digits ?)
-                | ? digits ?
-            )
-      ),
-      ["e" | "E", ["-" | "+"], ? digits ?];
+          ),
+          ["e" | "E", ["-" | "+"], ? digits ?]
+      );
 
 (* Identifiers *)
 identifier = ? letter or underscore followed by letters, digits, or underscores ?;

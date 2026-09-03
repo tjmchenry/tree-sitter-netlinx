@@ -1441,7 +1441,6 @@ sci4 = 1.23E-4
 
 // Edge cases
 edge1 = .5        // No leading digit
-edge2 = 5.        // No trailing digits
 edge3 = 0.0
 edge4 = 123.456
 edge5 = -.75      // Negative with no leading digit
@@ -1494,11 +1493,6 @@ float values[] = {1.1, 2.2, 3.3, 4.4}
     (assignment_expression
       (identifier)
       (number_literal)))
-  (expression_statement
-    (assignment_expression
-      (identifier)
-      (number_literal)))
-  (comment)
   (expression_statement
     (assignment_expression
       (identifier)

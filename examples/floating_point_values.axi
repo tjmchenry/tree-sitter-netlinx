@@ -11,7 +11,6 @@ sci4 = 1.23E-4
 
 // Edge cases
 edge1 = .5        // No leading digit
-edge2 = 5.        // No trailing digits
 edge3 = 0.0
 edge4 = 123.456
 edge5 = -.75      // Negative with no leading digit

@@ -120,6 +120,7 @@ module.exports = grammar({
         $._wait_body,
         $._assignment_left_expression,
         $._expression_not_binary,
+        $._expression_not_binary_or_number,
         $._semicolon,
     ],
 
@@ -1725,6 +1726,9 @@ module.exports = grammar({
             choice($._expression_not_binary, $.binary_expression),
 
         _expression_not_binary: ($) =>
+            choice($.number_literal, $._expression_not_binary_or_number),
+
+        _expression_not_binary_or_number: ($) =>
             choice(
                 $.unary_expression,
                 $.update_expression,
@@ -1733,7 +1737,6 @@ module.exports = grammar({
                 $.subscript_expression,
                 $.string_expression,
                 $.identifier,
-                $.number_literal,
                 $.string_literal,
                 $.compiler_variable,
                 $.system_constant,
@@ -2461,7 +2464,13 @@ module.exports = grammar({
                 prec(
                     PREC.FIELD,
                     seq(
-                        field("argument", $.expression),
+                        // A numeric literal is not a member-access object in NetLinx, so
+                        // `5.e3` is the C10201 of probe s141 rather than a field read on
+                        // `5`. A bare binary_expression is excluded for the same reason and
+                        // costs nothing: `.` binds tighter than every binary operator, so
+                        // an unparenthesised binary can only become the object by absorbing
+                        // the operator the literal was meant to end.
+                        field("argument", $._expression_not_binary_or_number),
                         field("operator", "."),
                     ),
                 ),
@@ -2605,10 +2614,18 @@ module.exports = grammar({
         number_literal: (_) => {
             return token(
                 choice(
-                    // Hexadecimal literals
+                    // Hexadecimal literals: no sign and no exponent (probes s126, s146,
+                    // s147, s152).
                     /\$[0-9a-fA-F]+/,
 
-                    // Floating point with scientific notation
+                    // Decimal integer: no sign and no exponent either. `5e3` is not one
+                    // token — NLRC lexes it as `5` followed by the symbol `E3`, which is a
+                    // syntax error whether or not `E3` is defined (probes s138, s155, s156).
+                    /\d+/,
+
+                    // Pointed mantissa: the only form that takes a sign or an exponent, and
+                    // only with digits on the right of the point — `5.` and `5.e3` are
+                    // C10201 (probes s136, s141, s148, s153).
                     seq(
                         // A leading `-` is NEVER part of the literal: NLRC binds it as the
                         // unary-minus operator at PREC.NEGATE, so `-1 & nB` is `-(1 & nB)`
@@ -2618,22 +2635,12 @@ module.exports = grammar({
                         // takes it only on a literal written with a decimal point — `+5.5`,
                         // `+.5` and `+5.5e3` compile while `+5` and `+$05` are C10201
                         // whatever the target type (probes s116, s117, s126-s133).
+                        optional("+"),
                         choice(
-                            seq(
-                                "+",
-                                choice(
-                                    seq(/\d+/, ".", optional(/\d+/)),
-                                    seq(".", /\d+/),
-                                ),
-                            ),
-                            choice(
-                                // Format: digits.digits
-                                seq(/\d+/, ".", optional(/\d+/)),
-                                // Format: .digits
-                                seq(".", /\d+/),
-                                // Format: digits (integers)
-                                /\d+/,
-                            ),
+                            // Format: digits.digits
+                            seq(/\d+/, ".", /\d+/),
+                            // Format: .digits
+                            seq(".", /\d+/),
                         ),
                         // Optional scientific notation
                         optional(seq(/[eE]/, optional(/[-+]/), /\d+/)),
