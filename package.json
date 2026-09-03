@@ -73,11 +73,5 @@
         "contrib:add": "all-contributors add",
         "contrib:generate": "all-contributors generate",
         "contrib:check": "all-contributors check"
-    },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "tree-sitter",
-            "tree-sitter-cli"
-        ]
     }
 }
