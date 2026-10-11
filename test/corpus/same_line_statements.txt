@@ -1367,7 +1367,7 @@ a = 1 b = 2
           (number_literal))))))
 
 ================================================================================
-Same-line NOT and BNOT can start statements after a bare identifier
+Same-line NOT and BNOT preserve existing custom declarations
 ================================================================================
 
 foo NOT a
@@ -1376,18 +1376,14 @@ foo BNOT a
 --------------------------------------------------------------------------------
 
 (source_file
-  (expression_statement
+  (declaration
+    (type_identifier)
+    (type_identifier)
     (identifier))
-  (expression_statement
-    (unary_expression
-      (not)
-      (identifier)))
-  (expression_statement
-    (identifier))
-  (expression_statement
-    (unary_expression
-      (bnot)
-      (identifier))))
+  (declaration
+    (type_identifier)
+    (type_identifier)
+    (identifier)))
 
 ================================================================================
 Same-line RETURN NOT and BNOT remain single return statements
@@ -1427,7 +1423,7 @@ DEFINE_FUNCTION probe2() { RETURN BNOT a }
                 (identifier)))))))))
 
 ================================================================================
-Same-line intrinsic type starts a declaration after a bare identifier
+Same-line intrinsic type spelling preserves an existing custom declaration
 ================================================================================
 
 DEFINE_PROGRAM
@@ -1439,12 +1435,9 @@ foo INTEGER a
   (section
     (define_program_section
       (define_program_keyword)
-      (expression_statement
-        (identifier))
       (declaration
-        (intrinsic_type
-          (primitive_type
-            (integer_keyword)))
+        (type_identifier)
+        (type_identifier)
         (identifier)))))
 
 ================================================================================
@@ -1590,7 +1583,7 @@ DEFINE_FUNCTION probe() { RETURN LOCAL_VAR INTEGER x }
               (identifier))))))))
 
 ================================================================================
-Same-line system type starts a declaration after a bare identifier
+Same-line system type spelling preserves an existing custom declaration
 ================================================================================
 
 DEFINE_PROGRAM
@@ -1602,9 +1595,7 @@ foo TDATA a
   (section
     (define_program_section
       (define_program_keyword)
-      (expression_statement
-        (identifier))
       (declaration
-        (system_type
-          (tdata))
+        (type_identifier)
+        (type_identifier)
         (identifier)))))

@@ -62,6 +62,7 @@ module.exports = grammar({
         $._declaration_continuation,
         $._value_continuation,
         $._preproc_continuation,
+        $._field_continuation,
     ],
 
     conflicts: ($) => [
@@ -121,6 +122,7 @@ module.exports = grammar({
     extras: ($) => [/\s/, $.comment],
 
     inline: ($) => [
+        $._name_identifier,
         $._type_identifier,
         $._field_identifier,
         $._statement_identifier,
@@ -246,7 +248,7 @@ module.exports = grammar({
                     preprocessor(directives.define),
                     $.preproc_define_keyword,
                 ),
-                field("name", $.identifier),
+                field("name", $._name_identifier),
                 optional($._preproc_continuation),
                 field("value", optional($.preproc_arg)),
                 $._semicolon,
@@ -965,6 +967,7 @@ module.exports = grammar({
             prec.right(
                 seq(
                     $._declaration_specifiers,
+                    optional($._field_continuation),
 
                     // This may not need to be optional. But leaving it for now
                     // as it provides some flexibility
@@ -1011,7 +1014,7 @@ module.exports = grammar({
                         choice($.type_specifier, $.array_return_type),
                     ),
                 ),
-                field("name", $.identifier),
+                field("name", $._name_identifier),
                 field("parameters", $.parameter_list),
 
                 // Optional local declarations
@@ -1031,7 +1034,7 @@ module.exports = grammar({
                         choice($.type_specifier, $.array_return_type),
                     ),
                 ),
-                field("name", $.identifier),
+                field("name", $._name_identifier),
                 field("parameters", $.parameter_list),
                 optional(seq("=", $.expression)),
                 $._semicolon,
@@ -1060,10 +1063,7 @@ module.exports = grammar({
                             10,
                             seq(
                                 $._declaration_specifiers,
-                                field(
-                                    "type",
-                                    alias($.identifier, $.type_identifier),
-                                ),
+                                field("type", $._type_identifier),
                                 optional($._declaration_continuation),
                                 commaSep1(
                                     field(
@@ -1082,10 +1082,7 @@ module.exports = grammar({
                             10,
                             seq(
                                 $.type_qualifier,
-                                field(
-                                    "type",
-                                    alias($.identifier, $.type_identifier),
-                                ),
+                                field("type", $._type_identifier),
                                 optional($._declaration_continuation),
                                 commaSep1(
                                     field(
@@ -1104,10 +1101,7 @@ module.exports = grammar({
                             10,
                             seq(
                                 $.storage_class_specifier,
-                                field(
-                                    "type",
-                                    alias($.identifier, $.type_identifier),
-                                ),
+                                field("type", $._type_identifier),
                                 optional($._declaration_continuation),
                                 commaSep1(
                                     field(
@@ -1197,7 +1191,7 @@ module.exports = grammar({
                 $.function_declarator,
                 $.array_declarator,
                 $.parenthesized_declarator,
-                $.identifier,
+                $._name_identifier,
             ),
 
         _declaration_declarator: ($) =>
@@ -1208,7 +1202,7 @@ module.exports = grammar({
                 ),
                 $.array_declarator,
                 $.parenthesized_declarator,
-                $.identifier,
+                $._name_identifier,
             ),
 
         _field_declarator: ($) =>
@@ -2665,8 +2659,21 @@ module.exports = grammar({
 
         identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
 
-        // Event-context spellings are also legal user structure names. Reuse
-        // their tokens only here, preserving system_variable in expressions.
+        // Keep event-context tokens usable as declared names when a type
+        // and a name are both possible (for example DEFINE_FUNCTION Data()).
+        _name_identifier: ($) =>
+            choice(
+                $.identifier,
+                alias($.data, $.identifier),
+                alias($.button, $.identifier),
+                alias($.channel, $.identifier),
+                alias($.level, $.identifier),
+                alias($.timeline, $.identifier),
+                alias($.custom, $.identifier),
+            ),
+
+        // Reuse event tokens for user types, preserving system_variable
+        // and member access in expressions.
         _type_identifier: ($) =>
             alias(
                 choice(
@@ -2733,7 +2740,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                         preprocessor(directives.if_defined),
                         $.preproc_if_defined_keyword,
                     ),
-                    field("name", $.identifier),
+                    field("name", $._name_identifier),
                     optional("\n"),
                     repeat(content($)),
                     field("alternative", optional(alternativeBlock($))),
@@ -2752,7 +2759,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                         preprocessor(directives.if_not_defined),
                         $.preproc_if_not_defined_keyword,
                     ),
-                    field("name", $.identifier),
+                    field("name", $._name_identifier),
                     optional("\n"),
                     repeat(content($)),
                     field("alternative", optional(alternativeBlock($))),

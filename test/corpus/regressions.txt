@@ -1,0 +1,1313 @@
+================================================================================
+Regression event name Timeline remains a function name
+================================================================================
+
+DEFINE_FUNCTION Timeline()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression event name Data remains a function name
+================================================================================
+
+DEFINE_FUNCTION Data()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression event name Button remains a function name
+================================================================================
+
+DEFINE_FUNCTION Button()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression event name Channel remains a function name
+================================================================================
+
+DEFINE_FUNCTION Channel()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression event name Level remains a function name
+================================================================================
+
+DEFINE_FUNCTION Level()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression event name Custom remains a function name
+================================================================================
+
+DEFINE_FUNCTION Custom()
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement))))))
+
+================================================================================
+Regression RETURN consumes keyword value ON
+================================================================================
+
+DEFINE_FUNCTION SLONG __probe__() { RETURN ON }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN consumes keyword value OFF
+================================================================================
+
+DEFINE_FUNCTION SLONG __probe__() { RETURN OFF }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN consumes keyword value TO
+================================================================================
+
+DEFINE_FUNCTION SLONG __probe__() { RETURN TO }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN consumes keyword value PULSE
+================================================================================
+
+DEFINE_FUNCTION SLONG __probe__() { RETURN PULSE }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN consumes keyword value SEND_LEVEL
+================================================================================
+
+DEFINE_FUNCTION SLONG __probe__() { RETURN SEND_LEVEL }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression glued token is not a statement: BAD = 1e-100
+================================================================================
+
+BAD = 1e-100
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ERROR
+        (number_literal))
+      (binary_expression
+        (identifier)
+        (number_literal)))))
+
+================================================================================
+Regression glued token is not a statement: x = 5e3
+================================================================================
+
+x = 5e3
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ERROR
+        (number_literal))
+      (identifier))))
+
+================================================================================
+Regression glued token is not a statement: x = 5E3
+================================================================================
+
+x = 5E3
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ERROR
+        (number_literal))
+      (identifier))))
+
+================================================================================
+Regression glued token is not a statement: x = -5e3
+================================================================================
+
+x = -5e3
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (unary_expression
+        (ERROR
+          (number_literal))
+        (identifier)))))
+
+================================================================================
+Regression glued token is not a statement: x = 5foo
+================================================================================
+
+x = 5foo
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (ERROR
+        (number_literal))
+      (identifier))))
+
+================================================================================
+Regression glued token is not a statement: x = (1)y = 2
+================================================================================
+
+x = (1)y = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (parenthesized_expression
+          (number_literal))
+        (ERROR
+          (identifier))
+        (number_literal)))))
+
+================================================================================
+Regression keyword operands remain values
+================================================================================
+
+DEFINE_FUNCTION probe() {
+x = ON
+x = a + OFF
+x = NOT ON
+IF (a = OFF) { x = 1 }
+x = probe(ON, OFF)
+x = a[ON]
+SEND_LEVEL dv, 1, ON
+SEND_STRING dv, ON
+WAIT ON { x = 1 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (identifier)))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (binary_expression
+                  (identifier)
+                  (identifier))))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (unary_expression
+                  (not)
+                  (identifier))))
+            (if_statement
+              (if_keyword)
+              (parenthesized_expression
+                (binary_expression
+                  (identifier)
+                  (identifier)))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)
+                    (identifier)))))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (subscript_expression
+                  (identifier)
+                  (identifier))))
+            (send_level_statement
+              (send_level_keyword)
+              (identifier)
+              (number_literal)
+              (identifier))
+            (send_string_statement
+              (send_string_keyword)
+              (identifier)
+              (identifier))
+            (wait_statement
+              (wait_keyword)
+              (identifier)
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Regression event names in declared name positions
+================================================================================
+
+DEFINE_FUNCTION INTEGER Data(INTEGER Timeline) { INTEGER Button
+Channel = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (identifier)
+          (parameter_list
+            (parameter_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (identifier)))
+          (compound_statement
+            (declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (identifier))
+            (expression_statement
+              (assignment_expression
+                (identifier
+                  (channel))
+                (number_literal)))))))))
+
+================================================================================
+Bare identifiers were already expression statements
+================================================================================
+
+a
+b
+c
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (identifier)))
+
+================================================================================
+Regression RETURN keeps all standalone keyword values
+================================================================================
+
+DEFINE_FUNCTION SLONG probe0() { RETURN MIN_TO }
+DEFINE_FUNCTION SLONG probe1() { RETURN TOTAL_OFF }
+DEFINE_FUNCTION SLONG probe2() { RETURN SEND_STRING }
+DEFINE_FUNCTION SLONG probe3() { RETURN SEND_COMMAND }
+DEFINE_FUNCTION SLONG probe4() { RETURN CLEAR_BUFFER }
+DEFINE_FUNCTION SLONG probe5() { RETURN CREATE_BUFFER }
+DEFINE_FUNCTION SLONG probe6() { RETURN CREATE_MULTI_BUFFER }
+DEFINE_FUNCTION SLONG probe7() { RETURN CREATE_LEVEL }
+DEFINE_FUNCTION SLONG probe8() { RETURN CALL }
+DEFINE_FUNCTION SLONG probe9() { RETURN SYSTEM_CALL }
+DEFINE_FUNCTION SLONG probe10() { RETURN BREAK }
+DEFINE_FUNCTION SLONG probe11() { RETURN CONTINUE }
+DEFINE_FUNCTION SLONG probe12() { RETURN WAIT }
+DEFINE_FUNCTION SLONG probe13() { RETURN CANCEL_WAIT }
+DEFINE_FUNCTION SLONG probe14() { RETURN CANCEL_ALL_WAIT }
+DEFINE_FUNCTION SLONG probe15() { RETURN PAUSE_ALL_WAIT }
+DEFINE_FUNCTION SLONG probe16() { RETURN RESTART_ALL_WAIT }
+DEFINE_FUNCTION SLONG probe17() { RETURN INTEGER }
+DEFINE_FUNCTION SLONG probe18() { RETURN TDATA }
+DEFINE_FUNCTION SLONG probe19() { RETURN CONSTANT }
+DEFINE_FUNCTION SLONG probe20() { RETURN LOCAL_VAR }
+DEFINE_FUNCTION SLONG probe21() { RETURN IF }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN keyword before an operator remains a value
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT + ON }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (identifier)
+                (identifier)))))))))
+
+================================================================================
+Regression keyword field names need a declarator
+================================================================================
+
+STRUCTURE X { INTEGER TDATA
+INTEGER IF }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (type_definition
+    (struct_specifier
+      (structure_keyword)
+      (type_identifier)
+      (field_declaration_list
+        (field_declaration
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (field_identifier))
+        (field_declaration
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (field_identifier))))))
+
+================================================================================
+Regression event names remain module field and member names
+================================================================================
+
+DEFINE_MODULE 'mod' Data()
+STRUCTURE X { INTEGER Data }
+x.Data
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_module_section
+      (define_module
+        (define_module_keyword)
+        (module_definition
+          (string_literal
+            (string_content))
+          (identifier)
+          (argument_list)))))
+  (type_definition
+    (struct_specifier
+      (structure_keyword)
+      (type_identifier)
+      (field_declaration_list
+        (field_declaration
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (field_identifier)))))
+  (expression_statement
+    (field_expression
+      (identifier)
+      (field_identifier))))
+
+================================================================================
+Regression event type arrays and returned type
+================================================================================
+
+Data d[3]
+DEFINE_FUNCTION Data MakeIt(Data d) { RETURN d }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    (type_identifier)
+    (array_declarator
+      (identifier)
+      (number_literal)))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (type_identifier)
+          (identifier)
+          (parameter_list
+            (parameter_declaration
+              (type_identifier)
+              (identifier)))
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+================================================================================
+Regression RETURN keyword before a word operator remains a value
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT MOD 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (identifier)
+                (mod)
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 1: WAIT(a)
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT(a) }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (call_expression
+                (identifier)
+                (argument_list
+                  (identifier))))))))))
+
+================================================================================
+Regression RETURN keyword suffix 2: CANCEL_WAIT(a)
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN CANCEL_WAIT(a) }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (call_expression
+                (identifier)
+                (argument_list
+                  (identifier))))))))))
+
+================================================================================
+Regression RETURN keyword suffix 3: IF(a) + 1
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF(a) + 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)))
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 4: WAIT[a]
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT[a] }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (subscript_expression
+                (identifier)
+                (identifier)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 5: WAIT:1:1
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT:1:1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (device_literal
+                (identifier)
+                (number_literal)
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 6: WAIT(')')
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN WAIT(')') }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (call_expression
+                (identifier)
+                (argument_list
+                  (string_literal
+                    (string_content)))))))))))
+
+================================================================================
+Regression RETURN keyword suffix 7: IF((a)) MOD 2
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF((a)) MOD 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (parenthesized_expression
+                      (identifier))))
+                (mod)
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 8: IF(a /* ) */) + 1
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF(a /* ) */) + 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)
+                    (comment)))
+                (number_literal)))))))))
+
+================================================================================
+Regression adjacent bare names preserve declaration ambiguity
+================================================================================
+
+DEFINE_PROGRAM
+a b c
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (declaration
+        (type_identifier)
+        (type_identifier)
+        (identifier)))))
+
+================================================================================
+Regression invalid word sequence remains an error
+:error
+================================================================================
+
+THIS IS NOT VALID ???
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (ERROR))
+
+================================================================================
+Regression RETURN keyword suffix 9: comment delimiter handling
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF(a (* )) WORD *) ) + 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)
+                    (comment)))
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 10: comment delimiter handling
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF(a (* )) WORD */ ) + 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)
+                    (comment)))
+                (number_literal)))))))))
+
+================================================================================
+Regression RETURN keyword suffix 11: comment delimiter handling
+================================================================================
+
+DEFINE_FUNCTION SLONG probe() { RETURN IF(a //\
+ ) WORD
+) + 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (slong_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (binary_expression
+                (call_expression
+                  (identifier)
+                  (argument_list
+                    (identifier)
+                    (comment)))
+                (number_literal)))))))))

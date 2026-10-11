@@ -11,6 +11,7 @@ enum TokenType {
     DECLARATION_CONTINUATION,
     VALUE_CONTINUATION,
     PREPROC_CONTINUATION,
+    FIELD_CONTINUATION,
 };
 
 void *tree_sitter_netlinx_external_scanner_create() { return NULL; }
@@ -37,9 +38,100 @@ typedef enum {
     UNARY_WORD_OPERATOR,
     DECLARATION_MODIFIER,
     STATEMENT_KEYWORD,
+    VALUE_STATEMENT_KEYWORD,
+    TYPE_WORD,
 } WordKind;
 
-static WordKind scan_word(TSLexer *lexer) {
+// The grammar accepts both /* ... */ and (* ... *) (also ending in */).
+// Called after consuming the opener; leave lookahead after the comment.
+static void scan_block_comment(TSLexer *lexer, bool pascal) {
+    while (lexer->lookahead != 0) {
+        if (lexer->lookahead == '*') {
+            advance(lexer);
+            if (lexer->lookahead == '/' || (pascal && lexer->lookahead == ')')) {
+                advance(lexer);
+                return;
+            }
+        } else {
+            advance(lexer);
+        }
+    }
+}
+
+// Look past a possible call/condition without consuming it. A closing
+// parenthesis followed by an expression suffix is a value; a following body
+// can instead start a control statement after a bare RETURN.
+static bool scan_parentheses(TSLexer *lexer) {
+    unsigned depth = 0;
+    while (lexer->lookahead != 0) {
+        if (lexer->lookahead == '(') {
+            advance(lexer);
+            if (lexer->lookahead == '*') {
+                advance(lexer);
+                scan_block_comment(lexer, true);
+            } else {
+                depth++;
+            }
+            continue;
+        }
+        if (depth == 0) {
+            while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' &&
+                   lexer->lookahead != 0x2028 && lexer->lookahead != 0x2029) {
+                advance(lexer);
+            }
+            if (lexer->lookahead == '(') {
+                continue;
+            }
+            return false; // Only trivia was found, not a parenthesized value.
+        }
+        if (lexer->lookahead == '\'') {
+            advance(lexer);
+            while (lexer->lookahead != 0) {
+                if (lexer->lookahead == '\'') {
+                    advance(lexer);
+                    if (lexer->lookahead != '\'') {
+                        break;
+                    }
+                }
+                advance(lexer);
+            }
+            continue;
+        }
+        if (lexer->lookahead == '/') {
+            advance(lexer);
+            if (lexer->lookahead == '/') {
+                while (lexer->lookahead != 0 && lexer->lookahead != '\n') {
+                    if (lexer->lookahead == '\\') {
+                        do {
+                            advance(lexer);
+                        } while (lexer->lookahead == '\\');
+                        if (lexer->lookahead == '\r') {
+                            advance(lexer);
+                        }
+                    }
+                    if (lexer->lookahead != 0) {
+                        advance(lexer);
+                    }
+                }
+            } else if (lexer->lookahead == '*') {
+                advance(lexer);
+                scan_block_comment(lexer, false);
+            }
+            continue;
+        }
+        if (lexer->lookahead == ')') {
+            advance(lexer);
+            if (--depth == 0) {
+                return true;
+            }
+            continue;
+        }
+        advance(lexer);
+    }
+    return false;
+}
+
+static WordKind scan_word(TSLexer *lexer, bool value_continuation) {
     char word[32];
     unsigned length = 0;
     while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
@@ -50,6 +142,40 @@ static WordKind scan_word(TSLexer *lexer) {
         advance(lexer);
     }
     word[length] = '\0';
+
+    // A keyword spelling followed by an expression boundary or operator is
+    // still an identifier operand, not the beginning of another statement.
+    // This applies to every word, including reserved-looking names like WAIT.
+    if (value_continuation) {
+        while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' &&
+               lexer->lookahead != 0x2028 && lexer->lookahead != 0x2029) {
+            advance(lexer);
+        }
+        if (lexer->lookahead == '(') {
+            if (!scan_parentheses(lexer)) {
+                return WORD;
+            }
+            while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' &&
+                   lexer->lookahead != 0x2028 && lexer->lookahead != 0x2029) {
+                advance(lexer);
+            }
+        }
+        switch (lexer->lookahead) {
+            case 0: case '}': case ';': case '\n': case 0x2028: case 0x2029:
+            case '(': case '[': case ')': case ']': case ',': case '.': case ':':
+            case '+': case '-': case '*': case '/': case '%': case '=':
+            case '<': case '>': case '&': case '|': case '^': case '!':
+                return WORD;
+            default:
+                break;
+        }
+        // A binary word operator also proves that this word is an operand.
+        // The nested scan only looks ahead; the token still ends at the
+        // original mark_end, and value_continuation=false bounds recursion.
+        if (is_word_start(lexer->lookahead) && scan_word(lexer, false) == WORD_OPERATOR) {
+            return WORD;
+        }
+    }
 
     static const char *operators[] = {
         "and", "or", "xor", "band", "bor", "bxor", "lshift", "rshift", "mod",
@@ -72,17 +198,44 @@ static WordKind scan_word(TSLexer *lexer) {
         }
     }
 
-    // These cannot supply a declarator or RETURN operand. In particular,
-    // don't reinterpret IF as a function name in `RETURN IF (a) ...`.
-    static const char *statements[] = {
-        "if", "else", "switch", "case", "default", "while", "long_while", "medium_while",
-        "for", "break", "continue", "return", "select", "active",
+    // Operation words can also be identifier values (notably ON and OFF).
+    // At an optional RETURN operand they continue the value, just like WORD.
+    static const char *value_statements[] = {
         "on", "off", "to", "min_to", "total_off", "pulse",
         "send_level", "send_string", "send_command", "clear_buffer", "create_buffer",
         "create_multi_buffer", "create_level", "call", "system_call",
+        "break", "continue", "cancel_all_wait", "cancel_all_wait_until",
+        "pause_all_wait", "restart_all_wait",
+    };
+    for (unsigned i = 0; i < sizeof(value_statements) / sizeof(value_statements[0]); i++) {
+        if (strcmp(word, value_statements[i]) == 0) {
+            return VALUE_STATEMENT_KEYWORD;
+        }
+    }
+
+    // Prefer a still-incomplete declaration over starting a new one.
+    static const char *types[] = {
+        "char", "widechar", "integer", "sinteger", "long", "slong", "float", "double",
+        "variant", "variantarray", "dev", "devlev", "devchan",
+        "tdata", "tchannel", "tlevel", "tbutton", "ttimeline", "tcustom",
+        "url_struct", "dns_struct", "ip_address_struct", "dev_info_struct",
+        "clkmgr_timeserver_struct", "data_feed", "data_field", "data_record",
+        "wc_data_feed", "wc_data_field", "wc_data_record", "last_login_info",
+    };
+    for (unsigned i = 0; i < sizeof(types) / sizeof(types[0]); i++) {
+        if (strcmp(word, types[i]) == 0) {
+            return TYPE_WORD;
+        }
+    }
+
+    // Control and section keywords can begin a following statement. Operand
+    // spellings above and incomplete field names take priority. In particular,
+    // `RETURN IF (a) ...` can still end a bare RETURN before the IF statement.
+    static const char *statements[] = {
+        "if", "else", "switch", "case", "default", "while", "long_while", "medium_while",
+        "for", "return", "select", "active",
         "wait", "wait_until", "timed_wait_until", "cancel_wait", "cancel_wait_until",
-        "cancel_all_wait", "cancel_all_wait_until", "pause_wait", "pause_all_wait",
-        "restart_wait", "restart_all_wait",
+        "pause_wait", "restart_wait",
         "program_name", "module_name", "define_device", "define_combine", "define_constant",
         "define_type", "define_variable", "define_system_variable", "define_connect_level",
         "define_latching", "define_mutually_exclusive", "define_toggling", "define_call",
@@ -90,12 +243,6 @@ static WordKind scan_word(TSLexer *lexer) {
         "define_program", "define_module",
         "struct", "structure", "button_event", "channel_event", "level_event", "data_event",
         "timeline_event", "custom_event", "push", "release",
-        "char", "widechar", "integer", "sinteger", "long", "slong", "float", "double",
-        "variant", "variantarray", "dev", "devlev", "devchan",
-        "tdata", "tchannel", "tlevel", "tbutton", "ttimeline", "tcustom",
-        "url_struct", "dns_struct", "ip_address_struct", "dev_info_struct",
-        "clkmgr_timeserver_struct", "data_feed", "data_field", "data_record",
-        "wc_data_feed", "wc_data_field", "wc_data_record", "last_login_info",
     };
     for (unsigned i = 0; i < sizeof(statements) / sizeof(statements[0]); i++) {
         if (strcmp(word, statements[i]) == 0) {
@@ -169,9 +316,10 @@ static WhitespaceResult scan_whitespace_and_comments(TSLexer *lexer, bool *scann
 
 static bool scan_automatic_semicolon(TSLexer *lexer, bool comment_condition, bool *scanned_comment,
                                      bool declaration_continuation, bool value_continuation,
-                                     bool preproc_continuation) {
+                                     bool preproc_continuation, bool field_continuation) {
     lexer->result_symbol = AUTOMATIC_SEMICOLON;
     lexer->mark_end(lexer);
+    bool saw_whitespace = false;
 
     for (;;) {
         if (lexer->lookahead == 0) {
@@ -211,16 +359,22 @@ static bool scan_automatic_semicolon(TSLexer *lexer, bool comment_condition, boo
             if (lexer->lookahead == '{') {
                 return !value_continuation;
             }
-            if (is_word_start(lexer->lookahead)) {
-                WordKind word = scan_word(lexer);
+            if (saw_whitespace && is_word_start(lexer->lookahead)) {
+                if (field_continuation) {
+                    return false;
+                }
+                WordKind word = scan_word(lexer, value_continuation);
                 return word == STATEMENT_KEYWORD ||
-                       (word == UNARY_WORD_OPERATOR && !value_continuation) ||
+                       (word == VALUE_STATEMENT_KEYWORD && !value_continuation && !declaration_continuation) ||
+                       (word == TYPE_WORD && !declaration_continuation && !value_continuation) ||
+                       (word == UNARY_WORD_OPERATOR && !declaration_continuation && !value_continuation) ||
                        (word == DECLARATION_MODIFIER && !declaration_continuation) ||
                        (word == WORD && !declaration_continuation && !value_continuation);
             }
             return false;
         }
 
+        saw_whitespace = true;
         skip(lexer);
     }
 
@@ -288,7 +442,8 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
         bool ret = scan_automatic_semicolon(lexer, true, &scanned_comment,
                                             valid_symbols[DECLARATION_CONTINUATION],
                                             valid_symbols[VALUE_CONTINUATION],
-                                            valid_symbols[PREPROC_CONTINUATION]);
+                                            valid_symbols[PREPROC_CONTINUATION],
+                                            valid_symbols[FIELD_CONTINUATION]);
 
         #if DEBUG_AUTOMATIC_SEMICOLON
         fprintf(stderr, "SCANNER: scan_automatic_semicolon returned %d\n", ret);
