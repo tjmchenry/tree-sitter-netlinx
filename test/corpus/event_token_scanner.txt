@@ -1,0 +1,117 @@
+================================================================================
+Event-object comments preserve existing statement boundaries
+================================================================================
+
+Data /* type */ value_data
+Button (* type *) value_button
+Channel // type
+value_channel
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    (type_identifier)
+    (comment)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (comment)
+    (identifier))
+  (expression_statement
+    (system_variable
+      (channel)))
+  (comment)
+  (expression_statement
+    (identifier)))
+
+================================================================================
+Event-object tokens retain expression trees across trivia and operators
+================================================================================
+
+DEFINE_FUNCTION INTEGER EventOperand() { RETURN Data.Text }
+Data /* object */ .Text;
+Channel = 1;
+Data / divisor;
+DataExtra = 2;
+Data AND value;
+DEFINE_FUNCTION OperandBeforeStatement() {
+    result = Data next = 1;
+    RETURN Data IF(flag) RETURN Data
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (field_expression
+                (system_variable
+                  (data))
+                (field_identifier))))))))
+  (expression_statement
+    (field_expression
+      (system_variable
+        (data))
+      (comment)
+      (field_identifier)))
+  (expression_statement
+    (assignment_expression
+      (identifier
+        (channel))
+      (number_literal)))
+  (expression_statement
+    (binary_expression
+      (system_variable
+        (data))
+      (identifier)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (binary_expression
+      (system_variable
+        (data))
+      (and)
+      (identifier)))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (system_variable
+                  (data))))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (return_statement
+              (return_keyword)
+              (system_variable
+                (data)))
+            (if_statement
+              (if_keyword)
+              (parenthesized_expression
+                (identifier))
+              (return_statement
+                (return_keyword)
+                (system_variable
+                  (data))))))))))

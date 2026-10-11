@@ -12,6 +12,13 @@ enum TokenType {
     VALUE_CONTINUATION,
     PREPROC_CONTINUATION,
     FIELD_CONTINUATION,
+    EVENT_DATA,
+    EVENT_BUTTON,
+    EVENT_CHANNEL,
+    EVENT_LEVEL,
+    EVENT_TIMELINE,
+    EVENT_CUSTOM,
+    EVENT_TYPE_CONTEXT,
 };
 
 void *tree_sitter_netlinx_external_scanner_create() { return NULL; }
@@ -40,6 +47,7 @@ typedef enum {
     STATEMENT_KEYWORD,
     VALUE_STATEMENT_KEYWORD,
     TYPE_WORD,
+    EVENT_WORD,
 } WordKind;
 
 // The grammar accepts both /* ... */ and (* ... *) (also ending in */).
@@ -131,7 +139,78 @@ static bool scan_parentheses(TSLexer *lexer) {
     return false;
 }
 
-static WordKind scan_word(TSLexer *lexer, bool value_continuation) {
+static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *event_symbols);
+
+// Block comments can separate a user type from its declarator. A line
+// comment instead ends the expression, as in the semicolon scanner.
+static bool event_object_is_type(TSLexer *lexer) {
+    for (;;) {
+        while (iswspace(lexer->lookahead)) {
+            advance(lexer);
+        }
+        if (lexer->lookahead == '/' || lexer->lookahead == '(') {
+            bool pascal = lexer->lookahead == '(';
+            advance(lexer);
+            if (lexer->lookahead != '*') {
+                return false;
+            }
+            advance(lexer);
+            scan_block_comment(lexer, pascal);
+            continue;
+        }
+        return is_word_start(lexer->lookahead) &&
+               scan_word(lexer, false, NULL) != WORD_OPERATOR;
+    }
+}
+
+// Preserve the token end while looking for a declarator. Only states which
+// can start a declaration need this lookahead; ordinary expression operands
+// retain their event tokens even before another statement on the same line.
+static bool finish_event_object(TSLexer *lexer, const char *word, const bool *valid_symbols) {
+    static const char *names[] = {
+        "data", "button", "channel", "level", "timeline", "custom",
+    };
+    for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
+        if (valid_symbols[EVENT_DATA + i] && strcmp(word, names[i]) == 0) {
+            lexer->mark_end(lexer);
+            if (valid_symbols[EVENT_TYPE_CONTEXT] && event_object_is_type(lexer)) {
+                return false;
+            }
+            lexer->result_symbol = EVENT_DATA + i;
+            return true;
+        }
+    }
+    return false;
+}
+
+// In name positions the event tokens are invalid and identifier lexing wins.
+// In expressions retain the named event token, including bare operands and
+// assignment targets, so system_variable and aliased identifier trees survive.
+static bool scan_event_object(TSLexer *lexer, const bool *valid_symbols) {
+    bool valid = false;
+    for (unsigned i = EVENT_DATA; i <= EVENT_CUSTOM; i++) {
+        valid |= valid_symbols[i];
+    }
+    if (!valid) {
+        return false;
+    }
+    while (iswspace(lexer->lookahead)) {
+        skip(lexer);
+    }
+    char word[9];
+    unsigned length = 0;
+    while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
+        if (length == sizeof(word) - 1) {
+            return false;
+        }
+        word[length++] = (char)towlower(lexer->lookahead);
+        advance(lexer);
+    }
+    word[length] = '\0';
+    return finish_event_object(lexer, word, valid_symbols);
+}
+
+static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *event_symbols) {
     char word[32];
     unsigned length = 0;
     while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
@@ -142,6 +221,10 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation) {
         advance(lexer);
     }
     word[length] = '\0';
+
+    if (event_symbols && finish_event_object(lexer, word, event_symbols)) {
+        return EVENT_WORD;
+    }
 
     // A keyword spelling followed by an expression boundary or operator is
     // still an identifier operand, not the beginning of another statement.
@@ -172,7 +255,7 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation) {
         // A binary word operator also proves that this word is an operand.
         // The nested scan only looks ahead; the token still ends at the
         // original mark_end, and value_continuation=false bounds recursion.
-        if (is_word_start(lexer->lookahead) && scan_word(lexer, false) == WORD_OPERATOR) {
+        if (is_word_start(lexer->lookahead) && scan_word(lexer, false, NULL) == WORD_OPERATOR) {
             return WORD;
         }
     }
@@ -316,7 +399,8 @@ static WhitespaceResult scan_whitespace_and_comments(TSLexer *lexer, bool *scann
 
 static bool scan_automatic_semicolon(TSLexer *lexer, bool comment_condition, bool *scanned_comment,
                                      bool declaration_continuation, bool value_continuation,
-                                     bool preproc_continuation, bool field_continuation) {
+                                     bool preproc_continuation, bool field_continuation,
+                                     const bool *valid_symbols) {
     lexer->result_symbol = AUTOMATIC_SEMICOLON;
     lexer->mark_end(lexer);
     bool saw_whitespace = false;
@@ -363,7 +447,11 @@ static bool scan_automatic_semicolon(TSLexer *lexer, bool comment_condition, boo
                 if (field_continuation) {
                     return false;
                 }
-                WordKind word = scan_word(lexer, value_continuation);
+                WordKind word = scan_word(lexer, value_continuation,
+                                          declaration_continuation || value_continuation ? valid_symbols : NULL);
+                if (word == EVENT_WORD) {
+                    return true;
+                }
                 return word == STATEMENT_KEYWORD ||
                        (word == VALUE_STATEMENT_KEYWORD && !value_continuation && !declaration_continuation) ||
                        (word == TYPE_WORD && !declaration_continuation && !value_continuation) ||
@@ -371,7 +459,7 @@ static bool scan_automatic_semicolon(TSLexer *lexer, bool comment_condition, boo
                        (word == DECLARATION_MODIFIER && !declaration_continuation) ||
                        (word == WORD && !declaration_continuation && !value_continuation);
             }
-            return false;
+            return scan_event_object(lexer, valid_symbols);
         }
 
         saw_whitespace = true;
@@ -443,7 +531,7 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
                                             valid_symbols[DECLARATION_CONTINUATION],
                                             valid_symbols[VALUE_CONTINUATION],
                                             valid_symbols[PREPROC_CONTINUATION],
-                                            valid_symbols[FIELD_CONTINUATION]);
+                                            valid_symbols[FIELD_CONTINUATION], valid_symbols);
 
         #if DEBUG_AUTOMATIC_SEMICOLON
         fprintf(stderr, "SCANNER: scan_automatic_semicolon returned %d\n", ret);
@@ -452,5 +540,5 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
         return ret;
     }
 
-    return false;
+    return scan_event_object(lexer, valid_symbols);
 }

@@ -63,12 +63,21 @@ module.exports = grammar({
         $._value_continuation,
         $._preproc_continuation,
         $._field_continuation,
+        // Event-object tokens are emitted only in expression positions;
+        // their spellings use the ordinary identifier token in names/types.
+        $.data,
+        $.button,
+        $.channel,
+        $.level,
+        $.timeline,
+        $.custom,
+        // Scanner context only; distinguish user types from event operands.
+        $._event_type_context,
     ],
 
     conflicts: ($) => [
         [$.assignment_expression, $.expression],
         [$.type_specifier, $.expression],
-        [$.type_specifier, $.system_variable],
         [$.string_expression],
         [$.type_specifier, $._top_level_expression_statement],
         [$.device_literal],
@@ -122,7 +131,6 @@ module.exports = grammar({
     extras: ($) => [/\s/, $.comment],
 
     inline: ($) => [
-        $._name_identifier,
         $._type_identifier,
         $._field_identifier,
         $._statement_identifier,
@@ -212,7 +220,19 @@ module.exports = grammar({
         // Include all netlinx nodes
         ...netlinx.constants,
         ...netlinx.types,
-        ...netlinx.variables,
+        ...Object.fromEntries(
+            Object.entries(netlinx.variables).filter(
+                ([name]) =>
+                    ![
+                        "data",
+                        "button",
+                        "channel",
+                        "level",
+                        "timeline",
+                        "custom",
+                    ].includes(name),
+            ),
+        ),
         ...netlinx.functions,
 
         program_name: ($) =>
@@ -248,7 +268,7 @@ module.exports = grammar({
                     preprocessor(directives.define),
                     $.preproc_define_keyword,
                 ),
-                field("name", $._name_identifier),
+                field("name", $.identifier),
                 optional($._preproc_continuation),
                 field("value", optional($.preproc_arg)),
                 $._semicolon,
@@ -1014,7 +1034,7 @@ module.exports = grammar({
                         choice($.type_specifier, $.array_return_type),
                     ),
                 ),
-                field("name", $._name_identifier),
+                field("name", $.identifier),
                 field("parameters", $.parameter_list),
 
                 // Optional local declarations
@@ -1034,7 +1054,7 @@ module.exports = grammar({
                         choice($.type_specifier, $.array_return_type),
                     ),
                 ),
-                field("name", $._name_identifier),
+                field("name", $.identifier),
                 field("parameters", $.parameter_list),
                 optional(seq("=", $.expression)),
                 $._semicolon,
@@ -1180,6 +1200,8 @@ module.exports = grammar({
             prec.right(
                 seq(
                     repeat($._declaration_modifiers),
+                    // Never emitted: expose type/operand ambiguity to the scanner.
+                    optional($._event_type_context),
                     field("type", $.type_specifier),
                     repeat($._declaration_modifiers),
                     optional($._declaration_continuation),
@@ -1191,7 +1213,7 @@ module.exports = grammar({
                 $.function_declarator,
                 $.array_declarator,
                 $.parenthesized_declarator,
-                $._name_identifier,
+                $.identifier,
             ),
 
         _declaration_declarator: ($) =>
@@ -1202,7 +1224,7 @@ module.exports = grammar({
                 ),
                 $.array_declarator,
                 $.parenthesized_declarator,
-                $._name_identifier,
+                $.identifier,
             ),
 
         _field_declarator: ($) =>
@@ -2659,34 +2681,9 @@ module.exports = grammar({
 
         identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
 
-        // Keep event-context tokens usable as declared names when a type
-        // and a name are both possible (for example DEFINE_FUNCTION Data()).
-        _name_identifier: ($) =>
-            choice(
-                $.identifier,
-                alias($.data, $.identifier),
-                alias($.button, $.identifier),
-                alias($.channel, $.identifier),
-                alias($.level, $.identifier),
-                alias($.timeline, $.identifier),
-                alias($.custom, $.identifier),
-            ),
-
-        // Reuse event tokens for user types, preserving system_variable
-        // and member access in expressions.
-        _type_identifier: ($) =>
-            alias(
-                choice(
-                    $.identifier,
-                    $.data,
-                    $.button,
-                    $.channel,
-                    $.level,
-                    $.timeline,
-                    $.custom,
-                ),
-                $.type_identifier,
-            ),
+        // Event spellings lex as identifiers in name and type positions.
+        // The scanner emits event-object tokens only in expression positions.
+        _type_identifier: ($) => alias($.identifier, $.type_identifier),
         _field_identifier: ($) => alias($.identifier, $.field_identifier),
         _statement_identifier: ($) =>
             alias($.identifier, $.statement_identifier),
@@ -2740,7 +2737,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                         preprocessor(directives.if_defined),
                         $.preproc_if_defined_keyword,
                     ),
-                    field("name", $._name_identifier),
+                    field("name", $.identifier),
                     optional("\n"),
                     repeat(content($)),
                     field("alternative", optional(alternativeBlock($))),
@@ -2759,7 +2756,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                         preprocessor(directives.if_not_defined),
                         $.preproc_if_not_defined_keyword,
                     ),
-                    field("name", $._name_identifier),
+                    field("name", $.identifier),
                     optional("\n"),
                     repeat(content($)),
                     field("alternative", optional(alternativeBlock($))),
