@@ -1,0 +1,446 @@
+================================================================================
+Event-object name Data is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_data'
+DEFINE_TYPE
+STRUCTURE Data
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Data d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object name Button is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_button'
+DEFINE_TYPE
+STRUCTURE Button
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Button d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object name Channel is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_channel'
+DEFINE_TYPE
+STRUCTURE Channel
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Channel d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object name Level is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_level'
+DEFINE_TYPE
+STRUCTURE Level
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Level d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object name Timeline is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_timeline'
+DEFINE_TYPE
+STRUCTURE Timeline
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Timeline d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object name Custom is a user declaration type
+================================================================================
+
+PROGRAM_NAME='structname_custom'
+DEFINE_TYPE
+STRUCTURE Custom
+{
+    INTEGER a
+}
+DEFINE_VARIABLE
+Custom d
+DEFINE_PROGRAM
+d.a = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (field_identifier)))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_identifier)
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (field_expression
+            (identifier)
+            (field_identifier))
+          (number_literal))))))
+
+================================================================================
+Event-object declaration types are case insensitive
+================================================================================
+
+DATA value_data
+button value_button
+ChAnNeL value_channel
+LEVEL value_level
+timeline value_timeline
+CuStOm value_custom
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    (type_identifier)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (identifier))
+  (declaration
+    (type_identifier)
+    (identifier)))
+
+================================================================================
+Event-object member accesses retain their system-variable trees
+================================================================================
+
+DATA.TEXT;
+BUTTON.INPUT.CHANNEL;
+CHANNEL.CHANNEL;
+LEVEL.VALUE;
+TIMELINE.ID;
+CUSTOM.VALUE1;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (field_expression
+      (system_variable
+        (data))
+      (field_identifier)))
+  (expression_statement
+    (field_expression
+      (field_expression
+        (system_variable
+          (button))
+        (field_identifier))
+      (field_identifier)))
+  (expression_statement
+    (field_expression
+      (system_variable
+        (channel))
+      (field_identifier)))
+  (expression_statement
+    (field_expression
+      (system_variable
+        (level))
+      (field_identifier)))
+  (expression_statement
+    (field_expression
+      (system_variable
+        (timeline))
+      (field_identifier)))
+  (expression_statement
+    (field_expression
+      (system_variable
+        (custom))
+      (field_identifier))))
+
+================================================================================
+Event-object user types work with modifiers arrays fields and function signatures
+================================================================================
+
+VOLATILE Data d
+STACK_VAR Button buttons[2]
+DEFINE_FUNCTION Channel probe(Level inputValue)
+{
+    LOCAL_VAR Custom resultValue
+    RETURN resultValue
+}
+DEFINE_TYPE
+STRUCTURE Envelope { Timeline eventValue }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    (type_qualifier
+      (volatile_keyword))
+    (type_identifier)
+    (identifier))
+  (declaration
+    (storage_class_specifier
+      (stack_var_keyword))
+    (type_identifier)
+    (array_declarator
+      (identifier)
+      (number_literal)))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (type_identifier)
+          (identifier)
+          (parameter_list
+            (parameter_declaration
+              (type_identifier)
+              (identifier)))
+          (compound_statement
+            (declaration
+              (storage_class_specifier
+                (local_var_keyword))
+              (type_identifier)
+              (identifier))
+            (return_statement
+              (return_keyword)
+              (identifier)))))))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          (type_identifier)
+          (field_declaration_list
+            (field_declaration
+              (type_identifier)
+              (field_identifier))))))))

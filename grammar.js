@@ -67,6 +67,7 @@ module.exports = grammar({
     conflicts: ($) => [
         [$.assignment_expression, $.expression],
         [$.type_specifier, $.expression],
+        [$.type_specifier, $.system_variable],
         [$.string_expression],
         [$.type_specifier, $._top_level_expression_statement],
         [$.device_literal],
@@ -2664,7 +2665,21 @@ module.exports = grammar({
 
         identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
 
-        _type_identifier: ($) => alias($.identifier, $.type_identifier),
+        // Event-context spellings are also legal user structure names. Reuse
+        // their tokens only here, preserving system_variable in expressions.
+        _type_identifier: ($) =>
+            alias(
+                choice(
+                    $.identifier,
+                    $.data,
+                    $.button,
+                    $.channel,
+                    $.level,
+                    $.timeline,
+                    $.custom,
+                ),
+                $.type_identifier,
+            ),
         _field_identifier: ($) => alias($.identifier, $.field_identifier),
         _statement_identifier: ($) =>
             alias($.identifier, $.statement_identifier),

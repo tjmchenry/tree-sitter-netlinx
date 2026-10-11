@@ -15852,8 +15852,37 @@
     "_type_identifier": {
       "type": "ALIAS",
       "content": {
-        "type": "SYMBOL",
-        "name": "identifier"
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "data"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "button"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "channel"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "level"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "timeline"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "custom"
+          }
+        ]
       },
       "named": true,
       "value": "type_identifier"
@@ -15972,6 +16001,10 @@
     [
       "type_specifier",
       "expression"
+    ],
+    [
+      "type_specifier",
+      "system_variable"
     ],
     [
       "string_expression"
