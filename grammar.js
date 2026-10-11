@@ -55,7 +55,14 @@ const PREC = {
 module.exports = grammar({
     name: "netlinx",
 
-    externals: ($) => [$._automatic_semicolon],
+    externals: ($) => [
+        $._automatic_semicolon,
+        // Scanner context only, never emitted. A type still needs its
+        // declarator; RETURN and #DEFINE may still take an optional value.
+        $._declaration_continuation,
+        $._value_continuation,
+        $._preproc_continuation,
+    ],
 
     conflicts: ($) => [
         [$.assignment_expression, $.expression],
@@ -239,6 +246,7 @@ module.exports = grammar({
                     $.preproc_define_keyword,
                 ),
                 field("name", $.identifier),
+                optional($._preproc_continuation),
                 field("value", optional($.preproc_arg)),
                 $._semicolon,
             ),
@@ -1055,6 +1063,7 @@ module.exports = grammar({
                                     "type",
                                     alias($.identifier, $.type_identifier),
                                 ),
+                                optional($._declaration_continuation),
                                 commaSep1(
                                     field(
                                         "declarator",
@@ -1076,6 +1085,7 @@ module.exports = grammar({
                                     "type",
                                     alias($.identifier, $.type_identifier),
                                 ),
+                                optional($._declaration_continuation),
                                 commaSep1(
                                     field(
                                         "declarator",
@@ -1097,6 +1107,7 @@ module.exports = grammar({
                                     "type",
                                     alias($.identifier, $.type_identifier),
                                 ),
+                                optional($._declaration_continuation),
                                 commaSep1(
                                     field(
                                         "declarator",
@@ -1176,6 +1187,7 @@ module.exports = grammar({
                     repeat($._declaration_modifiers),
                     field("type", $.type_specifier),
                     repeat($._declaration_modifiers),
+                    optional($._declaration_continuation),
                 ),
             ),
 
@@ -1465,6 +1477,7 @@ module.exports = grammar({
         return_statement: ($) =>
             seq(
                 $.return_keyword,
+                optional($._value_continuation),
                 optional(
                     choice(
                         $.expression,

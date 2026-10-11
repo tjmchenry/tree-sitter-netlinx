@@ -1,0 +1,1610 @@
+================================================================================
+Same-line assignment after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 b = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal))))))
+
+================================================================================
+Same-line call after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 probe()
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list))))))
+
+================================================================================
+Same-line IF after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 IF (a) { b = 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (if_statement
+        (if_keyword)
+        (parenthesized_expression
+          (identifier))
+        (compound_statement
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal))))))))
+
+================================================================================
+Same-line WAIT after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 WAIT 10 { b = 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (wait_statement
+        (wait_keyword)
+        (number_literal)
+        (compound_statement
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal))))))))
+
+================================================================================
+Same-line SWITCH after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 SWITCH (a) { CASE 1: b = 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (switch_statement
+        (switch_keyword)
+        (parenthesized_expression
+          (identifier))
+        (compound_statement
+          (case_statement
+            (case_keyword)
+            (number_literal)
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))))))))
+
+================================================================================
+Same-line ON after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 ON[dv,1]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (devchan_operation_statement
+        (devchan_operation
+          (devchan_on_keyword))
+        (devchan_expression
+          (identifier)
+          (number_literal))))))
+
+================================================================================
+Same-line SEND_STRING after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 SEND_STRING dv,'hello'
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (send_string_statement
+        (send_string_keyword)
+        (identifier)
+        (string_literal
+          (string_content))))))
+
+================================================================================
+Same-line compound block after assignment in mainline
+================================================================================
+
+DEFINE_PROGRAM
+a = 1 { b = 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (compound_statement
+        (expression_statement
+          (assignment_expression
+            (identifier)
+            (number_literal)))))))
+
+================================================================================
+Same-line assignment after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 b = 2
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))))))))
+
+================================================================================
+Same-line call after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 probe()
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (expression_statement
+              (call_expression
+                (identifier)
+                (argument_list)))))))))
+
+================================================================================
+Same-line IF after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 IF (a) { b = 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (if_statement
+              (if_keyword)
+              (parenthesized_expression
+                (identifier))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Same-line WAIT after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 WAIT 10 { b = 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (wait_statement
+              (wait_keyword)
+              (number_literal)
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Same-line SWITCH after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 SWITCH (a) { CASE 1: b = 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (switch_statement
+              (switch_keyword)
+              (parenthesized_expression
+                (identifier))
+              (compound_statement
+                (case_statement
+                  (case_keyword)
+                  (number_literal)
+                  (expression_statement
+                    (assignment_expression
+                      (identifier)
+                      (number_literal))))))))))))
+
+================================================================================
+Same-line ON after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 ON[dv,1]
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (devchan_operation_statement
+              (devchan_operation
+                (devchan_on_keyword))
+              (devchan_expression
+                (identifier)
+                (number_literal)))))))))
+
+================================================================================
+Same-line SEND_STRING after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 SEND_STRING dv,'hello'
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (send_string_statement
+              (send_string_keyword)
+              (identifier)
+              (string_literal
+                (string_content)))))))))
+
+================================================================================
+Same-line compound block after assignment in function
+================================================================================
+
+DEFINE_FUNCTION probe() {
+    a = 1 { b = 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))
+            (compound_statement
+              (expression_statement
+                (assignment_expression
+                  (identifier)
+                  (number_literal))))))))))
+
+================================================================================
+Same-line assignment after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 b = 2 }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Same-line call after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 probe() }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (expression_statement
+                  (call_expression
+                    (identifier)
+                    (argument_list)))))))))))
+
+================================================================================
+Same-line IF after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 IF (a) { b = 2 } }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (if_statement
+                  (if_keyword)
+                  (parenthesized_expression
+                    (identifier))
+                  (compound_statement
+                    (expression_statement
+                      (assignment_expression
+                        (identifier)
+                        (number_literal)))))))))))))
+
+================================================================================
+Same-line WAIT after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 WAIT 10 { b = 2 } }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (wait_statement
+                  (wait_keyword)
+                  (number_literal)
+                  (compound_statement
+                    (expression_statement
+                      (assignment_expression
+                        (identifier)
+                        (number_literal)))))))))))))
+
+================================================================================
+Same-line SWITCH after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 SWITCH (a) { CASE 1: b = 2 } }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (switch_statement
+                  (switch_keyword)
+                  (parenthesized_expression
+                    (identifier))
+                  (compound_statement
+                    (case_statement
+                      (case_keyword)
+                      (number_literal)
+                      (expression_statement
+                        (assignment_expression
+                          (identifier)
+                          (number_literal))))))))))))))
+
+================================================================================
+Same-line ON after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 ON[dv,1] }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (devchan_operation_statement
+                  (devchan_operation
+                    (devchan_on_keyword))
+                  (devchan_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Same-line SEND_STRING after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 SEND_STRING dv,'hello' }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (send_string_statement
+                  (send_string_keyword)
+                  (identifier)
+                  (string_literal
+                    (string_content)))))))))))
+
+================================================================================
+Same-line compound block after assignment in handler
+================================================================================
+
+DEFINE_EVENT
+DATA_EVENT[dv]
+{
+    STRING: { a = 1 { b = 2 } }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (data_event_definition
+          (data_event_declarator
+            (data_event_keyword)
+            (data_event_device_reference
+              (identifier)))
+          (data_event_block
+            (data_event_handler
+              (data_event_type
+                (string_keyword))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))
+                (compound_statement
+                  (expression_statement
+                    (assignment_expression
+                      (identifier)
+                      (number_literal))))))))))))
+
+================================================================================
+Same-line AND continues the expression before the next statement
+================================================================================
+
+a = 1 And b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (and)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line OR continues the expression before the next statement
+================================================================================
+
+a = 1 Or b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (or)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line XOR continues the expression before the next statement
+================================================================================
+
+a = 1 Xor b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (xor)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line BAND continues the expression before the next statement
+================================================================================
+
+a = 1 Band b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (band)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line BOR continues the expression before the next statement
+================================================================================
+
+a = 1 Bor b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (bor)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line BXOR continues the expression before the next statement
+================================================================================
+
+a = 1 Bxor b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (bxor)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line LSHIFT continues the expression before the next statement
+================================================================================
+
+a = 1 Lshift b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (lshift)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line RSHIFT continues the expression before the next statement
+================================================================================
+
+a = 1 Rshift b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (rshift)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line MOD continues the expression before the next statement
+================================================================================
+
+x = y MOD 2 z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (mod)
+        (number_literal))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line AND without another statement
+================================================================================
+
+a = 1 AND b
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (and)
+        (identifier)))))
+
+================================================================================
+Same-line word operator prefixes are statement identifiers
+================================================================================
+
+a = 1 android = 2 a = 1 MOD_value = 2 a = 1 _next = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line NOT and BNOT after operators continue operands
+================================================================================
+
+a = b AND NOT c z = 1
+a = b BAND BNOT c z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (and)
+        (unary_expression
+          (not)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (identifier)
+        (band)
+        (unary_expression
+          (bnot)
+          (identifier)))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line ELSE attaches to expression and compound IF bodies
+================================================================================
+
+IF (a) b = 1 ELSE b = 2
+IF (a) { b = 1 } ELSE { b = 2 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (if_statement
+    (if_keyword)
+    (parenthesized_expression
+      (identifier))
+    (expression_statement
+      (assignment_expression
+        (identifier)
+        (number_literal)))
+    (else_clause
+      (else_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))))
+  (if_statement
+    (if_keyword)
+    (parenthesized_expression
+      (identifier))
+    (compound_statement
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal))))
+    (else_clause
+      (else_keyword)
+      (compound_statement
+        (expression_statement
+          (assignment_expression
+            (identifier)
+            (number_literal)))))))
+
+================================================================================
+Same-line ACTIVE colon and device range remain part of their statements
+================================================================================
+
+SELECT { ACTIVE (a): b = 1 ACTIVE (b): b = 2 }
+ON[dv,1]..[dv,2] TO[dv,3]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (select_statement
+    (select_keyword)
+    (compound_statement
+      (active_statement
+        (active_keyword)
+        (parenthesized_expression
+          (identifier))
+        (expression_statement
+          (assignment_expression
+            (identifier)
+            (number_literal))))
+      (active_statement
+        (active_keyword)
+        (parenthesized_expression
+          (identifier))
+        (expression_statement
+          (assignment_expression
+            (identifier)
+            (number_literal))))))
+  (devchan_operation_statement
+    (devchan_operation
+      (devchan_on_keyword))
+    (devchan_range_expression
+      (devchan_expression
+        (identifier)
+        (number_literal))
+      (range_operator)
+      (devchan_expression
+        (identifier)
+        (number_literal))))
+  (devchan_operation_statement
+    (devchan_operation
+      (devchan_to_keyword))
+    (devchan_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line parentheses brackets and symbols continue expressions
+================================================================================
+
+a = f(1) + g[2] * (b + 3) z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (call_expression
+          (identifier)
+          (argument_list
+            (number_literal)))
+        (binary_expression
+          (subscript_expression
+            (identifier)
+            (number_literal))
+          (parenthesized_expression
+            (binary_expression
+              (identifier)
+              (number_literal)))))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line RETURN keeps its value before the next statement
+================================================================================
+
+DEFINE_FUNCTION INTEGER probe() { RETURN value a = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (identifier))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))))))))
+
+================================================================================
+Same-line comments do not split a word operator expression
+================================================================================
+
+a = 1 /* keep AND with its left operand */ AND b z = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (binary_expression
+        (number_literal)
+        (comment)
+        (and)
+        (identifier))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line RETURN initializer stays with RETURN
+================================================================================
+
+DEFINE_FUNCTION probe() { RETURN {1,2} a = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (initializer_list
+                (number_literal)
+                (number_literal)))
+            (expression_statement
+              (assignment_expression
+                (identifier)
+                (number_literal)))))))))
+
+================================================================================
+Same-line macro words remain in the directive argument
+================================================================================
+
+#DEFINE SAMPLE some words
+DEFINE_PROGRAM
+a = 1 b = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (preproc_define
+    (preproc_define_keyword)
+    (identifier)
+    (preproc_arg))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal))))))
+
+================================================================================
+Same-line statement starts after calls and device operations
+================================================================================
+
+probe() a = 1 ON[dv,1] SEND_STRING dv,'hello' b = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (call_expression
+      (identifier)
+      (argument_list)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal)))
+  (devchan_operation_statement
+    (devchan_operation
+      (devchan_on_keyword))
+    (devchan_expression
+      (identifier)
+      (number_literal)))
+  (send_string_statement
+    (send_string_keyword)
+    (identifier)
+    (string_literal
+      (string_content)))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (number_literal))))
+
+================================================================================
+Same-line statement keyword and block after a bare identifier
+================================================================================
+
+foo IF (a) { a = 1 }
+foo { a = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (if_statement
+    (if_keyword)
+    (parenthesized_expression
+      (identifier))
+    (compound_statement
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))))
+  (expression_statement
+    (identifier))
+  (compound_statement
+    (expression_statement
+      (assignment_expression
+        (identifier)
+        (number_literal)))))
+
+================================================================================
+Same-line bare RETURN before a statement keyword
+================================================================================
+
+DEFINE_FUNCTION probe() { RETURN IF (a) { a = 1 } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword))
+            (if_statement
+              (if_keyword)
+              (parenthesized_expression
+                (identifier))
+              (compound_statement
+                (expression_statement
+                  (assignment_expression
+                    (identifier)
+                    (number_literal)))))))))))
+
+================================================================================
+Same-line macro argument may begin with a statement keyword
+================================================================================
+
+#DEFINE SAMPLE IF (a)
+DEFINE_PROGRAM
+a = 1 b = 2
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (preproc_define
+    (preproc_define_keyword)
+    (identifier)
+    (preproc_arg))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal))))))
+
+================================================================================
+Same-line NOT and BNOT can start statements after a bare identifier
+================================================================================
+
+foo NOT a
+foo BNOT a
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (unary_expression
+      (not)
+      (identifier)))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (unary_expression
+      (bnot)
+      (identifier))))
+
+================================================================================
+Same-line RETURN NOT and BNOT remain single return statements
+================================================================================
+
+DEFINE_FUNCTION probe() { RETURN NOT a }
+DEFINE_FUNCTION probe2() { RETURN BNOT a }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (unary_expression
+                (not)
+                (identifier))))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword)
+              (unary_expression
+                (bnot)
+                (identifier)))))))))
+
+================================================================================
+Same-line intrinsic type starts a declaration after a bare identifier
+================================================================================
+
+DEFINE_PROGRAM
+foo INTEGER a
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (identifier))
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))))
+
+================================================================================
+Same-line STRUCT starts a definition after a bare identifier
+================================================================================
+
+foo STRUCT Bar { INTEGER memberValue }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (type_definition
+    (struct_specifier
+      (struct_keyword)
+      (type_identifier)
+      (field_declaration_list
+        (field_declaration
+          (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          (field_identifier))))))
+
+================================================================================
+Same-line event keyword starts a definition after a bare identifier
+================================================================================
+
+foo DATA_EVENT[dv] { ONLINE: a = 1 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (expression_statement
+    (identifier))
+  (event_definition
+    (data_event_definition
+      (data_event_declarator
+        (data_event_keyword)
+        (data_event_device_reference
+          (identifier)))
+      (data_event_block
+        (data_event_handler
+          (data_event_type
+            (online_keyword))
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal))))))))
+
+================================================================================
+Same-line compiler probe with declarations and nested IF assignments
+================================================================================
+
+PROGRAM_NAME='sameline_probe'
+
+DEFINE_VARIABLE
+INTEGER a
+INTEGER b
+
+DEFINE_PROGRAM
+a = 1 b = 2
+IF (a) { a = 3 b = 4 }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (program_name
+    (program_name_keyword)
+    (string_literal
+      (string_content)))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (number_literal)))
+      (if_statement
+        (if_keyword)
+        (parenthesized_expression
+          (identifier))
+        (compound_statement
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal)))
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal))))))))
+
+================================================================================
+Same-line declaration modifiers continue their declaration and start one after RETURN
+================================================================================
+
+INTEGER CONSTANT a
+DEFINE_FUNCTION probe() { RETURN LOCAL_VAR INTEGER x }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    (intrinsic_type
+      (primitive_type
+        (integer_keyword)))
+    (type_qualifier
+      (constant_keyword))
+    (identifier))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          (identifier)
+          (parameter_list)
+          (compound_statement
+            (return_statement
+              (return_keyword))
+            (declaration
+              (storage_class_specifier
+                (local_var_keyword))
+              (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (identifier))))))))
+
+================================================================================
+Same-line system type starts a declaration after a bare identifier
+================================================================================
+
+DEFINE_PROGRAM
+foo TDATA a
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (identifier))
+      (declaration
+        (system_type
+          (tdata))
+        (identifier)))))
