@@ -11,6 +11,7 @@
  (#match? @comment.block "^\\(\\*"))
 
 (comment) @comment
+(unclosed_comment) @comment
 
 ;; ============================================================================
 ;; IDENTIFIERS, VARIABLES AND CONSTANTS
@@ -427,9 +428,7 @@
 ;; LITERALS
 ;; ============================================================================
 (string_literal) @string
-;; (escape_sequence) @string.escape
-;; (escape_sequence) @constant.character.escape
-;; (string_content) @string.content
+(unclosed_string) @string
 (number_literal) @number
 (device_literal) @number
 "\"" @string

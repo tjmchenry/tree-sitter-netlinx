@@ -6725,17 +6725,6 @@
         ]
       }
     },
-    "preproc_arg": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": -1,
-        "content": {
-          "type": "PATTERN",
-          "value": "\\S([^/\\n]|\\/[^*]|\\\\\\r?\\n)*"
-        }
-      }
-    },
     "preproc_directive": {
       "type": "PATTERN",
       "value": "#[a-zA-Z0-9]\\w*"
@@ -15666,62 +15655,22 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
-          "value": "'"
+          "type": "SYMBOL",
+          "name": "string_part"
         },
         {
           "type": "REPEAT",
           "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "ALIAS",
-                "content": {
-                  "type": "IMMEDIATE_TOKEN",
-                  "content": {
-                    "type": "PREC",
-                    "value": 1,
-                    "content": {
-                      "type": "PATTERN",
-                      "value": "[^']+"
-                    }
-                  }
-                },
-                "named": true,
-                "value": "string_content"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "escape_sequence"
-              }
-            ]
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_string_continuation"
+            },
+            "named": true,
+            "value": "string_part"
           }
-        },
-        {
-          "type": "STRING",
-          "value": "'"
         }
       ]
-    },
-    "escape_sequence": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PREC",
-        "value": 1,
-        "content": {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "'"
-            },
-            {
-              "type": "PATTERN",
-              "value": "'"
-            }
-          ]
-        }
-      }
     },
     "number_literal": {
       "type": "TOKEN",
@@ -15855,70 +15804,6 @@
       "named": true,
       "value": "statement_identifier"
     },
-    "comment": {
-      "type": "TOKEN",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "//"
-              },
-              {
-                "type": "PATTERN",
-                "value": "(\\\\+(.|\\r?\\n)|[^\\\\\\n])*"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "/*"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[^*]*\\*+([^/*][^*]*\\*+)*"
-              },
-              {
-                "type": "STRING",
-                "value": "/"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "(*"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[^*]*\\*+(?:[^)*/][^*]*\\*+)*"
-              },
-              {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": ")"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "/"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    },
     "_semicolon": {
       "type": "CHOICE",
       "members": [
@@ -15941,6 +15826,10 @@
     {
       "type": "SYMBOL",
       "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_comment_ahead"
     }
   ],
   "conflicts": [
@@ -16133,6 +16022,38 @@
     {
       "type": "SYMBOL",
       "name": "_event_type_context"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "unclosed_comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "string_part"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_string_continuation"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "unclosed_string"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "preproc_arg"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_comment_ahead"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_error_sentinel"
     }
   ],
   "inline": [

@@ -170,7 +170,7 @@ a = 1 SEND_STRING dv,'hello'
         (send_string_keyword)
         (identifier)
         (string_literal
-          (string_content))))))
+          (string_part))))))
 
 ================================================================================
 Same-line compound block after assignment in mainline
@@ -409,7 +409,7 @@ DEFINE_FUNCTION probe() {
               (send_string_keyword)
               (identifier)
               (string_literal
-                (string_content)))))))))
+                (string_part)))))))))
 
 ================================================================================
 Same-line compound block after assignment in function
@@ -710,7 +710,7 @@ DATA_EVENT[dv]
                   (send_string_keyword)
                   (identifier)
                   (string_literal
-                    (string_content)))))))))))
+                    (string_part)))))))))))
 
 ================================================================================
 Same-line compound block after assignment in handler
@@ -1275,7 +1275,7 @@ probe() a = 1 ON[dv,1] SEND_STRING dv,'hello' b = 2
     (send_string_keyword)
     (identifier)
     (string_literal
-      (string_content)))
+      (string_part)))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -1508,7 +1508,7 @@ IF (a) { a = 3 b = 4 }
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_variable_section
       (define_variable_keyword)

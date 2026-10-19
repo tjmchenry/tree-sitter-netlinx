@@ -73,6 +73,19 @@ module.exports = grammar({
         $.custom,
         // Scanner context only; distinguish user types from event operands.
         $._event_type_context,
+        // Comments and strings, read by the compiler's rules. A comment or
+        // string its file never closes is a token no rule takes.
+        $.comment,
+        $.unclosed_comment,
+        $.string_part,
+        $._string_continuation,
+        $.unclosed_string,
+        // A #DEFINE's value: the rest of its line up to a comment.
+        $.preproc_arg,
+        // Empty: a comment follows that no semicolon goes before.
+        $._comment_ahead,
+        // Valid only while the parser recovers from an error.
+        $._error_sentinel,
     ],
 
     conflicts: ($) => [
@@ -128,7 +141,7 @@ module.exports = grammar({
         [$.comma_expression, $.argument_list],
     ],
 
-    extras: ($) => [/\s/, $.comment],
+    extras: ($) => [/\s/, $.comment, $._comment_ahead],
 
     inline: ($) => [
         $._type_identifier,
@@ -359,7 +372,6 @@ module.exports = grammar({
             repeat1($.release_event_declarator),
         ),
 
-        preproc_arg: (_) => token(prec(-1, /\S([^/\n]|\/[^*]|\\\r?\n)*/)),
         preproc_directive: (_) => /#[a-zA-Z0-9]\w*/,
 
         // Main Grammar
@@ -2619,27 +2631,14 @@ module.exports = grammar({
                 ),
             ),
 
+        // Each part runs from its quote to the next quote, across lines. A
+        // part written right after another's closing quote continues the
+        // string with a quote character between them.
         string_literal: ($) =>
             seq(
-                "'",
-                repeat(
-                    choice(
-                        alias(
-                            // Newlines are intentionally permitted so single-quoted strings may
-                            // span multiple lines (NetLinx allows this).  The accepted tradeoff:
-                            // an UNTERMINATED string will greedily consume input up to the next
-                            // single-quote or EOF, giving degraded (but non-crashing) error
-                            // recovery rather than a hard parse failure.
-                            token.immediate(prec(1, /[^']+/)),
-                            $.string_content,
-                        ),
-                        $.escape_sequence,
-                    ),
-                ),
-                "'",
+                $.string_part,
+                repeat(alias($._string_continuation, $.string_part)),
             ),
-
-        escape_sequence: (_) => token(prec(1, seq("'", /'/))),
 
         number_literal: (_) => {
             return token(
@@ -2687,18 +2686,6 @@ module.exports = grammar({
         _field_identifier: ($) => alias($.identifier, $.field_identifier),
         _statement_identifier: ($) =>
             alias($.identifier, $.statement_identifier),
-
-        comment: (_) =>
-            token(
-                choice(
-                    seq("//", /(\\+(.|\r?\n)|[^\\\n])*/), // Single-line comments
-                    seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"), // C-style multi-line comments
-
-                    // Adding choice for Pascal-style comment endings
-                    // This is to support this odd use case in the NetLinx.axi file
-                    seq("(*", /[^*]*\*+(?:[^)*/][^*]*\*+)*/, choice(")", "/")), // Pascal-style comments
-                ),
-            ),
 
         _semicolon: ($) => choice($._automatic_semicolon, ";"),
     },

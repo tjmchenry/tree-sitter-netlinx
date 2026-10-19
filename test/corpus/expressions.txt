@@ -81,33 +81,33 @@ command = "'COMMAND-',CMD_TYPE,',',PARAM"
       left: (identifier)
       right: (string_expression
         (string_literal
-          (string_content)))))
+          (string_part)))))
   (expression_statement
     (assignment_expression
       left: (identifier)
       right: (string_expression
         (string_literal
-          (string_content))
+          (string_part))
         (identifier))))
   (expression_statement
     (assignment_expression
       left: (identifier)
       right: (string_expression
         (string_literal
-          (string_content))
+          (string_part))
         (identifier)
         (string_literal
-          (string_content))
+          (string_part))
         (identifier))))
   (expression_statement
     (string_expression
       (string_literal
-        (string_content))
+        (string_part))
       (field_expression
         argument: (identifier)
         field: (field_identifier))
       (string_literal
-        (string_content))
+        (string_part))
       (call_expression
         function: (system_function
           (itoa))
@@ -394,7 +394,7 @@ ascii_code = 'Z'
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content))))
+        (string_part))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -409,7 +409,7 @@ ascii_code = 'Z'
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)))))
+        (string_part)))))
 
 ==================
 Device
@@ -1102,73 +1102,66 @@ onlyEscaped = ''''''
 (source_file
   (expression_statement
     (string_literal
-      (string_content)
-      (escape_sequence)
-      (string_content)
-      (escape_sequence)
-      (string_content)))
+      (string_part)
+      (string_part)
+      (string_part)))
   (expression_statement
     (string_literal
-      (string_content)
-      (escape_sequence)
-      (string_content)))
+      (string_part)
+      (string_part)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content))))
+        (string_part)
+        (string_part))))
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence))))
-  (expression_statement
-    (assignment_expression
-      (identifier)
-      (string_literal)))
+        (string_part)
+        (string_part)
+        (string_part))))
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (escape_sequence))))
+        (string_part))))
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (string_literal
+        (string_part)
+        (string_part))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence))))
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence))))
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (escape_sequence)
-        (escape_sequence)))))
+        (string_part)
+        (string_part)
+        (string_part)))))
 
 ===============================
 String Literals as Function Arguments
@@ -1192,34 +1185,28 @@ SetName(userID, 'O''Brien', isActive)
       (argument_list
         (identifier)
         (string_literal
-          (string_content)
-          (escape_sequence)
-          (string_content)))))
+          (string_part)
+          (string_part)))))
   (expression_statement
     (call_expression
       (identifier)
       (argument_list
         (string_literal
-          (string_content)
-          (escape_sequence)
-          (string_content)
-          (escape_sequence)))))
+          (string_part)
+          (string_part)
+          (string_part)))))
   (expression_statement
     (call_expression
       (identifier)
       (argument_list
         (string_literal
-          (string_content))
+          (string_part))
         (string_literal
-          (string_content)
-          (escape_sequence)
-          (string_content)
-          (escape_sequence)
-          (string_content)
-          (escape_sequence)
-          (string_content)
-          (escape_sequence)
-          (string_content)))))
+          (string_part)
+          (string_part)
+          (string_part)
+          (string_part)
+          (string_part)))))
   (comment)
   (expression_statement
     (call_expression
@@ -1227,9 +1214,8 @@ SetName(userID, 'O''Brien', isActive)
       (argument_list
         (identifier)
         (string_literal
-          (string_content)
-          (escape_sequence)
-          (string_content))
+          (string_part)
+          (string_part))
         (identifier)))))
 
 ===============================
@@ -1260,19 +1246,9 @@ UserInfo user = {'John O''Malley', 42, TRUE}
           (array_declarator
             (identifier))
           (string_literal
-            (string_content)
-            (escape_sequence)
-            (string_content)
-            (escape_sequence)
-            (string_content))))
-      (declaration
-        (intrinsic_type
-          (primitive_type
-            (char_keyword)))
-        (init_declarator
-          (array_declarator
-            (identifier))
-          (string_literal)))
+            (string_part)
+            (string_part)
+            (string_part))))
       (declaration
         (intrinsic_type
           (primitive_type
@@ -1281,7 +1257,17 @@ UserInfo user = {'John O''Malley', 42, TRUE}
           (array_declarator
             (identifier))
           (string_literal
-            (escape_sequence))))
+            (string_part))))
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (char_keyword)))
+        (init_declarator
+          (array_declarator
+            (identifier))
+          (string_literal
+            (string_part)
+            (string_part))))
       (comment)
       (declaration
         (type_identifier)
@@ -1289,9 +1275,8 @@ UserInfo user = {'John O''Malley', 42, TRUE}
           (identifier)
           (initializer_list
             (string_literal
-              (string_content)
-              (escape_sequence)
-              (string_content))
+              (string_part)
+              (string_part))
             (number_literal)
             (system_constant
               (true))))))))
@@ -1314,17 +1299,14 @@ DEFINE_MODULE 'User''s Authentication Module' AuthModule(vdvAuth, dvTP)
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)
-      (escape_sequence)
-      (string_content)
-      (escape_sequence)
-      (string_content)))
+      (string_part)
+      (string_part)
+      (string_part)))
   (module_name
     (module_name_keyword)
     (string_literal
-      (string_content)
-      (escape_sequence)
-      (string_content)))
+      (string_part)
+      (string_part)))
   (comment)
   (section
     (define_module_section
@@ -1332,9 +1314,8 @@ DEFINE_MODULE 'User''s Authentication Module' AuthModule(vdvAuth, dvTP)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content)
-            (escape_sequence)
-            (string_content))
+            (string_part)
+            (string_part))
           (identifier)
           (argument_list
             (identifier)
@@ -1360,34 +1341,30 @@ justOneQuote = ''''
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content))))
+        (string_part))))
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content))))
+        (string_part)
+        (string_part)
+        (string_part))))
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence)
-        (string_content)
-        (escape_sequence))))
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part)
+        (string_part))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (string_literal
-        (escape_sequence)))))
+        (string_part)
+        (string_part)))))
 
 ======================================
 Comment Sequences in String Literals
@@ -1405,24 +1382,24 @@ Comment Sequences in String Literals
 (source_file
   (expression_statement
     (string_literal
-      (string_content)))
+      (string_part)))
   (expression_statement
     (string_expression
       (string_literal
-        (string_content))))
+        (string_part))))
   (expression_statement
     (string_literal
-      (string_content)))
+      (string_part)))
   (expression_statement
     (string_literal
-      (string_content)))
+      (string_part)))
   (expression_statement
     (string_expression
       (string_literal
-        (string_content))))
+        (string_part))))
   (expression_statement
     (string_literal
-      (string_content))))
+      (string_part))))
 
 =================================
 Floating Point Literals
@@ -1990,7 +1967,7 @@ build = GET_MASTER_BUILD()
           (atoi))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -1999,7 +1976,7 @@ build = GET_MASTER_BUILD()
           (atol))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2008,7 +1985,7 @@ build = GET_MASTER_BUILD()
           (atof))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2033,7 +2010,7 @@ build = GET_MASTER_BUILD()
           (hextoi))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2051,9 +2028,9 @@ build = GET_MASTER_BUILD()
           (find_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2062,7 +2039,7 @@ build = GET_MASTER_BUILD()
           (left_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (number_literal)))))
   (expression_statement
     (assignment_expression
@@ -2072,7 +2049,7 @@ build = GET_MASTER_BUILD()
           (right_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (number_literal)))))
   (expression_statement
     (assignment_expression
@@ -2082,7 +2059,7 @@ build = GET_MASTER_BUILD()
           (mid_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (number_literal)
           (number_literal)))))
   (expression_statement
@@ -2093,7 +2070,7 @@ build = GET_MASTER_BUILD()
           (remove_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (number_literal)
           (number_literal)))))
   (expression_statement
@@ -2104,7 +2081,7 @@ build = GET_MASTER_BUILD()
           (length_string))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2128,9 +2105,9 @@ build = GET_MASTER_BUILD()
           (compare_string))
         (argument_list
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2139,7 +2116,7 @@ build = GET_MASTER_BUILD()
           (upper_string))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -2148,7 +2125,7 @@ build = GET_MASTER_BUILD()
           (lower_string))
         (argument_list
           (string_literal
-            (string_content))))))
+            (string_part))))))
   (comment)
   (expression_statement
     (assignment_expression
@@ -2360,7 +2337,7 @@ build = GET_MASTER_BUILD()
         (identifier)
         (number_literal)
         (string_literal
-          (string_content))
+          (string_part))
         (number_literal)
         (system_constant
           (ip_tcp)))))
@@ -2396,7 +2373,7 @@ build = GET_MASTER_BUILD()
         (identifier)
         (number_literal)
         (string_literal
-          (string_content))
+          (string_part))
         (number_literal)
         (system_constant
           (tls_validate_certificate)))))
@@ -2862,7 +2839,7 @@ line two'
     (assignment_expression
       (identifier)
       (string_literal
-        (string_content)))))
+        (string_part)))))
 
 ===================================
 Equality = In Value Positions

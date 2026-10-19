@@ -129,16 +129,17 @@
 - Literals
     - :white_check_mark: String Literals
         - :white_check_mark: Single Quoted String Literals
-        - :white_check_mark: Escape Sequence for Single Quotes (`''`)
+        - :white_check_mark: Doubled Quotes (`''`) joining two parts of one string
     - :white_check_mark: Number Literals
         - :white_check_mark: Decimal
         - :white_check_mark: Hexadecimal
         - :white_check_mark: Floating Point
     - :white_check_mark: Device Literals
-- Comments
-    - :white_check_mark: Single Line Comments
+- Comments, read by the NetLinx compiler's rules in the external scanner
+    - :white_check_mark: Single Line Comments (a final `\` continues nothing)
     - :white_check_mark: Multi Line Comments (C Style `/* */`)
     - :white_check_mark: Pascal Comments (`(* *)`)
+    - :white_check_mark: Block comments nest across both kinds, and either closer ends either opener
 - Preprocessor
     - :white_check_mark: Define
     - :white_check_mark: Include
@@ -151,7 +152,7 @@
 
 ### Multi-line Single-quoted Strings
 
-Single-quoted string literals may span multiple lines — NetLinx permits this and the grammar honours it.  The accepted tradeoff is that an **unterminated** single-quoted string will greedily consume input up to the next single-quote character or end of file, producing degraded error recovery rather than a hard parse failure.  If your file produces unexpected parse errors, check for an unclosed `'` string.
+Single-quoted string literals may span multiple lines — NetLinx permits this and the grammar honours it: a string runs to the next single-quote character anywhere in the file, as the compiler reads it. A string with no single quote after it ends with its line as an `unclosed_string` error, and a block comment the file ends inside is an `unclosed_comment` error.
 
 ### Preprocessor Directives in Expressions
 

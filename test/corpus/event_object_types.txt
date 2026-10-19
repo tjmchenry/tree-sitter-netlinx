@@ -19,7 +19,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)
@@ -70,7 +70,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)
@@ -121,7 +121,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)
@@ -172,7 +172,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)
@@ -223,7 +223,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)
@@ -274,7 +274,7 @@ d.a = 1
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_type_section
       (define_type_keyword)

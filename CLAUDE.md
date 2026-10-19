@@ -28,7 +28,7 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 - `netlinx.js` — system constants and built-in functions
 - `g4api.js`, `snapi.js`, `unicodelib.js` — large library API definitions for highlighting
 
-**External scanner** — `src/scanner.c` handles automatic semicolon insertion by analyzing whitespace, newlines, and comments to determine where semicolons are implicitly legal. This file is manually maintained (not generated).
+**External scanner** — `src/scanner.c` reads comments, strings and `#DEFINE` values by the NetLinx compiler's rules (the one place comment boundaries are decided), and handles automatic semicolon insertion by analyzing whitespace, newlines, and comments to determine where semicolons are implicitly legal. This file is manually maintained (not generated).
 
 **Generated files** (committed but never edit manually):
 - `src/parser.c`, `src/grammar.json`, `src/node-types.json`

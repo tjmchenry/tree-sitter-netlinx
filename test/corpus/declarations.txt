@@ -10,7 +10,7 @@ MODULE_NAME='MyModule' (dev vdvObject, dev dvPort)
   (module_name
     (module_name_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     parameters: (parameter_list
       (parameter_declaration
         type: (intrinsic_type
@@ -35,7 +35,7 @@ PROGRAM_NAME='Basic Test'
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 Devices, Constants, Variables
@@ -112,7 +112,7 @@ PERSISTENT INTEGER lastPowerState
       (array_declarator
         (identifier))
       (string_literal
-        (string_content))))
+        (string_part))))
   (declaration
     (intrinsic_type
       (primitive_type
@@ -535,7 +535,7 @@ DEFINE_FUNCTION CHAR[10] getUsername() {
             (return_statement
               (return_keyword)
               (string_literal
-                (string_content)))))))))
+                (string_part)))))))))
 
 ==================
 Array Declarations
@@ -570,7 +570,7 @@ INTEGER values[] = {1, 2, 3 + x, func()}
       (array_declarator
         (identifier))
       (string_literal
-        (string_content))))
+        (string_part))))
   (declaration
     (intrinsic_type
       (primitive_type
@@ -579,7 +579,7 @@ INTEGER values[] = {1, 2, 3 + x, func()}
       (array_declarator
         (identifier))
       (string_literal
-        (string_content))))
+        (string_part))))
   (declaration
     (intrinsic_type
       (primitive_type
@@ -742,7 +742,7 @@ DEFINE_FUNCTION SortArray(INTEGER array[]) {
             (return_statement
               (return_keyword)
               (string_literal
-                (string_content))))))))
+                (string_part))))))))
   (section
     (define_function_section
       (define_function
@@ -1002,7 +1002,7 @@ DEFINE_FUNCTION INTEGER SumArrays(INTEGER[], INTEGER[10])
           (compound_statement
             (return_statement
               (return_keyword)
-              (string_literal)))))))
+              (string_literal (string_part))))))))
   (comment)
   (section
     (define_function_section
@@ -1196,7 +1196,7 @@ systemSettings.backupDevices[0].statusMessage = 'Standby'
               (number_literal))
             (field_identifier))
           (string_literal
-            (string_content)))))))
+            (string_part)))))))
 
 =================================
 Function Type Declarator
@@ -1308,7 +1308,7 @@ DEFINE_FUNCTION INTEGER Process(INTEGER count)
                         arguments: (argument_list
                           (identifier)
                           (string_literal
-                            (string_content)))))
+                            (string_part)))))
                     (wait_statement
                       (wait_keyword)
                       time: (number_literal)
@@ -1318,14 +1318,14 @@ DEFINE_FUNCTION INTEGER Process(INTEGER count)
                           arguments: (argument_list
                             (identifier)
                             (string_literal
-                              (string_content))))))))))
+                              (string_part))))))))))
             (expression_statement
               (call_expression
                 function: (identifier)
                 arguments: (argument_list
                   (identifier)
                   (string_literal
-                    (string_content))
+                    (string_part))
                   (compound_statement
                     (comment)
                     (expression_statement
@@ -1422,7 +1422,7 @@ stack_var integer j
         (define_call_keyword)
         (call_definition
           (string_literal
-            (string_content))
+            (string_part))
           (parameter_list
             (parameter_declaration
               (intrinsic_type
@@ -1456,7 +1456,7 @@ stack_var integer j
         (define_call_keyword)
         (call_definition
           (string_literal
-            (string_content))
+            (string_part))
           (declaration
             (storage_class_specifier
               (stack_var_keyword))
@@ -1568,7 +1568,7 @@ DEFINE_MODULE 'RmsNetLinxAdapter' mdlRms(vdvRMS,
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (identifier)
@@ -1620,7 +1620,7 @@ MORE_USERS[][][50] = {
       (subscript_expression
         (identifier))
       (string_literal
-        (string_content))))
+        (string_part))))
   (expression_statement
     (assignment_expression
       (subscript_expression
@@ -1629,11 +1629,11 @@ MORE_USERS[][][50] = {
         (number_literal))
       (initializer_list
         (string_literal
-          (string_content))
+          (string_part))
         (string_literal
-          (string_content))
+          (string_part))
         (string_literal
-          (string_content)))))
+          (string_part)))))
   (expression_statement
     (assignment_expression
       (subscript_expression
@@ -1644,11 +1644,11 @@ MORE_USERS[][][50] = {
       (initializer_list
         (initializer_list
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content)))
+            (string_part)))
         (initializer_list
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content)))))))
+            (string_part)))))))

@@ -66,7 +66,7 @@ switch (a) {
           function: (identifier)
           arguments: (argument_list
             (string_literal
-              (string_content)))))
+              (string_part)))))
       (case_statement
         (case_keyword)
         value: (number_literal))
@@ -282,7 +282,7 @@ while (x)
         function: (identifier)
         arguments: (argument_list
           (string_literal
-            (string_content)))))))
+            (string_part)))))))
 
 ==================
 Long_While loops
@@ -693,13 +693,13 @@ send_string 5001:1:0, payload
     value: (string_expression
       (number_literal)
       (string_literal
-        (string_content))
+        (string_part))
       (number_literal)))
   (send_string_statement
     (send_string_keyword)
     device: (number_literal)
     value: (string_literal
-      (string_content)))
+      (string_part)))
   (send_string_statement
     (send_string_keyword)
     device: (device_literal
@@ -724,7 +724,7 @@ send_command (33201 + 1):1:2, 'INPUT-HDMI,1'
     (send_command_keyword)
     device: (identifier)
     value: (string_literal
-      (string_content)))
+      (string_part)))
   (send_command_statement
     (send_command_keyword)
     device: (device_literal
@@ -733,9 +733,9 @@ send_command (33201 + 1):1:2, 'INPUT-HDMI,1'
       system: (number_literal))
     value: (string_expression
       (string_literal
-        (string_content))
+        (string_part))
       (string_literal
-        (string_content))))
+        (string_part))))
   (send_command_statement
     (send_command_keyword)
     device: (identifier)
@@ -751,7 +751,7 @@ send_command (33201 + 1):1:2, 'INPUT-HDMI,1'
       port: (number_literal)
       system: (number_literal))
     value: (string_literal
-      (string_content))))
+      (string_part))))
 
 ===================
 Send Level
@@ -893,7 +893,7 @@ wait 30 'NamedBare' corge()
         left: (identifier)
         right: (number_literal)))
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (compound_statement
       (expression_statement
         (call_expression
@@ -911,7 +911,7 @@ wait 30 'NamedBare' corge()
     (wait_keyword)
     time: (number_literal)
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (compound_statement
       (expression_statement
         (call_expression
@@ -921,7 +921,7 @@ wait 30 'NamedBare' corge()
     (wait_keyword)
     time: (number_literal)
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (expression_statement
       (call_expression
         function: (identifier)
@@ -978,7 +978,7 @@ wait_until (ready)
         left: (identifier)
         right: (number_literal)))
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (compound_statement
       (expression_statement
         (call_expression
@@ -1016,7 +1016,7 @@ wait (timeout * 10) 'Timeout'
         (wait_keyword)
         time: (number_literal)
         name: (string_literal
-          (string_content))
+          (string_part))
         body: (wait_statement
           (wait_keyword)
           time: (parenthesized_expression
@@ -1024,7 +1024,7 @@ wait (timeout * 10) 'Timeout'
               left: (identifier)
               right: (number_literal)))
           name: (string_literal
-            (string_content)))))))
+            (string_part)))))))
 
 ====================
 Combine
@@ -1151,7 +1151,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (identifier)
@@ -1162,7 +1162,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (identifier))))))
@@ -1172,7 +1172,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list)))))
   (section
@@ -1181,7 +1181,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (subscript_expression
@@ -1194,7 +1194,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (identifier)
@@ -1206,7 +1206,7 @@ define_module 'MyModule6' MyModuleInstance6(vdvObject, dvObject, foo, bar)
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list
             (identifier)
@@ -1295,19 +1295,19 @@ call 'MyFunction'
   (call_statement
     (call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list))
   (call_statement
     (call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list
       (identifier)
       (identifier)))
   (call_statement
     (call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list
       (identifier)
       (identifier)
@@ -1315,7 +1315,7 @@ call 'MyFunction'
   (call_statement
     (call_keyword)
     (string_literal
-      (string_content))))
+      (string_part))))
 
 =================================
 Named Wait Statements
@@ -1345,22 +1345,22 @@ CANCEL_WAIT 'DynamicWait'
     (wait_keyword)
     time: (number_literal)
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (wait_until_statement
       (wait_until_keyword)
       condition: (parenthesized_expression
         (identifier))
       name: (string_literal
-        (string_content))
+        (string_part))
       (comment)
       body: (cancel_wait_statement
         (cancel_wait_keyword)
         name: (string_literal
-          (string_content)))))
+          (string_part)))))
   (cancel_wait_until_statement
     (cancel_wait_until_keyword)
     name: (string_literal
-      (string_content)))
+      (string_part)))
   (comment)
   (cancel_all_wait_statement
     (cancel_all_wait_keyword))
@@ -1373,11 +1373,11 @@ CANCEL_WAIT 'DynamicWait'
       left: (identifier)
       right: (identifier))
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (cancel_wait_statement
       (cancel_wait_keyword)
       name: (string_literal
-        (string_content)))))
+        (string_part)))))
 
 =================================
 DevChan Range in Operations
@@ -1549,19 +1549,19 @@ system_call 'MyFunction'
   (system_call_statement
     (system_call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list))
   (system_call_statement
     (system_call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list
       (identifier)
       (identifier)))
   (system_call_statement
     (system_call_keyword)
     (string_literal
-      (string_content))
+      (string_part))
     (argument_list
       (identifier)
       (identifier)
@@ -1569,7 +1569,7 @@ system_call 'MyFunction'
   (system_call_statement
     (system_call_keyword)
     (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 System Call with Instance
@@ -1586,21 +1586,21 @@ SYSTEM_CALL[3] 'ModuleFunc'
     (system_call_keyword)
     instance: (number_literal)
     call: (string_literal
-      (string_content))
+      (string_part))
     arguments: (argument_list
       (number_literal)))
   (system_call_statement
     (system_call_keyword)
     instance: (number_literal)
     call: (string_literal
-      (string_content))
+      (string_part))
     arguments: (argument_list
       (number_literal)))
   (system_call_statement
     (system_call_keyword)
     instance: (number_literal)
     call: (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 Wait Control Statements
@@ -1617,13 +1617,13 @@ RESTART_ALL_WAIT
   (pause_wait_statement
     (pause_wait_keyword)
     name: (string_literal
-      (string_content)))
+      (string_part)))
   (pause_all_wait_statement
     (pause_all_wait_keyword))
   (restart_wait_statement
     (restart_wait_keyword)
     name: (string_literal
-      (string_content)))
+      (string_part)))
   (restart_all_wait_statement
     (restart_all_wait_keyword)))
 
@@ -1664,7 +1664,7 @@ TIMED_WAIT_UNTIL (powerState) 100 'PowerWait'
         right: (number_literal)))
     timeout: (number_literal)
     name: (string_literal
-      (string_content))
+      (string_part))
     body: (compound_statement
       (expression_statement
         (call_expression
@@ -1676,7 +1676,7 @@ TIMED_WAIT_UNTIL (powerState) 100 'PowerWait'
       (identifier))
     timeout: (number_literal)
     name: (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 Create Level

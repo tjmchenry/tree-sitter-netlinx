@@ -12,15 +12,15 @@ INCLUDE 'button_constants'
   (preproc_include
     (preproc_include_keyword)
     path: (string_literal
-      (string_content)))
+      (string_part)))
   (preproc_include
     (preproc_include_keyword)
     path: (string_literal
-      (string_content)))
+      (string_part)))
   (preproc_include
     (preproc_include_keyword)
     path: (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 Define Directives
@@ -35,7 +35,8 @@ Define Directives
 (source_file
   (preproc_define
     (preproc_define_keyword)
-    name: (identifier))
+    name: (identifier)
+    value: (preproc_arg))
   (preproc_define
     (preproc_define_keyword)
     name: (identifier)
@@ -76,7 +77,7 @@ Warning Directive
   (preproc_warn
     (preproc_warn_keyword)
     (string_literal
-      (string_content))))
+      (string_part))))
 
 ==================
 Complex Conditional Directives
@@ -98,13 +99,13 @@ Complex Conditional Directives
     (preproc_include
       (preproc_include_keyword)
       path: (string_literal
-        (string_content)))
+        (string_part)))
     alternative: (preproc_else
       (preproc_else_keyword)
       (preproc_include
         (preproc_include_keyword)
         path: (string_literal
-          (string_content)))
+          (string_part)))
       (preproc_define
         (preproc_define_keyword)
         name: (identifier)))
@@ -225,7 +226,7 @@ DEFINE_FUNCTION integer GetSpecialValue(integer param)
                   (return_keyword)
                   (string_expression
                     (string_literal
-                      (string_content))
+                      (string_part))
                     (call_expression
                       (system_function
                         (itoa))
@@ -314,7 +315,7 @@ volatile powerState = false
             (array_declarator
               (identifier))
             (string_literal
-              (string_content))))))
+              (string_part))))))
     (section
       (define_variable_section
         (define_variable_keyword)
@@ -997,33 +998,33 @@ constant char FOO[][50]     =   {
           (preproc_if_defined_keyword)
           (identifier)
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (preproc_end_if_keyword))
         (preproc_if_defined
           (preproc_if_defined_keyword)
           (identifier)
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (string_literal
-            (string_content))
+            (string_part))
           (preproc_end_if_keyword))))))
 
 ===============================

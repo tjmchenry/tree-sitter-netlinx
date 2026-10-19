@@ -33,7 +33,7 @@ DEFINE_TOGGLING
   (program_name
     (program_name_keyword)
     (string_literal
-      (string_content)))
+      (string_part)))
   (section
     (define_device_section
       (define_device_keyword)

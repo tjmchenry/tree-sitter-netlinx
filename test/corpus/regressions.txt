@@ -889,7 +889,7 @@ x.Data
         (define_module_keyword)
         (module_definition
           (string_literal
-            (string_content))
+            (string_part))
           (identifier)
           (argument_list)))))
   (type_definition
@@ -1127,7 +1127,7 @@ DEFINE_FUNCTION SLONG probe() { RETURN WAIT(')') }
                 (identifier)
                 (argument_list
                   (string_literal
-                    (string_content)))))))))))
+                    (string_part)))))))))))
 
 ================================================================================
 Regression RETURN keyword suffix 7: IF((a)) MOD 2
@@ -1285,7 +1285,6 @@ Regression RETURN keyword suffix 11: comment delimiter handling
 ================================================================================
 
 DEFINE_FUNCTION SLONG probe() { RETURN IF(a //\
- ) WORD
 ) + 1 }
 
 --------------------------------------------------------------------------------

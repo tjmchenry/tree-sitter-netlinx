@@ -85,7 +85,7 @@ primaryDevice.isPowered = true;
               (identifier)
               (field_identifier))
             (string_literal
-              (string_content))))
+              (string_part))))
         (expression_statement
           (assignment_expression
             (field_expression

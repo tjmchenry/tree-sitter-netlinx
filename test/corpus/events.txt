@@ -705,7 +705,7 @@ DATA_EVENT[dvTP] {
             (send_command_keyword)
             device: (identifier)
             value: (string_literal
-              (string_content))))))))
+              (string_part))))))))
 
 ==================
 Level event bare body

@@ -7309,14 +7309,10 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "escape_sequence",
-          "named": true
-        },
-        {
-          "type": "string_content",
+          "type": "string_part",
           "named": true
         }
       ]
@@ -9923,10 +9919,6 @@
     "named": false
   },
   {
-    "type": "'",
-    "named": false
-  },
-  {
     "type": "(",
     "named": false
   },
@@ -10880,10 +10872,6 @@
     "named": true
   },
   {
-    "type": "escape_sequence",
-    "named": true
-  },
-  {
     "type": "exp_value",
     "named": true
   },
@@ -11784,11 +11772,11 @@
     "named": true
   },
   {
-    "type": "string_content",
+    "type": "string_keyword",
     "named": true
   },
   {
-    "type": "string_keyword",
+    "type": "string_part",
     "named": true
   },
   {

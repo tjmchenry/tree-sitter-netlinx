@@ -101,3 +101,227 @@ integer b;
       (comment)
       (comment)
       (comment))
+
+================================================================================
+Block comments nest
+================================================================================
+
+(* a (* b *) integer hidden *) integer a;
+/* a /* b */ integer hidden */ integer b;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))
+
+================================================================================
+Block comments of both kinds nest in each other
+================================================================================
+
+(* a /* b *) integer hidden */ integer a;
+/* a (* b */ integer hidden *) integer b;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))
+
+================================================================================
+Either closer ends either opener
+================================================================================
+
+(* a */ integer a;
+/* a *) integer b;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))
+
+================================================================================
+A block comment ends at the closer that balances it
+================================================================================
+
+(* a *) integer a; (* b *)
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (comment))
+
+================================================================================
+A line comment does not continue over a final backslash
+================================================================================
+
+// a \
+integer a;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))
+
+================================================================================
+Line comment openers and quotes inside a block comment are inert
+================================================================================
+
+(* // ' *) integer a;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (comment)
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier)))
+
+================================================================================
+Comment openers inside a string are inert
+================================================================================
+
+char a[] = '(* /* //';
+char b[] = '*)'; // c
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (char_keyword)))
+        (init_declarator
+          (array_declarator
+            (identifier))
+          (string_literal
+            (string_part))))
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (char_keyword)))
+        (init_declarator
+          (array_declarator
+            (identifier))
+          (string_literal
+            (string_part))))
+      (comment))
+
+================================================================================
+A block comment its file never closes is an error
+================================================================================
+
+integer a;
+(* b (* c *)
+integer hidden;
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (declaration
+        (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (identifier))
+      (ERROR
+        (unclosed_comment)))
+
+================================================================================
+A string its file never closes ends with its line, as an error
+================================================================================
+
+a = 'b
+c = 1
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (ERROR
+            (unclosed_string))
+          (binary_expression
+            (identifier)
+            (number_literal)))))
+
+================================================================================
+A string runs to the next quote across lines
+================================================================================
+
+a = 'b
+(* c *)'
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (string_literal
+            (string_part)))))
+
+================================================================================
+A comment after a define's value is a comment
+================================================================================
+
+#DEFINE X 1 // note
+#DEFINE Y 'a(* b *)
+
+--------------------------------------------------------------------------------
+
+(source_file
+      (preproc_define
+        (preproc_define_keyword)
+        (identifier)
+        (preproc_arg))
+      (comment)
+      (preproc_define
+        (preproc_define_keyword)
+        (identifier)
+        (preproc_arg))
+      (comment))
