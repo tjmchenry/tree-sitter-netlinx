@@ -2076,8 +2076,8 @@ module.exports = grammar({
                 $.file_dir,
                 $.file_getdir,
                 $.file_setdir,
-                $.file_create_dir,
-                $.file_remove_dir,
+                $.file_createdir,
+                $.file_removedir,
                 $.file_seek,
 
                 // Array functions

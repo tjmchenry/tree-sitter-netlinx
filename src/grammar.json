@@ -2059,14 +2059,14 @@
       "value": "file_setdir",
       "flags": "i"
     },
-    "file_create_dir": {
+    "file_createdir": {
       "type": "PATTERN",
-      "value": "file_create_dir",
+      "value": "file_createdir",
       "flags": "i"
     },
-    "file_remove_dir": {
+    "file_removedir": {
       "type": "PATTERN",
-      "value": "file_remove_dir",
+      "value": "file_removedir",
       "flags": "i"
     },
     "file_seek": {
@@ -13011,11 +13011,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "file_create_dir"
+          "name": "file_createdir"
         },
         {
           "type": "SYMBOL",
-          "name": "file_remove_dir"
+          "name": "file_removedir"
         },
         {
           "type": "SYMBOL",

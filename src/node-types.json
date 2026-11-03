@@ -8501,7 +8501,7 @@
           "named": true
         },
         {
-          "type": "file_create_dir",
+          "type": "file_createdir",
           "named": true
         },
         {
@@ -8529,7 +8529,7 @@
           "named": true
         },
         {
-          "type": "file_remove_dir",
+          "type": "file_removedir",
           "named": true
         },
         {
@@ -10892,7 +10892,7 @@
     "named": true
   },
   {
-    "type": "file_create_dir",
+    "type": "file_createdir",
     "named": true
   },
   {
@@ -10924,7 +10924,7 @@
     "named": true
   },
   {
-    "type": "file_remove_dir",
+    "type": "file_removedir",
     "named": true
   },
   {

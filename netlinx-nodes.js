@@ -372,8 +372,8 @@ module.exports = {
         file_dir: (_) => netlinx.functions.file_dir,
         file_getdir: (_) => netlinx.functions.file_getdir,
         file_setdir: (_) => netlinx.functions.file_setdir,
-        file_create_dir: (_) => netlinx.functions.file_create_dir,
-        file_remove_dir: (_) => netlinx.functions.file_remove_dir,
+        file_createdir: (_) => netlinx.functions.file_createdir,
+        file_removedir: (_) => netlinx.functions.file_removedir,
         file_seek: (_) => netlinx.functions.file_seek,
 
         // Array functions
