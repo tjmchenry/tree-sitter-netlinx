@@ -571,7 +571,7 @@ select {
 (source_file
   (select_statement
     (select_keyword)
-    (compound_statement
+    (select_block
       (active_statement
         (active_keyword)
         (parenthesized_expression

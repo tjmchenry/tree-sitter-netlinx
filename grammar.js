@@ -372,6 +372,15 @@ module.exports = grammar({
             repeat1($.release_event_declarator),
         ),
 
+        // A branch may open with the content of the arm whose label stands
+        // before the conditional.
+        ...preprocIf(
+            "_in_select_block",
+            ($) => $._select_block_item,
+            PREC.DIRECTIVE,
+            ($) => $._active_content,
+        ),
+
         preproc_directive: (_) => /#[a-zA-Z0-9]\w*/,
 
         // Main Grammar
@@ -1353,7 +1362,6 @@ module.exports = grammar({
                 $.if_statement,
                 $.switch_statement,
                 $.select_statement,
-                $.active_statement,
                 $.while_statement,
                 $.for_statement,
                 $.return_statement,
@@ -1390,7 +1398,6 @@ module.exports = grammar({
                 $.if_statement,
                 $.switch_statement,
                 $.select_statement,
-                $.active_statement,
                 $.while_statement,
                 $.for_statement,
                 $.return_statement,
@@ -1493,17 +1500,46 @@ module.exports = grammar({
             ),
 
         select_statement: ($) =>
-            seq($.select_keyword, field("body", $.compound_statement)),
+            seq($.select_keyword, field("body", $.select_block)),
 
-        active_statement: ($) =>
-            prec.right(
+        select_block: ($) => seq("{", repeat($._select_block_item), "}"),
+
+        // Content after a conditional continues the arm whose label the
+        // conditional holds or follows.
+        _select_block_item: ($) =>
+            choice(
+                $.active_statement,
                 seq(
-                    $.active_keyword,
-                    field("condition", $.parenthesized_expression),
-                    ":",
-                    optional(field("body", $.statement)),
+                    choice(
+                        alias(
+                            $.preproc_if_defined_in_select_block,
+                            $.preproc_if_defined,
+                        ),
+                        alias(
+                            $.preproc_if_not_defined_in_select_block,
+                            $.preproc_if_not_defined,
+                        ),
+                    ),
+                    optional($._active_content),
+                ),
+                $.preproc_define,
+                $.preproc_include,
+                $.preproc_warn,
+                $.preproc_disable_warning,
+            ),
+
+        // An arm holds one statement, a run of declarations, or nothing.
+        active_statement: ($) =>
+            seq(
+                $.active_keyword,
+                field("condition", $.parenthesized_expression),
+                ":",
+                optional(
+                    choice(field("body", $.statement), repeat1($.declaration)),
                 ),
             ),
+
+        _active_content: ($) => choice($.statement, repeat1($.declaration)),
 
         return_statement: ($) =>
             seq(
@@ -1631,7 +1667,6 @@ module.exports = grammar({
                 $.if_statement,
                 $.switch_statement,
                 $.select_statement,
-                $.active_statement,
                 $.while_statement,
                 $.for_statement,
                 $.return_statement,
@@ -2699,10 +2734,12 @@ module.exports = grammar({
  * @param {string} suffix
  * @param {RuleBuilder<string>} content
  * @param {number} precedence
+ * @param {RuleBuilder<string> | null} lead what a branch may open with
+ *   before its run of `content`
  *
  * @returns {RuleBuilders<string, string>}
  */
-function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
+function preprocIf(suffix, content, precedence = PREC.DIRECTIVE, lead = null) {
     /**
      *
      * @param {GrammarSymbols<string>} $
@@ -2717,6 +2754,18 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
         );
     }
 
+    /**
+     *
+     * @param {GrammarSymbols<string>} $
+     *
+     * @returns {Rule}
+     */
+    function branch($) {
+        return lead
+            ? seq(optional(lead($)), repeat(content($)))
+            : repeat(content($));
+    }
+
     return {
         ["preproc_if_defined" + suffix]: ($) =>
             prec.dynamic(
@@ -2728,7 +2777,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                     ),
                     field("name", $.identifier),
                     optional("\n"),
-                    repeat(content($)),
+                    branch($),
                     field("alternative", optional(alternativeBlock($))),
                     alias(
                         preprocessor(directives.end_if),
@@ -2747,7 +2796,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                     ),
                     field("name", $.identifier),
                     optional("\n"),
-                    repeat(content($)),
+                    branch($),
                     field("alternative", optional(alternativeBlock($))),
                     alias(
                         preprocessor(directives.end_if),
@@ -2764,7 +2813,7 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE) {
                         preprocessor(directives.else),
                         $.preproc_else_keyword,
                     ),
-                    repeat(content($)),
+                    branch($),
                 ),
             ),
     };

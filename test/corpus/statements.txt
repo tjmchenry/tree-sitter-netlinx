@@ -324,7 +324,7 @@ SELECT {
 (source_file
   (select_statement
     (select_keyword)
-    body: (compound_statement
+    body: (select_block
       (active_statement
         (active_keyword)
         condition: (parenthesized_expression
@@ -375,7 +375,7 @@ SELECT {
 (source_file
   (select_statement
     (select_keyword)
-    body: (compound_statement
+    body: (select_block
       (preproc_if_defined
         (preproc_if_defined_keyword)
         name: (identifier)
@@ -396,6 +396,324 @@ SELECT {
           (assignment_expression
             left: (identifier)
             right: (number_literal)))))))
+
+==================
+Select Statement with consecutive labels as sibling arms
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+    ACTIVE(p = 2):
+        nG = 2
+    ACTIVE(p = 3):
+        nG = 3
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with an empty arm
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with an arm of declarations
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+        STACK_VAR INTEGER a = 5
+        INTEGER b, c
+    ACTIVE(p = 2):
+        nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (declaration
+          (storage_class_specifier
+            (stack_var_keyword))
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (init_declarator
+            declarator: (identifier)
+            value: (number_literal)))
+        (declaration
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (identifier)
+          declarator: (identifier)))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with an arm's declarations after the conditional holding its label
+==================
+
+SELECT
+{
+#IF_DEFINED ENABLED
+ACTIVE (p = 1):
+#END_IF
+STACK_VAR INTEGER a
+ACTIVE (p = 2):
+nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (preproc_if_defined
+        (preproc_if_defined_keyword)
+        name: (identifier)
+        (active_statement
+          (active_keyword)
+          condition: (parenthesized_expression
+            (binary_expression
+              left: (identifier)
+              right: (number_literal))))
+        (preproc_end_if_keyword))
+      (declaration
+        (storage_class_specifier
+          (stack_var_keyword))
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with conditionals inside an arm's declarations and around its statement
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+        STACK_VAR INTEGER a
+#IF_DEFINED X
+        STACK_VAR INTEGER b
+#END_IF
+        STACK_VAR INTEGER c
+    ACTIVE(p = 2):
+#IF_DEFINED X
+        nG = 1
+#ELSE
+        nG = 2
+#END_IF
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (declaration
+          (storage_class_specifier
+            (stack_var_keyword))
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (identifier)))
+      (preproc_if_defined
+        (preproc_if_defined_keyword)
+        name: (identifier)
+        (declaration
+          (storage_class_specifier
+            (stack_var_keyword))
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (identifier))
+        (preproc_end_if_keyword))
+      (declaration
+        (storage_class_specifier
+          (stack_var_keyword))
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal))))
+      (preproc_if_defined
+        (preproc_if_defined_keyword)
+        name: (identifier)
+        (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))
+        alternative: (preproc_else
+          (preproc_else_keyword)
+          (expression_statement
+            (assignment_expression
+              left: (identifier)
+              right: (number_literal))))
+        (preproc_end_if_keyword)))))
+
+==================
+Select Statement with a declaration after an arm's statement is an error
+==================
+
+SELECT {
+    ACTIVE(p = 1): {
+        nG = 1
+    }
+    INTEGER a = 5
+    ACTIVE(p = 2):
+        nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (compound_statement
+          (expression_statement
+            (assignment_expression
+              left: (identifier)
+              right: (number_literal)))))
+      (MISSING "}")))
+  (declaration
+    type: (intrinsic_type
+      (primitive_type
+        (integer_keyword)))
+    declarator: (init_declarator
+      declarator: (identifier)
+      value: (number_literal)))
+  (ERROR
+    (call_expression
+      function: (identifier)
+      arguments: (argument_list
+        (binary_expression
+          left: (identifier)
+          right: (number_literal))))
+    (binary_expression
+      left: (identifier)
+      right: (number_literal))))
+
+==================
+Active label outside a select is an error
+==================
+
+IF (p) {
+    ACTIVE(p = 1):
+        nG = 1
+}
+
+---
+
+(source_file
+  (if_statement
+    (if_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    consequence: (compound_statement
+      (ERROR
+        (call_expression
+          function: (identifier)
+          arguments: (argument_list
+            (binary_expression
+              left: (identifier)
+              right: (number_literal))))
+        (binary_expression
+          left: (identifier)
+          right: (number_literal))))))
 
 ==================
 Dangling else and nested if statements

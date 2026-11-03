@@ -196,6 +196,23 @@
     .
     (identifier)))
 
+;; The same in a SELECT arm, and after a conditional in a SELECT
+(active_statement
+  (declaration
+    (storage_class_specifier)
+    .
+    (_) @type
+    .
+    (identifier)))
+
+(select_block
+  (declaration
+    (storage_class_specifier)
+    .
+    (_) @type
+    .
+    (identifier)))
+
 ;; Custom types in variable declarations with type qualifiers
 (declaration
   (type_qualifier)
