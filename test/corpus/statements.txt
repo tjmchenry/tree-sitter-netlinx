@@ -359,6 +359,45 @@ SELECT {
               arguments: (argument_list))))))))
 
 ==================
+Select Statement with a label alone in a conditional
+==================
+
+SELECT {
+#IF_DEFINED ENABLED
+    ACTIVE(p = 1):
+#END_IF
+    ACTIVE(p = 2):
+        nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (compound_statement
+      (preproc_if_defined
+        (preproc_if_defined_keyword)
+        name: (identifier)
+        (active_statement
+          (active_keyword)
+          condition: (parenthesized_expression
+            (binary_expression
+              left: (identifier)
+              right: (number_literal))))
+        (preproc_end_if_keyword))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
 Dangling else and nested if statements
 ==================
 

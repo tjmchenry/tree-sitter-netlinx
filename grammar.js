@@ -1496,11 +1496,13 @@ module.exports = grammar({
             seq($.select_keyword, field("body", $.compound_statement)),
 
         active_statement: ($) =>
-            seq(
-                $.active_keyword,
-                field("condition", $.parenthesized_expression),
-                ":",
-                field("body", $.statement),
+            prec.right(
+                seq(
+                    $.active_keyword,
+                    field("condition", $.parenthesized_expression),
+                    ":",
+                    optional(field("body", $.statement)),
+                ),
             ),
 
         return_statement: ($) =>
