@@ -84,6 +84,12 @@ module.exports = grammar({
         $.preproc_arg,
         // Empty: a comment follows that no semicolon goes before.
         $._comment_ahead,
+        // Never emitted: what error recovery inserts for an arm's missing
+        // content.
+        $.arm_content,
+        // Empty: before an ACTIVE where no label may start. Only a label
+        // start takes it.
+        $._label_start,
         // Valid only while the parser recovers from an error.
         $._error_sentinel,
     ],
@@ -373,12 +379,19 @@ module.exports = grammar({
         ),
 
         // A branch may open with the content of the arm whose label stands
-        // before the conditional.
+        // before the conditional, and close on a label whose content follows
+        // the conditional.
         ...preprocIf(
             "_in_select_block",
             ($) => $._select_block_item,
             PREC.DIRECTIVE,
-            ($) => $._active_content,
+            ($, items) =>
+                seq(
+                    repeat($._select_directive),
+                    optional($._active_content),
+                    items,
+                    optional(alias($._active_label, $.active_statement)),
+                ),
         ),
 
         preproc_directive: (_) => /#[a-zA-Z0-9]\w*/,
@@ -1502,14 +1515,22 @@ module.exports = grammar({
         select_statement: ($) =>
             seq($.select_keyword, field("body", $.select_block)),
 
-        select_block: ($) => seq("{", repeat($._select_block_item), "}"),
+        select_block: ($) =>
+            seq(
+                "{",
+                repeat($._select_directive),
+                repeat($._select_block_item),
+                "}",
+            ),
 
-        // Content after a conditional continues the arm whose label the
-        // conditional holds or follows.
+        // A label stands without content only directly before a conditional,
+        // which may hold or cut off that content. Content after a conditional
+        // continues the arm whose label the conditional holds or follows.
         _select_block_item: ($) =>
             choice(
                 $.active_statement,
                 seq(
+                    optional(alias($._active_label, $.active_statement)),
                     choice(
                         alias(
                             $.preproc_if_defined_in_select_block,
@@ -1520,26 +1541,56 @@ module.exports = grammar({
                             $.preproc_if_not_defined,
                         ),
                     ),
+                    repeat($._select_directive),
                     optional($._active_content),
                 ),
+            ),
+
+        // An arm holds one statement or a run of declarations.
+        active_statement: ($) =>
+            seq(
+                $._active_label,
+                choice(
+                    seq(
+                        field("body", $.statement),
+                        repeat($._select_directive),
+                    ),
+                    $._active_declarations,
+                    $.arm_content,
+                ),
+            ),
+
+        _active_label: ($) =>
+            seq(
+                optional($._label_start),
+                $.active_keyword,
+                field("condition", $.parenthesized_expression),
+                ":",
+                repeat($._select_directive),
+            ),
+
+        _active_content: ($) =>
+            choice(
+                seq($.statement, repeat($._select_directive)),
+                $._active_declarations,
+            ),
+
+        _active_declarations: ($) =>
+            seq(
+                $.declaration,
+                repeat(choice($.declaration, $._select_directive)),
+            ),
+
+        // A directive never ends an arm: one that follows an active_statement's
+        // label or content is part of that node, and any other stands in the
+        // block or branch.
+        _select_directive: ($) =>
+            choice(
                 $.preproc_define,
                 $.preproc_include,
                 $.preproc_warn,
                 $.preproc_disable_warning,
             ),
-
-        // An arm holds one statement, a run of declarations, or nothing.
-        active_statement: ($) =>
-            seq(
-                $.active_keyword,
-                field("condition", $.parenthesized_expression),
-                ":",
-                optional(
-                    choice(field("body", $.statement), repeat1($.declaration)),
-                ),
-            ),
-
-        _active_content: ($) => choice($.statement, repeat1($.declaration)),
 
         return_statement: ($) =>
             seq(
@@ -2734,12 +2785,19 @@ module.exports = grammar({
  * @param {string} suffix
  * @param {RuleBuilder<string>} content
  * @param {number} precedence
- * @param {RuleBuilder<string> | null} lead what a branch may open with
- *   before its run of `content`
+ * @param {((
+ *   $: GrammarSymbols<string>,
+ *   items: Rule,
+ * ) => Rule) | null} around builds a branch from its run of `content`
  *
  * @returns {RuleBuilders<string, string>}
  */
-function preprocIf(suffix, content, precedence = PREC.DIRECTIVE, lead = null) {
+function preprocIf(
+    suffix,
+    content,
+    precedence = PREC.DIRECTIVE,
+    around = null,
+) {
     /**
      *
      * @param {GrammarSymbols<string>} $
@@ -2761,9 +2819,8 @@ function preprocIf(suffix, content, precedence = PREC.DIRECTIVE, lead = null) {
      * @returns {Rule}
      */
     function branch($) {
-        return lead
-            ? seq(optional(lead($)), repeat(content($)))
-            : repeat(content($));
+        const items = repeat(content($));
+        return around ? around($, items) : items;
     }
 
     return {

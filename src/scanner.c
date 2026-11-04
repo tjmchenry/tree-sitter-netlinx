@@ -24,6 +24,8 @@ enum TokenType {
     UNCLOSED_STRING,
     PREPROC_ARG,
     COMMENT_AHEAD,
+    ARM_CONTENT,
+    LABEL_START,
     ERROR_SENTINEL,
 };
 
@@ -284,6 +286,21 @@ static bool finish_event_object(TSLexer *lexer, const char *word, const bool *va
     return false;
 }
 
+// Reads a word of at most eight characters, lowercased. A longer word is
+// none of the words the callers look for.
+static bool read_short_word(TSLexer *lexer, char word[9]) {
+    unsigned length = 0;
+    while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
+        if (length == 8) {
+            return false;
+        }
+        word[length++] = (char)towlower(lexer->lookahead);
+        advance(lexer);
+    }
+    word[length] = '\0';
+    return true;
+}
+
 // In name positions the event tokens are invalid and identifier lexing wins.
 // In expressions retain the named event token, including bare operands and
 // assignment targets, so system_variable and aliased identifier trees survive.
@@ -299,15 +316,29 @@ static bool scan_event_object(TSLexer *lexer, const bool *valid_symbols) {
         skip(lexer);
     }
     char word[9];
-    unsigned length = 0;
-    while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
-        if (length == sizeof(word) - 1) {
-            return false;
-        }
-        word[length++] = (char)towlower(lexer->lookahead);
-        advance(lexer);
+    return read_short_word(lexer, word) && finish_event_object(lexer, word, valid_symbols);
+}
+
+// ACTIVE is reserved, but where no label may start it would lex as an
+// identifier and carry the label into an expression. Where an operand is
+// owed it ends the statement there, short of that operand; anywhere else the
+// empty token before it, which only a label start takes, ends the parse at
+// the misplaced label.
+static bool scan_misplaced_label(TSLexer *lexer, const bool *valid_symbols) {
+    lexer->mark_end(lexer);
+    char word[9];
+    if (!read_short_word(lexer, word)) {
+        return false;
     }
-    word[length] = '\0';
+    if (strcmp(word, "active") == 0) {
+        bool operand = false;
+        for (unsigned i = EVENT_DATA; i <= EVENT_CUSTOM; i++) {
+            operand |= valid_symbols[i];
+        }
+        lexer->result_symbol =
+            operand && !valid_symbols[EVENT_TYPE_CONTEXT] ? AUTOMATIC_SEMICOLON : LABEL_START;
+        return true;
+    }
     return finish_event_object(lexer, word, valid_symbols);
 }
 
@@ -682,6 +713,9 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
     }
     if (lexer->lookahead == '\'') {
         return (valid_symbols[STRING_PART] || error_mode) && lex_string(lexer, STRING_PART);
+    }
+    if (!valid_symbols[LABEL_START] && !error_mode) {
+        return scan_misplaced_label(lexer, valid_symbols);
     }
     return scan_event_object(lexer, valid_symbols);
 }

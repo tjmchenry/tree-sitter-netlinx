@@ -398,7 +398,7 @@ SELECT {
             right: (number_literal)))))))
 
 ==================
-Select Statement with consecutive labels as sibling arms
+Select Statement with consecutive labels is an error
 ==================
 
 SELECT {
@@ -420,7 +420,8 @@ SELECT {
         condition: (parenthesized_expression
           (binary_expression
             left: (identifier)
-            right: (number_literal))))
+            right: (number_literal)))
+        (MISSING arm_content))
       (active_statement
         (active_keyword)
         condition: (parenthesized_expression
@@ -443,7 +444,7 @@ SELECT {
             right: (number_literal)))))))
 
 ==================
-Select Statement with an empty arm
+Select Statement with an empty arm is an error
 ==================
 
 SELECT {
@@ -460,6 +461,159 @@ SELECT {
         (active_keyword)
         condition: (parenthesized_expression
           (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (MISSING arm_content)))))
+
+==================
+Select Statement with an empty last arm is an error
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+        nG = 1
+    ACTIVE(p = 2):
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (MISSING arm_content)))))
+
+==================
+Select Statement with a #DEFINE between a label and its statement
+==================
+
+SELECT
+{
+ACTIVE (p = 1):
+#DEFINE FOO
+nG = 1
+ACTIVE (p = 2):
+nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (preproc_define
+          (preproc_define_keyword)
+          name: (identifier))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with directives among an arm's declarations and after its statement
+==================
+
+SELECT {
+#WARN 'select'
+    ACTIVE(p = 1):
+        STACK_VAR INTEGER a
+#DISABLE_WARNING 10571
+        STACK_VAR INTEGER b
+    ACTIVE(p = 2):
+        nG = 2
+#INCLUDE 'Extra.axi'
+    ACTIVE(p = 3):
+        nG = 3
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (preproc_warn
+        (preproc_warn_keyword)
+        message: (string_literal
+          (string_part)))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        (declaration
+          (storage_class_specifier
+            (stack_var_keyword))
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (identifier))
+        (preproc_disable_warning
+          (preproc_disable_warning_keyword)
+          code: (number_literal))
+        (declaration
+          (storage_class_specifier
+            (stack_var_keyword))
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (identifier)))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))
+        (preproc_include
+          (preproc_include_keyword)
+          path: (string_literal
+            (string_part))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
             left: (identifier)
             right: (number_literal)))))))
 
@@ -639,6 +793,127 @@ SELECT {
         (preproc_end_if_keyword)))))
 
 ==================
+Select Statement with a label last in a conditional branch and its content after the conditional
+==================
+
+SELECT {
+#IF_DEFINED X
+    ACTIVE(p = 1):
+        nG = 1
+    ACTIVE(p = 2):
+#ELSE
+    ACTIVE(p = 3):
+#END_IF
+        nG = 2
+    ACTIVE(p = 4):
+        nG = 4
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (preproc_if_defined
+        (preproc_if_defined_keyword)
+        name: (identifier)
+        (active_statement
+          (active_keyword)
+          condition: (parenthesized_expression
+            (binary_expression
+              left: (identifier)
+              right: (number_literal)))
+          body: (expression_statement
+            (assignment_expression
+              left: (identifier)
+              right: (number_literal))))
+        (active_statement
+          (active_keyword)
+          condition: (parenthesized_expression
+            (binary_expression
+              left: (identifier)
+              right: (number_literal))))
+        alternative: (preproc_else
+          (preproc_else_keyword)
+          (active_statement
+            (active_keyword)
+            condition: (parenthesized_expression
+              (binary_expression
+                left: (identifier)
+                right: (number_literal)))))
+        (preproc_end_if_keyword))
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with an arm's content inside the conditional after its label
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+#IF_NOT_DEFINED X
+        nG = 1
+#ELSE
+        STACK_VAR INTEGER a
+#END_IF
+    ACTIVE(p = 2):
+        nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal))))
+      (preproc_if_not_defined
+        (preproc_if_not_defined_keyword)
+        name: (identifier)
+        (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))
+        alternative: (preproc_else
+          (preproc_else_keyword)
+          (declaration
+            (storage_class_specifier
+              (stack_var_keyword))
+            type: (intrinsic_type
+              (primitive_type
+                (integer_keyword)))
+            declarator: (identifier)))
+        (preproc_end_if_keyword))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
 Select Statement with a declaration after an arm's statement is an error
 ==================
 
@@ -663,29 +938,66 @@ SELECT {
           (binary_expression
             left: (identifier)
             right: (number_literal)))
-        body: (compound_statement
-          (expression_statement
-            (assignment_expression
-              left: (identifier)
-              right: (number_literal)))))
-      (MISSING "}")))
-  (declaration
-    type: (intrinsic_type
-      (primitive_type
-        (integer_keyword)))
-    declarator: (init_declarator
-      declarator: (identifier)
-      value: (number_literal)))
-  (ERROR
-    (call_expression
-      function: (identifier)
-      arguments: (argument_list
-        (binary_expression
-          left: (identifier)
-          right: (number_literal))))
-    (binary_expression
-      left: (identifier)
-      right: (number_literal))))
+        (ERROR
+          (compound_statement
+            (expression_statement
+              (assignment_expression
+                left: (identifier)
+                right: (number_literal)))))
+        (declaration
+          type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          declarator: (init_declarator
+            declarator: (identifier)
+            value: (number_literal))))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+==================
+Select Statement with an arm's statement cut short by the next label is an error
+==================
+
+SELECT {
+    ACTIVE(p = 1):
+        nG =
+    ACTIVE(p = 2):
+        nG = 2
+}
+
+---
+
+(source_file
+  (select_statement
+    (select_keyword)
+    body: (select_block
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (identifier)
+          (ERROR)))
+      (active_statement
+        (active_keyword)
+        condition: (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
+        body: (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
 
 ==================
 Active label outside a select is an error
@@ -705,12 +1017,11 @@ IF (p) {
       (identifier))
     consequence: (compound_statement
       (ERROR
-        (call_expression
-          function: (identifier)
-          arguments: (argument_list
-            (binary_expression
-              left: (identifier)
-              right: (number_literal))))
+        (active_keyword)
+        (parenthesized_expression
+          (binary_expression
+            left: (identifier)
+            right: (number_literal)))
         (binary_expression
           left: (identifier)
           right: (number_literal))))))

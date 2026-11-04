@@ -339,7 +339,27 @@
           "named": true
         },
         {
+          "type": "arm_content",
+          "named": true
+        },
+        {
           "type": "declaration",
+          "named": true
+        },
+        {
+          "type": "preproc_define",
+          "named": true
+        },
+        {
+          "type": "preproc_disable_warning",
+          "named": true
+        },
+        {
+          "type": "preproc_include",
+          "named": true
+        },
+        {
+          "type": "preproc_warn",
           "named": true
         }
       ]
@@ -9655,6 +9675,10 @@
   },
   {
     "type": "and",
+    "named": true
+  },
+  {
+    "type": "arm_content",
     "named": true
   },
   {
