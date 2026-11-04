@@ -311,7 +311,6 @@ module.exports = grammar({
             ),
 
         ...preprocIf("", ($) => $._top_level_item),
-        ...preprocIf("_in_block", ($) => $._block_item),
         ...preprocIf(
             "_in_field_declaration_list",
             ($) => $._field_declaration_list_item,
