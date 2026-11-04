@@ -25,9 +25,6 @@
 ((identifier) @constant
  (#match? @constant "^[A-Z][A-Z\\d_]*$"))
 
-;; Constants
-(system_constant) @constant.builtin
-
 (field_identifier) @property
 
 ;; ============================================================================
@@ -157,8 +154,6 @@
     (variant_keyword)
     (variantarray_keyword)
 ] @type
-
-(system_type) @type.builtin
 
 (local_var_keyword) @type.storage
 (stack_var_keyword) @type.storage
@@ -315,8 +310,6 @@
 ;; ============================================================================
 ;; Functions
 (call_expression
-  function: (system_function) @function.builtin)
-(call_expression
   function: (identifier) @function)
 (function_definition
   name: (identifier) @function)
@@ -355,9 +348,6 @@
 (call_expression
   arguments: (argument_list
     (identifier) @variable.parameter))
-(call_expression
-  arguments: (argument_list
-    (system_constant) @constant.builtin.parameter))
 
 ;; Array parameters in function definition
 (function_definition

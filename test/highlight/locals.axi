@@ -11,13 +11,13 @@ DEFINE_FUNCTION INTEGER MyFunction(INTEGER param1)
     stack_var char date[10]
     // ^ type.storage
     //        ^ type
-    //             ^ variable
+    //             ^ variable.builtin
     //                 ^ punctuation.bracket
     //                   ^ number
     //                    ^ punctuation.bracket
 
     date = '2023-10-01'
-    // ^ variable
+    // ^ variable.builtin
     //   ^ operator
     //     ^ string
     result = "'The date is: ', date"

@@ -91,8 +91,7 @@ primaryDevice.isPowered = true;
             (field_expression
               (identifier)
               (field_identifier))
-            (system_constant
-              (false))))
+            (identifier)))
         (expression_statement
           (assignment_expression
             (field_expression
@@ -107,8 +106,7 @@ primaryDevice.isPowered = true;
           (field_expression
             (identifier)
             (field_identifier))
-          (system_constant
-            (true)))))))
+          (identifier))))))
 
 =====================================
 Define Program
@@ -149,5 +147,4 @@ define_program
           (parenthesized_expression
             (binary_expression
               (identifier)
-              (system_constant
-                (true)))))))))
+              (identifier))))))))

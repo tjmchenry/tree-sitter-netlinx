@@ -228,8 +228,7 @@ DEFINE_FUNCTION integer GetSpecialValue(integer param)
                     (string_literal
                       (string_part))
                     (call_expression
-                      (system_function
-                        (itoa))
+                      (identifier)
                       (argument_list
                         (identifier))))))))))
       (preproc_end_if_keyword))
@@ -324,8 +323,7 @@ volatile powerState = false
             (volatile_keyword))
           (init_declarator
             (identifier)
-            (system_constant
-              (false))))))
+            (identifier)))))
     (preproc_end_if_keyword)))
 
 =================================

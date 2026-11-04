@@ -350,8 +350,7 @@ SELECT {
       (active_statement
         (active_keyword)
         condition: (parenthesized_expression
-          (system_constant
-            (true)))
+          (identifier))
         body: (compound_statement
           (expression_statement
             (call_expression
@@ -1621,8 +1620,7 @@ wait_until (ready)
     condition: (parenthesized_expression
       (binary_expression
         left: (identifier)
-        right: (system_constant
-          (true))))
+        right: (identifier)))
     body: (expression_statement
       (call_expression
         function: (identifier)
@@ -1632,8 +1630,7 @@ wait_until (ready)
     condition: (parenthesized_expression
       (binary_expression
         left: (identifier)
-        right: (system_constant
-          (false))))
+        right: (identifier)))
     body: (compound_statement
       (expression_statement
         (call_expression

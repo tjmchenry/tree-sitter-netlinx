@@ -612,8 +612,7 @@ BUTTON_EVENT[dvTP, 1] {
             (push_keyword))
           body: (expression_statement
             (call_expression
-              function: (system_function
-                (do_push))
+              function: (identifier)
               arguments: (argument_list
                 (identifier)
                 (number_literal)))))
@@ -623,8 +622,7 @@ BUTTON_EVENT[dvTP, 1] {
           body: (compound_statement
             (expression_statement
               (call_expression
-                function: (system_function
-                  (do_push))
+                function: (identifier)
                 arguments: (argument_list
                   (identifier)
                   (number_literal))))))
@@ -634,8 +632,7 @@ BUTTON_EVENT[dvTP, 1] {
             time: (identifier))
           body: (expression_statement
             (call_expression
-              function: (system_function
-                (do_push))
+              function: (identifier)
               arguments: (argument_list
                 (identifier)
                 (number_literal)))))))))
@@ -768,8 +765,7 @@ TIMELINE_EVENT[1] do_push(dvTP, 1)
           (number_literal)))
       body: (expression_statement
         (call_expression
-          function: (system_function
-            (do_push))
+          function: (identifier)
           arguments: (argument_list
             (identifier)
             (number_literal)))))))

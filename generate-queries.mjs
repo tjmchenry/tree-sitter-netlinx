@@ -1,12 +1,51 @@
 #!/usr/bin/env node
 
 import fs from "node:fs";
+import netlinx from "./netlinx.js";
 import snapi from "./snapi.js";
 import g4api from "./g4api.js";
 import unicodelib from "./unicodelib.js";
 import StringBuilder from "string-builder";
 
 const builder = new StringBuilder();
+
+// The scanner's event objects are `system_variable` tokens, which highlights.scm covers.
+const eventObjects = [
+    "button",
+    "data",
+    "level",
+    "timeline",
+    "channel",
+    "custom",
+];
+
+builder.clear();
+builder.appendLine(";; Auto-generated NetLinx.axi built-ins");
+builder.appendLine();
+builder.appendLine(";; Functions");
+builder.appendLine(`(call_expression
+  function: (identifier) @function.builtin
+  (#match? @function.builtin "(?i)^(${Object.keys(netlinx.functions).join("|")})$"))`);
+builder.appendLine();
+builder.appendLine(";; Constants");
+builder.appendLine(`((identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(${Object.keys(netlinx.constants).join("|")})$"))`);
+builder.appendLine(`(call_expression
+  arguments: (argument_list
+    (identifier) @constant.builtin.parameter
+    (#match? @constant.builtin.parameter "(?i)^(${Object.keys(netlinx.constants).join("|")})$")))`);
+builder.appendLine();
+builder.appendLine(";; Variables");
+builder.appendLine(`((identifier) @variable.builtin
+  (#match? @variable.builtin "(?i)^(${Object.keys(netlinx.variables)
+      .filter((name) => !eventObjects.includes(name))
+      .join("|")})$"))`);
+builder.appendLine();
+builder.appendLine(";; Types");
+builder.appendLine(`((type_identifier) @type.builtin
+  (#match? @type.builtin "(?i)^(${Object.keys(netlinx.types).join("|")})$"))`);
+
+fs.writeFileSync("./queries/highlights-netlinx.scm", builder.toString());
 
 builder.clear();
 builder.appendLine(";; Auto-generated SNAPI.axi built-ins");
@@ -17,8 +56,8 @@ builder.appendLine(`(call_expression
   (#match? @function.builtin "(?i)^(${Object.keys(snapi.functions).join("|")})$"))`);
 builder.appendLine();
 builder.appendLine(";; Constants");
-builder.appendLine(`(identifier) @constant.builtin
-  (#match? @constant.builtin "(?i)^(${Object.keys(snapi.constants).join("|")})$")`);
+builder.appendLine(`((identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(${Object.keys(snapi.constants).join("|")})$"))`);
 
 fs.writeFileSync("./queries/highlights-snapi.scm", builder.toString());
 
@@ -26,8 +65,8 @@ builder.clear();
 builder.appendLine(";; Auto-generated G4API.axi built-ins");
 builder.appendLine();
 builder.appendLine(";; Constants");
-builder.appendLine(`(identifier) @constant.builtin
-  (#match? @constant.builtin "(?i)^(${Object.keys(g4api.constants).join("|")})$")`);
+builder.appendLine(`((identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(${Object.keys(g4api.constants).join("|")})$"))`);
 
 fs.writeFileSync("./queries/highlights-g4api.scm", builder.toString());
 
@@ -40,11 +79,11 @@ builder.appendLine(`(call_expression
   (#match? @function.builtin "(?i)^(${Object.keys(unicodelib.functions).join("|")})$"))`);
 builder.appendLine();
 builder.appendLine(";; Constants");
-builder.appendLine(`(identifier) @constant.builtin
-  (#match? @constant.builtin "(?i)^(${Object.keys(unicodelib.constants).join("|")})$")`);
+builder.appendLine(`((identifier) @constant.builtin
+  (#match? @constant.builtin "(?i)^(${Object.keys(unicodelib.constants).join("|")})$"))`);
 builder.appendLine();
 builder.appendLine(";; Variables");
-builder.appendLine(`(identifier) @variable.builtin
-  (#match? @variable.builtin "(?i)^(${Object.keys(unicodelib.variables).join("|")})$")`);
+builder.appendLine(`((identifier) @variable.builtin
+  (#match? @variable.builtin "(?i)^(${Object.keys(unicodelib.variables).join("|")})$"))`);
 
 fs.writeFileSync("./queries/highlights-unicodelib.scm", builder.toString());

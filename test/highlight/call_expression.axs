@@ -104,7 +104,7 @@ len = LENGTH_STRING('Hello')
 // Date and time functions
 // ^ comment
 day = DATE_TO_DAY(date)
-// <- variable
+// <- variable.builtin
 //  ^ operator
 //    ^ function.builtin
 //               ^ punctuation.bracket

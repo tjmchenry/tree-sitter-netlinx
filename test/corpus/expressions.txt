@@ -109,8 +109,7 @@ command = "'COMMAND-',CMD_TYPE,',',PARAM"
       (string_literal
         (string_part))
       (call_expression
-        function: (system_function
-          (itoa))
+        function: (identifier)
         arguments: (argument_list
           (field_expression
             argument: (identifier)
@@ -335,8 +334,7 @@ status = [dvTP, 1]
       (devchan_expression
         (identifier)
         (identifier))
-      (system_constant
-        (true))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (devchan_expression
@@ -360,13 +358,11 @@ result = (x > 5) == TRUE
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (true))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (false))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
@@ -375,8 +371,7 @@ result = (x > 5) == TRUE
           (binary_expression
             (identifier)
             (number_literal)))
-        (system_constant
-          (true))))))
+        (identifier)))))
 
 ==================
 Character and Hex Literals
@@ -876,8 +871,7 @@ Device Assignment
       (devchan_expression
         (identifier)
         (number_literal))
-      (system_constant
-        (true)))))
+      (identifier))))
 
 ==================
 Device Operations
@@ -1001,15 +995,13 @@ dvPort.NUMBER:dvPort.PORT:dvPort.SYSTEM
   (expression_statement
     (device_literal
       (number_literal)
-      (system_constant
-        (first_local_port))
+      (identifier)
       (number_literal)))
   (expression_statement
     (device_literal
       (number_literal)
       (binary_expression
-        (system_constant
-          (first_local_port))
+        (identifier)
         (number_literal))
       (number_literal)))
   (expression_statement
@@ -1278,8 +1270,7 @@ UserInfo user = {'John O''Malley', 42, TRUE}
               (string_part)
               (string_part))
             (number_literal)
-            (system_constant
-              (true))))))))
+            (identifier)))))))
 
 ===============================
 String Literals in Module and Program Names
@@ -1623,38 +1614,27 @@ system_number
 
 (source_file
   (expression_statement
-    (system_variable
-      (day)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (date)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (ldate)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (time)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (push_device)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (push_channel)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (push_devchan)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (release_channel)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (release_device)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (release_devchan)))
+    (identifier))
   (expression_statement
-    (system_variable
-      (system_number))))
+    (identifier)))
 
 ===================================
 System Constants
@@ -1715,160 +1695,129 @@ error = ERR_INVALID_PARAMETER
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (true))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (false))))
+      (identifier)))
   (comment)
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_create))
+      (identifier)
       (argument_list
         (number_literal)
         (number_literal)
-        (system_constant
-          (timeline_absolute))
-        (system_constant
-          (timeline_repeat)))))
+        (identifier)
+        (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_create))
+      (identifier)
       (argument_list
         (number_literal)
         (number_literal)
-        (system_constant
-          (timeline_relative))
-        (system_constant
-          (timeline_once)))))
+        (identifier)
+        (identifier))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (ip_tcp))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (ip_udp_2way))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (url_flg_tcp))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (file_read_only))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (file_rw_new))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (file_rw_append))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (binary_expression
-        (system_constant
-          (first_virtual_device))
+        (identifier)
         (number_literal))))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (first_local_port))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (dynamic_virtual_device))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
       (binary_expression
-        (system_constant
-          (xml_encode_char_as_list))
-        (system_constant
-          (xml_encode_types)))))
+        (identifier)
+        (identifier))))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (duet_dev_type_display_device))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (duet_dev_type_audio_processor))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (clkmgr_mode_network))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (normal_standby))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (normal_wake))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (ip_ttl_subnet))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (ip_nodelay_on))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (amx_debug))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (netlinx_login_success))))
+      (identifier)))
   (comment)
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (data_format_iso8601))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (data_type_datetime))))
+      (identifier)))
   (expression_statement
     (assignment_expression
       (identifier)
-      (system_constant
-        (err_invalid_parameter)))))
+      (identifier))))
 
 ===================================
 System Built-in Functions
@@ -1963,8 +1912,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (atoi))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -1972,8 +1920,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (atol))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -1981,8 +1928,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (atof))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -1990,24 +1936,21 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (itoa))
+        (identifier)
         (argument_list
           (number_literal)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (itohex))
+        (identifier)
         (argument_list
           (number_literal)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (hextoi))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -2015,8 +1958,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (ftoa))
+        (identifier)
         (argument_list
           (number_literal)))))
   (comment)
@@ -2024,8 +1966,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (find_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2035,8 +1976,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (left_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2045,8 +1985,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (right_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2055,8 +1994,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (mid_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2066,8 +2004,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (remove_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2077,8 +2014,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (length_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -2086,14 +2022,12 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (max_length_string))
+        (identifier)
         (argument_list
           (identifier)))))
   (expression_statement
     (call_expression
-      (system_function
-        (set_length_string))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
@@ -2101,8 +2035,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (compare_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))
@@ -2112,8 +2045,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (upper_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
@@ -2121,88 +2053,70 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (lower_string))
+        (identifier)
         (argument_list
           (string_literal
             (string_part))))))
   (comment)
   (expression_statement
     (assignment_expression
-      (identifier
-        (day))
+      (identifier)
       (call_expression
-        (system_function
-          (date_to_day))
+        (identifier)
         (argument_list
-          (system_variable
-            (date))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (date_to_month))
+        (identifier)
         (argument_list
-          (system_variable
-            (date))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (date_to_year))
+        (identifier)
         (argument_list
-          (system_variable
-            (date))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (time_to_hour))
+        (identifier)
         (argument_list
-          (system_variable
-            (time))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (time_to_minute))
+        (identifier)
         (argument_list
-          (system_variable
-            (time))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (time_to_second))
+        (identifier)
         (argument_list
-          (system_variable
-            (time))))))
+          (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (day_of_week))
+        (identifier)
         (argument_list
-          (system_variable
-            (date))))))
+          (identifier)))))
   (expression_statement
     (call_expression
-      (system_function
-        (set_pulse_time))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal)
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (set_timer))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
@@ -2211,45 +2125,39 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (length_array))
+        (identifier)
         (argument_list
           (identifier)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (max_length_array))
+        (identifier)
         (argument_list
           (identifier)))))
   (expression_statement
     (call_expression
-      (system_function
-        (set_length_array))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
   (comment)
   (expression_statement
     (call_expression
-      (system_function
-        (do_push))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (do_push_timed))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal)
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (do_release))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
@@ -2257,56 +2165,46 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (device_id))
+        (identifier)
         (argument_list
           (identifier)))))
   (expression_statement
     (call_expression
-      (system_function
-        (device_standby))
+      (identifier)
       (argument_list
         (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (device_wake))
+      (identifier)
       (argument_list
         (identifier))))
   (comment)
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_create))
+      (identifier)
       (argument_list
         (number_literal)
         (number_literal)
-        (system_constant
-          (timeline_absolute))
-        (system_constant
-          (timeline_repeat)))))
+        (identifier)
+        (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_kill))
+      (identifier)
       (argument_list
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_pause))
+      (identifier)
       (argument_list
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_restart))
+      (identifier)
       (argument_list
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (timeline_set))
+      (identifier)
       (argument_list
         (number_literal)
         (number_literal)
@@ -2315,8 +2213,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (timeline_get))
+        (identifier)
         (argument_list
           (number_literal)
           (number_literal)))))
@@ -2324,63 +2221,53 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (timeline_active))
+        (identifier)
         (argument_list
           (number_literal)))))
   (comment)
   (expression_statement
     (call_expression
-      (system_function
-        (ip_client_open))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal)
         (string_literal
           (string_part))
         (number_literal)
-        (system_constant
-          (ip_tcp)))))
+        (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (ip_client_close))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (ip_server_open))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal)
         (number_literal)
-        (system_constant
-          (ip_tcp)))))
+        (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (ip_server_close))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
   (expression_statement
     (call_expression
-      (system_function
-        (tls_client_open))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal)
         (string_literal
           (string_part))
         (number_literal)
-        (system_constant
-          (tls_validate_certificate)))))
+        (identifier))))
   (expression_statement
     (call_expression
-      (system_function
-        (tls_client_close))
+      (identifier)
       (argument_list
         (identifier)
         (number_literal))))
@@ -2389,8 +2276,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (abs_value))
+        (identifier)
         (argument_list
           (unary_expression
             (number_literal))))))
@@ -2398,8 +2284,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (max_value))
+        (identifier)
         (argument_list
           (number_literal)
           (number_literal)))))
@@ -2407,8 +2292,7 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (min_value))
+        (identifier)
         (argument_list
           (number_literal)
           (number_literal)))))
@@ -2416,16 +2300,14 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (sqrt_value))
+        (identifier)
         (argument_list
           (number_literal)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (power_value))
+        (identifier)
         (argument_list
           (number_literal)
           (number_literal)))))
@@ -2433,65 +2315,56 @@ build = GET_MASTER_BUILD()
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (exp_value))
+        (identifier)
         (argument_list
           (number_literal)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (log_value))
+        (identifier)
         (argument_list
           (number_literal)))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (log10_value))
+        (identifier)
         (argument_list
           (number_literal)))))
   (comment)
   (expression_statement
     (call_expression
-      (system_function
-        (reboot))
+      (identifier)
       (argument_list)))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (get_unique_id))
+        (identifier)
         (argument_list))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (get_serial_number))
+        (identifier)
         (argument_list))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (get_system_number))
+        (identifier)
         (argument_list))))
   (expression_statement
     (call_expression
-      (system_function
-        (set_system_number))
+      (identifier)
       (argument_list
         (number_literal))))
   (expression_statement
     (assignment_expression
       (identifier)
       (call_expression
-        (system_function
-          (get_master_build))
+        (identifier)
         (argument_list)))))
 
 ===================================
@@ -2712,16 +2585,14 @@ chained2 = w and x and y and z
       (identifier)
       (binary_expression
         (call_expression
-          (system_function
-            (timeline_active))
+          (identifier)
           (argument_list
             (number_literal)))
         (and)
         (unary_expression
           (not)
           (call_expression
-            (system_function
-              (timeline_active))
+            (identifier)
             (argument_list
               (number_literal)))))))
   (expression_statement
@@ -2730,16 +2601,14 @@ chained2 = w and x and y and z
       (binary_expression
         (binary_expression
           (call_expression
-            (system_function
-              (length_array))
+            (identifier)
             (argument_list
               (identifier)))
           (number_literal))
         (or)
         (binary_expression
           (call_expression
-            (system_function
-              (length_array))
+            (identifier)
             (argument_list
               (identifier)))
           (number_literal)))))

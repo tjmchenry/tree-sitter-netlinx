@@ -110,67 +110,52 @@ LAST_LOGIN_INFO login_data
 (source_file
   (comment)
   (declaration
-    (system_type
-      (tdata))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (tbutton))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (tchannel))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (tlevel))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (ttimeline))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (tcustom))
+    (type_identifier)
     (identifier))
   (comment)
   (declaration
-    (system_type
-      (url_struct))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (dns_struct))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (ip_address_struct))
+    (type_identifier)
     (identifier))
   (comment)
   (declaration
-    (system_type
-      (dev_info_struct))
+    (type_identifier)
     (identifier))
   (comment)
   (declaration
-    (system_type
-      (clkmgr_timeserver_struct))
+    (type_identifier)
     (identifier))
   (comment)
   (declaration
-    (system_type
-      (data_feed))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (data_field))
+    (type_identifier)
     (identifier))
   (declaration
-    (system_type
-      (data_record))
+    (type_identifier)
     (identifier))
   (comment)
   (declaration
-    (system_type
-      (last_login_info))
+    (type_identifier)
     (identifier)))
