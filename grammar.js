@@ -158,7 +158,6 @@ module.exports = grammar({
         $._assignment_left_expression,
         $._expression_not_binary,
         $._expression_not_binary_or_number,
-        $._semicolon,
     ],
 
     supertypes: ($) => [
