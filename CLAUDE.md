@@ -22,18 +22,20 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 ## Architecture
 
 **Grammar definition** — `grammar.js` is the source of truth. It imports supporting modules:
+
 - `keywords.js` — keyword definitions
 - `directives.js` — preprocessor directives
-- `netlinx-nodes.js` — NetLinx-specific node definitions (events, sections, etc.)
-- `netlinx.js` — system constants and built-in functions
+- `netlinx.js` — system constants, types, variables and built-in functions, for highlighting
 - `g4api.js`, `snapi.js`, `unicodelib.js` — large library API definitions for highlighting
 
 **External scanner** — `src/scanner.c` reads comments, strings and `#DEFINE` values by the NetLinx compiler's rules (the one place comment boundaries are decided), and handles automatic semicolon insertion by analyzing whitespace, newlines, and comments to determine where semicolons are implicitly legal. This file is manually maintained (not generated).
 
 **Generated files** (committed but never edit manually):
+
 - `src/parser.c`, `src/grammar.json`, `src/node-types.json`
 
 **Queries** (`queries/`):
+
 - `highlights.scm` + library-specific highlight files (`highlights-g4api.scm`, `highlights-snapi.scm`, `highlights-unicodelib.scm`)
 - `tags.scm`, `locals.scm`, `folds.scm`
 
