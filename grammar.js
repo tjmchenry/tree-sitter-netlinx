@@ -273,9 +273,17 @@ module.exports = grammar({
         // Preprocessor
         preproc_include: ($) =>
             seq(
-                alias(
-                    preprocessor(directives.include),
-                    $.preproc_include_keyword,
+                // Two tokens, not /#?include/i: a word token that can start
+                // with `#` is never a keyword.
+                choice(
+                    alias(
+                        preprocessor(directives.include),
+                        $.preproc_include_keyword,
+                    ),
+                    alias(
+                        new RegExp(directives.include, "i"),
+                        $.preproc_include_keyword,
+                    ),
                 ),
                 field("path", choice($.string_literal)),
                 $._semicolon,
@@ -2765,7 +2773,9 @@ module.exports = grammar({
             );
         },
 
-        identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
+        // U+212A: the `i` flag folds `k` to it, and a word is a keyword only
+        // if identifier matches every spelling the word's pattern does.
+        identifier: (_) => /[_a-zA-Z\u212A][_a-zA-Z0-9\u212A]*/,
 
         // Event spellings lex as identifiers in name and type positions.
         // The scanner emits event-object tokens only in expression positions.
@@ -2883,11 +2893,6 @@ function preprocIf(
  * @returns {AliasRule}
  */
 function preprocessor(command) {
-    if (command === directives.include) {
-        // Allow for optional # at the start of include
-        return alias(new RegExp("#?" + command, "i"), "#" + command);
-    }
-
     return alias(new RegExp("#" + command, "i"), "#" + command);
 }
 

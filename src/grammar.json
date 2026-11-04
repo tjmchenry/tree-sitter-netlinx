@@ -2871,19 +2871,34 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "PATTERN",
-              "value": "#?include",
-              "flags": "i"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "#include",
+                  "flags": "i"
+                },
+                "named": false,
+                "value": "#include"
+              },
+              "named": true,
+              "value": "preproc_include_keyword"
             },
-            "named": false,
-            "value": "#include"
-          },
-          "named": true,
-          "value": "preproc_include_keyword"
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "PATTERN",
+                "value": "include",
+                "flags": "i"
+              },
+              "named": true,
+              "value": "preproc_include_keyword"
+            }
+          ]
         },
         {
           "type": "FIELD",
@@ -16110,7 +16125,7 @@
     },
     "identifier": {
       "type": "PATTERN",
-      "value": "[_a-zA-Z][_a-zA-Z0-9]*"
+      "value": "[_a-zA-Z\\u212A][_a-zA-Z0-9\\u212A]*"
     },
     "_type_identifier": {
       "type": "ALIAS",
