@@ -101,6 +101,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "case_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "statement"
         },
         {
@@ -10408,17 +10412,8 @@
       ]
     },
     "statement": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "case_statement"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_non_case_statement"
-        }
-      ]
+      "type": "SYMBOL",
+      "name": "_non_case_statement"
     },
     "_non_case_statement": {
       "type": "CHOICE",

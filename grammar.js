@@ -221,6 +221,7 @@ module.exports = grammar({
                 $.declaration,
 
                 // Statements
+                $.case_statement,
                 $.statement,
 
                 // Preprocessor
@@ -1372,7 +1373,7 @@ module.exports = grammar({
          * Statements
          */
 
-        statement: ($) => choice($.case_statement, $._non_case_statement),
+        statement: ($) => $._non_case_statement,
 
         _non_case_statement: ($) =>
             choice(

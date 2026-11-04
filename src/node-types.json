@@ -156,10 +156,6 @@
         "named": true
       },
       {
-        "type": "case_statement",
-        "named": true
-      },
-      {
         "type": "clear_buffer_statement",
         "named": true
       },
@@ -1457,6 +1453,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "case_statement",
+          "named": true
+        },
         {
           "type": "declaration",
           "named": true
@@ -5674,6 +5674,10 @@
           "named": true
         },
         {
+          "type": "case_statement",
+          "named": true
+        },
+        {
           "type": "channel_event_declarator",
           "named": true
         },
@@ -5819,6 +5823,10 @@
         },
         {
           "type": "button_event_handler",
+          "named": true
+        },
+        {
+          "type": "case_statement",
           "named": true
         },
         {
@@ -5971,6 +5979,10 @@
         },
         {
           "type": "button_event_handler",
+          "named": true
+        },
+        {
+          "type": "case_statement",
           "named": true
         },
         {
