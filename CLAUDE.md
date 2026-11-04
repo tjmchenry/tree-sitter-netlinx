@@ -36,7 +36,7 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 
 **Queries** (`queries/`):
 
-- `highlights.scm` + library-specific highlight files (`highlights-g4api.scm`, `highlights-snapi.scm`, `highlights-unicodelib.scm`)
+- `highlights.scm` + generated highlight files (`highlights-netlinx.scm`, `highlights-g4api.scm`, `highlights-snapi.scm`, `highlights-unicodelib.scm`)
 - `tags.scm`, `locals.scm`, `folds.scm`
 
 **Tests** (`test/corpus/*.txt`) — Tree-sitter test format: test name, NetLinx code, expected S-expression tree separated by `---`.
