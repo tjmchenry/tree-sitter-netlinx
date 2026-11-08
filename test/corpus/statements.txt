@@ -1319,7 +1319,6 @@ switch (empty) {
 
 ==================
 Empty statement bodies
-:error
 ==================
 
 if (condition);
@@ -1330,7 +1329,20 @@ while (true);
 
 ---
 
-
+(source_file
+  (if_statement
+    (if_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    consequence: (empty_statement))
+  (for_statement
+    (for_keyword)
+    body: (empty_statement))
+  (while_statement
+    (while_keyword)
+    condition: (parenthesized_expression
+      (identifier))
+    body: (empty_statement)))
 
 ==================
 Send String

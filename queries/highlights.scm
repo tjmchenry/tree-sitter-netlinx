@@ -289,6 +289,8 @@
     ":"
 ] @punctuation.delimiter
 
+(empty_statement) @punctuation.delimiter
+
 ;; Parameter lists
 (parameter_list) @punctuation.bracket
 

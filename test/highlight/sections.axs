@@ -48,6 +48,8 @@ persistent DeviceStatus status
 
 DEFINE_START
 // ^ keyword
+;
+// <- punctuation.delimiter
 {
 // <- punctuation.bracket
     count = 1
