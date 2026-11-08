@@ -32,7 +32,6 @@ enum TokenType {
     ARM_CONTENT,
     LABEL_START,
     ARM_CONTINUATION,
-    EMPTY_STATEMENT,
     PREPROC_INCLUDE_KEYWORD,
     PREPROC_DEFINE_KEYWORD,
     PREPROC_WARN_KEYWORD,
@@ -1031,14 +1030,6 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
 
     while (iswspace(lexer->lookahead)) {
         skip(lexer);
-    }
-    if (lexer->lookahead == ';') {
-        if (!valid_symbols[EMPTY_STATEMENT] || error_mode) {
-            return false;
-        }
-        advance(lexer);
-        lexer->result_symbol = EMPTY_STATEMENT;
-        return true;
     }
     if (lexer->lookahead == '(' || lexer->lookahead == '/') {
         return lex_comment(lexer);

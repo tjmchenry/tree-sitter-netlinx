@@ -103,9 +103,6 @@ module.exports = grammar({
         // recovery reads a second statement as the arm's and the first as
         // the error, where NLRC reports it.
         $._arm_continuation,
-        // A lone `;`, lexed here so that error recovery, which inserts the
-        // first token that fits, prefers an arm's missing content to it.
-        $.empty_statement,
         // A directive's keyword, then the argument it reads, each a token of
         // its own: an extra, as a comment is.
         $.preproc_include_keyword,
@@ -287,10 +284,7 @@ module.exports = grammar({
             ),
         define_constant_section: ($) =>
             prec.right(
-                seq(
-                    $.define_constant_keyword,
-                    repeat(choice($._section_body_item, $.empty_statement)),
-                ),
+                seq($.define_constant_keyword, repeat($._section_body_item)),
             ),
         define_type_section: ($) =>
             prec.right(
@@ -313,10 +307,7 @@ module.exports = grammar({
             ),
         define_variable_section: ($) =>
             prec.right(
-                seq(
-                    $.define_variable_keyword,
-                    repeat(choice($._section_body_item, $.empty_statement)),
-                ),
+                seq($.define_variable_keyword, repeat($._section_body_item)),
             ),
         define_system_variable_section: ($) =>
             prec.right(
@@ -333,26 +324,14 @@ module.exports = grammar({
             prec.right(
                 seq(
                     $.define_start_keyword,
-                    repeat(
-                        choice(
-                            $._section_body_item,
-                            $.empty_statement,
-                            $.compound_statement,
-                        ),
-                    ),
+                    repeat(choice($._section_body_item, $.compound_statement)),
                 ),
             ),
         define_program_section: ($) =>
             prec.right(
                 seq(
                     $.define_program_keyword,
-                    repeat(
-                        choice(
-                            $._section_body_item,
-                            $.empty_statement,
-                            $.compound_statement,
-                        ),
-                    ),
+                    repeat(choice($._section_body_item, $.compound_statement)),
                 ),
             ),
 
@@ -665,11 +644,7 @@ module.exports = grammar({
             ),
 
         field_declaration_list: ($) =>
-            seq(
-                "{",
-                repeat1(choice($.field_declaration, $.empty_statement)),
-                "}",
-            ),
+            seq("{", repeat1($.field_declaration), "}"),
 
         // A keyword type's field ends without a declarator only at a semicolon
         // the scanner places before a line that cannot continue it.
@@ -1049,7 +1024,6 @@ module.exports = grammar({
 
         _non_case_statement: ($) =>
             choice(
-                $.empty_statement,
                 $.compound_statement,
                 $.expression_statement,
                 $.if_statement,
@@ -1335,7 +1309,6 @@ module.exports = grammar({
         // in NLRC and including them forces over-broad global conflict entries.
         _wait_body: ($) =>
             choice(
-                $.empty_statement,
                 $.compound_statement,
                 $.if_statement,
                 $.switch_statement,

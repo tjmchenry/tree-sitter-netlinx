@@ -180,10 +180,6 @@
         "named": true
       },
       {
-        "type": "empty_statement",
-        "named": true
-      },
-      {
         "type": "expression_statement",
         "named": true
       },
@@ -1075,10 +1071,6 @@
         },
         {
           "type": "devchan_operation_statement",
-          "named": true
-        },
-        {
-          "type": "empty_statement",
           "named": true
         },
         {
@@ -2172,10 +2164,6 @@
           "named": true
         },
         {
-          "type": "empty_statement",
-          "named": true
-        },
-        {
           "type": "event_definition",
           "named": true
         },
@@ -3011,10 +2999,6 @@
           "named": true
         },
         {
-          "type": "empty_statement",
-          "named": true
-        },
-        {
           "type": "event_definition",
           "named": true
         },
@@ -3167,10 +3151,6 @@
         },
         {
           "type": "devchan_operation_statement",
-          "named": true
-        },
-        {
-          "type": "empty_statement",
           "named": true
         },
         {
@@ -3778,10 +3758,6 @@
           "named": true
         },
         {
-          "type": "empty_statement",
-          "named": true
-        },
-        {
           "type": "event_definition",
           "named": true
         },
@@ -4210,10 +4186,6 @@
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "empty_statement",
-          "named": true
-        },
         {
           "type": "field_declaration",
           "named": true
@@ -5959,10 +5931,6 @@
             "named": true
           },
           {
-            "type": "empty_statement",
-            "named": true
-          },
-          {
             "type": "expression_statement",
             "named": true
           },
@@ -6320,10 +6288,6 @@
             "named": true
           },
           {
-            "type": "empty_statement",
-            "named": true
-          },
-          {
             "type": "expression_statement",
             "named": true
           },
@@ -6487,10 +6451,6 @@
           },
           {
             "type": "devchan_operation_statement",
-            "named": true
-          },
-          {
-            "type": "empty_statement",
             "named": true
           },
           {
@@ -7002,10 +6962,6 @@
   },
   {
     "type": "else_keyword",
-    "named": true
-  },
-  {
-    "type": "empty_statement",
     "named": true
   },
   {
