@@ -596,7 +596,7 @@ static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *vali
     if (strcmp(word, "include") == 0) {
         return finish_directive_keyword(scanner, lexer, word);
     }
-    if (!label_may_start && strcmp(word, "active") == 0) {
+    if (!label_may_start && IS_LISTED(word, ARM_WORDS)) {
         bool operand = false;
         for (unsigned i = EVENT_DATA; i <= EVENT_CUSTOM; i++) {
             operand |= valid_symbols[i];
@@ -674,16 +674,10 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
         }
     }
 
-    static const char *operators[] = {
-        "and", "or", "xor", "band", "bor", "bxor", "lshift", "rshift", "mod",
-    };
-    for (unsigned i = 0; i < sizeof(operators) / sizeof(operators[0]); i++) {
-        if (strcmp(word, operators[i]) == 0) {
-            return WORD_OPERATOR;
-        }
+    if (IS_LISTED(word, WORD_OPERATORS)) {
+        return WORD_OPERATOR;
     }
-
-    if (strcmp(word, "not") == 0 || strcmp(word, "bnot") == 0) {
+    if (IS_LISTED(word, UNARY_WORD_OPERATORS)) {
         return UNARY_WORD_OPERATOR;
     }
     if (IS_LISTED(word, DECLARATION_MODIFIERS)) {

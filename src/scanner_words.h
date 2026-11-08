@@ -249,4 +249,28 @@ static const char *const VALUE_STATEMENT_WORDS[] = {
     "total_off",
 };
 
+// The words a binary operator spells.
+static const char *const WORD_OPERATORS[] = {
+    "and",
+    "band",
+    "bor",
+    "bxor",
+    "lshift",
+    "mod",
+    "or",
+    "rshift",
+    "xor",
+};
+
+// The words a unary operator spells.
+static const char *const UNARY_WORD_OPERATORS[] = {
+    "bnot",
+    "not",
+};
+
+// The words a SELECT arm begins with.
+static const char *const ARM_WORDS[] = {
+    "active",
+};
+
 #endif // TREE_SITTER_NETLINX_SCANNER_WORDS_H_

@@ -66,6 +66,17 @@ function first(rules, rule, entered = new Set()) {
     }
 }
 
+// The words a field named `name` spells, wherever `rule` holds it.
+function fieldWords(rules, rule, name, found = new Set()) {
+    if (rule.type === "FIELD" && rule.name === name) {
+        first(rules, rule.content).words.forEach((word) => found.add(word));
+        return found;
+    }
+    const inner = rule.members ?? (rule.content ? [rule.content] : []);
+    inner.forEach((member) => fieldWords(rules, member, name, found));
+    return found;
+}
+
 function sorted(words) {
     return [...words].sort();
 }
@@ -109,6 +120,12 @@ function scannerWords(grammar) {
         return first(rules, rules[name]).words;
     };
     const firstOf = (name) => sorted(firstWords(name));
+    const operators = (name) => {
+        if (!(name in rules)) {
+            throw new Error(`the grammar has no rule ${name}`);
+        }
+        return sorted(fieldWords(rules, rules[name], "operator"));
+    };
     const keywordTypes = firstOf("intrinsic_type");
     const modifiers = firstOf("_declaration_modifiers");
     const values = new Set(
@@ -132,6 +149,9 @@ function scannerWords(grammar) {
         FIELD_START_WORDS: firstOf("field_declaration"),
         STATEMENT_WORDS: sorted(new Set(statements)),
         VALUE_STATEMENT_WORDS: sorted(values),
+        WORD_OPERATORS: operators("binary_expression"),
+        UNARY_WORD_OPERATORS: operators("unary_expression"),
+        ARM_WORDS: firstOf("active_statement"),
     };
 }
 
@@ -144,6 +164,9 @@ const COMMENTS = {
         "The words a statement, section, event, arm or ELSE begins with, short of types, modifiers, values and value statements.",
     VALUE_STATEMENT_WORDS:
         "The words a statement begins with that the compiler also reads as a value.",
+    WORD_OPERATORS: "The words a binary operator spells.",
+    UNARY_WORD_OPERATORS: "The words a unary operator spells.",
+    ARM_WORDS: "The words a SELECT arm begins with.",
 };
 
 function scannerWordsHeader(grammar) {
