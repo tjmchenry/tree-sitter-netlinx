@@ -465,12 +465,13 @@ static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
         }
     }
     if (lexer->lookahead == '/' || lexer->lookahead == '(') {
-        switch (scan_comment(lexer, false, NULL)) {
+        bool newline = false;
+        switch (scan_comment(lexer, false, &newline)) {
             case LINE_COMMENT:
             case BLOCK_COMMENT:
                 lexer->mark_end(lexer);
                 lexer->result_symbol = COMMENT;
-                if (argument != ARGUMENT_VALUE || value_follows(lexer)) {
+                if (argument != ARGUMENT_VALUE || (!newline && value_follows(lexer))) {
                     scanner->argument = argument;
                 }
                 return true;
