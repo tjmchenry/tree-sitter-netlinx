@@ -89,6 +89,22 @@ D 4
   (preproc_arg))
 
 ==================
+A Comment Ending On A Later Line Ends A Define's Value
+==================
+
+#DEFINE X (* c
+*) #INCLUDE 'a.axi'
+
+---
+
+(source_file
+  (preproc_define_keyword)
+  (preproc_name)
+  (comment)
+  (preproc_include_keyword)
+  (preproc_string))
+
+==================
 Code After A Directive On Its Line
 ==================
 
