@@ -34,8 +34,11 @@ test("each of the scanner's word lists is reserved, not empty, and fits its buff
     }
 });
 
-test("the scanner spells no reserved word of its own", () => {
-    const reserved = new Set(scannerWords(readGrammar()).RESERVED_WORDS);
+test("the scanner spells no reserved word or system type of its own", () => {
+    const reserved = new Set([
+        ...scannerWords(readGrammar()).RESERVED_WORDS,
+        ...Object.keys(require("../../netlinx.js").types),
+    ]);
     const scanner = fs.readFileSync(path.join(__dirname, "..", "..", "src", "scanner.c"), "utf8");
     const directives = new Set(
         [...scanner.matchAll(/\{"(\w+)", PREPROC_/g)].map((match) => match[1]),
