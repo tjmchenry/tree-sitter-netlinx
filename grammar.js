@@ -330,14 +330,26 @@ module.exports = grammar({
             prec.right(
                 seq(
                     $.define_start_keyword,
-                    repeat(choice($._section_body_item, $.empty_statement)),
+                    repeat(
+                        choice(
+                            $._section_body_item,
+                            $.empty_statement,
+                            $.compound_statement,
+                        ),
+                    ),
                 ),
             ),
         define_program_section: ($) =>
             prec.right(
                 seq(
                     $.define_program_keyword,
-                    repeat(choice($._section_body_item, $.empty_statement)),
+                    repeat(
+                        choice(
+                            $._section_body_item,
+                            $.empty_statement,
+                            $.compound_statement,
+                        ),
+                    ),
                 ),
             ),
 
@@ -1071,7 +1083,6 @@ module.exports = grammar({
         _top_level_statement: ($) =>
             choice(
                 $.case_statement,
-                $.compound_statement,
                 $.expression_statement,
                 $.if_statement,
                 $.switch_statement,

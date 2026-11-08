@@ -1842,10 +1842,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -1997,10 +1993,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -2149,10 +2141,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {
@@ -2311,10 +2299,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -2463,10 +2447,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {
@@ -2663,10 +2643,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -2849,10 +2825,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {
@@ -3325,10 +3297,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -3477,10 +3445,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {
@@ -3635,10 +3599,6 @@
           "named": true
         },
         {
-          "type": "compound_statement",
-          "named": true
-        },
-        {
           "type": "continue_statement",
           "named": true
         },
@@ -3787,10 +3747,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {
@@ -5566,10 +5522,6 @@
         },
         {
           "type": "clear_buffer_statement",
-          "named": true
-        },
-        {
-          "type": "compound_statement",
           "named": true
         },
         {

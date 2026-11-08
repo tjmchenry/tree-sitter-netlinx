@@ -1052,6 +1052,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "empty_statement"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "compound_statement"
                 }
               ]
             }
@@ -1081,6 +1085,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "empty_statement"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "compound_statement"
                 }
               ]
             }
@@ -4031,10 +4039,6 @@
         {
           "type": "SYMBOL",
           "name": "case_statement"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "compound_statement"
         },
         {
           "type": "SYMBOL",
