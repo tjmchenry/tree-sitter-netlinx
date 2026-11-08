@@ -382,6 +382,24 @@ nX = 1 INCLUDE 'a.axi' nY = include 'b.axi' 2
           right: (number_literal))))))
 
 ==================
+INCLUDE After A Dot Is A Directive
+==================
+
+DEFINE_PROGRAM
+x = tV.include
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)))
+  (ERROR
+    (identifier)
+    (identifier))
+  (preproc_include_keyword))
+
+==================
 Include Directives
 ==================
 
