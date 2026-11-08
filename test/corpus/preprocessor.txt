@@ -1,4 +1,371 @@
 ==================
+Every Directive Is An Extra
+==================
+
+#IF_DEFINED A
+#IF_NOT_DEFINED B
+#ELSE
+#END_IF
+#DEFINE C 1
+#INCLUDE 'x.axi'
+INCLUDE 'y.axi'
+#WARN 'w'
+#DISABLE_WARNING 10571
+#END_IF
+
+---
+
+(source_file
+  (preproc_if_defined_keyword)
+  (preproc_name)
+  (preproc_if_not_defined_keyword)
+  (preproc_name)
+  (preproc_else_keyword)
+  (preproc_end_if_keyword)
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
+  (preproc_include_keyword)
+  (preproc_string)
+  (preproc_include_keyword)
+  (preproc_string)
+  (preproc_warn_keyword)
+  (preproc_string)
+  (preproc_disable_warning_keyword)
+  (preproc_number)
+  (preproc_end_if_keyword))
+
+==================
+A Directive's Argument On A Later Line
+==================
+
+#IF_DEFINED
+  A
+#IF_NOT_DEFINED // the flag
+
+  B
+#INCLUDE
+'x.axi'
+#END_IF
+#END_IF
+
+---
+
+(source_file
+  (preproc_if_defined_keyword)
+  (preproc_name)
+  (preproc_if_not_defined_keyword)
+  (comment)
+  (preproc_name)
+  (preproc_include_keyword)
+  (preproc_string)
+  (preproc_end_if_keyword)
+  (preproc_end_if_keyword))
+
+==================
+A Define's Value Is The Rest Of Its Name's Line
+==================
+
+#DEFINE A
+#DEFINE B // no value
+#DEFINE C (* before *) 1 + 2 nX
+#DEFINE
+D 4
+
+---
+
+(source_file
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_define_keyword)
+  (preproc_name)
+  (comment)
+  (preproc_define_keyword)
+  (preproc_name)
+  (comment)
+  (preproc_arg)
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg))
+
+==================
+Code After A Directive On Its Line
+==================
+
+DEFINE_PROGRAM
+#IF_DEFINED A nX = 1
+nY = 2 #END_IF
+#DEFINE B 3 // the value
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_if_defined_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))
+        (preproc_end_if_keyword))))
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
+  (comment))
+
+==================
+A Directive Between Any Two Tokens Of A Declaration
+==================
+
+DEFINE_VARIABLE
+CONSTANT #IF_DEFINED A INTEGER #END_IF nX #ELSE [ #END_IF 2 #DEFINE B 3
+] = #WARN 'w' { 1 , #INCLUDE 'i.axi' 2 }
+
+---
+
+(source_file
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        (type_qualifier
+          (constant_keyword))
+        (preproc_if_defined_keyword)
+        (preproc_name)
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (preproc_end_if_keyword)
+        declarator: (init_declarator
+          declarator: (array_declarator
+            declarator: (identifier)
+            (preproc_else_keyword)
+            (preproc_end_if_keyword)
+            size: (number_literal)
+            (preproc_define_keyword)
+            (preproc_name)
+            (preproc_arg))
+          (preproc_warn_keyword)
+          (preproc_string)
+          value: (initializer_list
+            (number_literal)
+            (preproc_include_keyword)
+            (preproc_string)
+            (number_literal)))))))
+
+==================
+A Directive Between Any Two Tokens Of A Statement
+==================
+
+DEFINE_PROGRAM
+IF #IF_DEFINED A ( #END_IF nX #ELSE > #END_IF 1 ) #IF_NOT_DEFINED B { fn ( #END_IF nX , INCLUDE 'i.axi' 2 ) }
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (if_statement
+        (if_keyword)
+        (preproc_if_defined_keyword)
+        (preproc_name)
+        condition: (parenthesized_expression
+          (preproc_end_if_keyword)
+          (binary_expression
+            left: (identifier)
+            (preproc_else_keyword)
+            (preproc_end_if_keyword)
+            right: (number_literal)))
+        (preproc_if_not_defined_keyword)
+        (preproc_name)
+        consequence: (compound_statement
+          (expression_statement
+            (call_expression
+              function: (identifier)
+              arguments: (argument_list
+                (preproc_end_if_keyword)
+                (identifier)
+                (preproc_include_keyword)
+                (preproc_string)
+                (number_literal)))))))))
+
+==================
+Directives In Bodies And Lists
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+#IF_DEFINED A
+    INTEGER nA
+#ELSE
+    CHAR cA[2]
+#END_IF
+}
+DEFINE_FUNCTION INTEGER fn(
+#IF_DEFINED A
+    INTEGER nP
+#END_IF
+)
+{
+    SELECT
+    {
+        ACTIVE (nP = 1):
+#IF_DEFINED A
+            RETURN 1
+#END_IF
+    }
+    SWITCH (nP)
+    {
+#IF_NOT_DEFINED A
+        CASE 1: RETURN 2
+#END_IF
+    }
+}
+DEFINE_EVENT
+BUTTON_EVENT[dvTP,
+#IF_DEFINED A
+1
+#END_IF
+]
+{
+    PUSH:
+    {
+#DISABLE_WARNING 10571
+    }
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (preproc_if_defined_keyword)
+            (preproc_name)
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (preproc_else_keyword)
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (char_keyword)))
+              declarator: (array_declarator
+                declarator: (field_identifier)
+                size: (number_literal)))
+            (preproc_end_if_keyword))))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          return_type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          name: (identifier)
+          parameters: (parameter_list
+            (preproc_if_defined_keyword)
+            (preproc_name)
+            (parameter_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (identifier))
+            (preproc_end_if_keyword))
+          body: (compound_statement
+            (select_statement
+              (select_keyword)
+              body: (select_block
+                (active_statement
+                  (active_keyword)
+                  condition: (parenthesized_expression
+                    (binary_expression
+                      left: (identifier)
+                      right: (number_literal)))
+                  (preproc_if_defined_keyword)
+                  (preproc_name)
+                  body: (return_statement
+                    (return_keyword)
+                    (number_literal)))
+                (preproc_end_if_keyword)))
+            (switch_statement
+              (switch_keyword)
+              condition: (parenthesized_expression
+                (identifier))
+              body: (compound_statement
+                (preproc_if_not_defined_keyword)
+                (preproc_name)
+                (case_statement
+                  (case_keyword)
+                  value: (number_literal)
+                  (return_statement
+                    (return_keyword)
+                    (number_literal)))
+                (preproc_end_if_keyword))))))))
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (button_event_definition
+          (button_event_declarator
+            (button_event_keyword)
+            devchan: (button_event_devchan_reference
+              (devchan_expression
+                device: (identifier)
+                (preproc_if_defined_keyword)
+                (preproc_name)
+                channel: (number_literal)
+                (preproc_end_if_keyword))))
+          body: (button_event_block
+            (button_event_handler
+              type: (button_event_type
+                (push_keyword))
+              body: (compound_statement
+                (preproc_disable_warning_keyword)
+                (preproc_number)))))))))
+
+==================
+Bare INCLUDE Is A Directive Wherever It Stands
+==================
+
+DEFINE_PROGRAM
+nX = 1 INCLUDE 'a.axi' nY = include 'b.axi' 2
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_include_keyword)
+      (preproc_string)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          (preproc_include_keyword)
+          (preproc_string)
+          right: (number_literal))))))
+
+==================
 Include Directives
 ==================
 

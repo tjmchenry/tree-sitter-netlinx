@@ -1652,3 +1652,81 @@ MORE_USERS[][][50] = {
             (string_part))
           (string_literal
             (string_part)))))))
+
+==================
+Keyword Type Ending Its Line In A Structure Body
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER m
+    FLOAT // the type
+
+    k
+    CHAR
+    c[3]
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (float_keyword)))
+              (comment)
+              declarator: (field_identifier))
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (char_keyword)))
+              declarator: (array_declarator
+                declarator: (field_identifier)
+                size: (number_literal)))))))))
+
+==================
+Lone Words Ending Their Lines In A Structure Body
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    k
+    j
+    TU
+    u
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (type_identifier))
+            (field_declaration
+              type: (type_identifier))
+            (field_declaration
+              type: (type_identifier))
+            (field_declaration
+              type: (type_identifier))))))))
