@@ -89,20 +89,44 @@ D 4
   (preproc_arg))
 
 ==================
-A Comment Ending On A Later Line Ends A Define's Value
+A Comment A Define's Line Leaves Open Ends With The Line
 ==================
 
+DEFINE_PROGRAM
 #DEFINE X (* c
+nX = 1
+#DEFINE Y 1 (* c
+nY = 2
+#DEFINE Z (* c
 *) #INCLUDE 'a.axi'
 
 ---
 
 (source_file
-  (preproc_define_keyword)
-  (preproc_name)
-  (comment)
-  (preproc_include_keyword)
-  (preproc_string))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (ERROR)
+      (preproc_include_keyword)
+      (preproc_string))))
 
 ==================
 Code After A Directive On Its Line
