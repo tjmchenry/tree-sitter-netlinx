@@ -1699,6 +1699,36 @@ STRUCTURE TS
                 size: (number_literal)))))))))
 
 ==================
+A Keyword Type Ending Its Line Takes The Next Line's Word
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER
+    INTEGER m
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (field_declaration
+              type: (type_identifier))))))))
+
+==================
 Lone Words Ending Their Lines In A Structure Body
 ==================
 
