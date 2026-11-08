@@ -69,6 +69,9 @@ module.exports = grammar({
         // after a comma.
         $._field_start,
         $._field_name,
+        // Never emitted: where a declaration's or a parameter's name goes,
+        // past its type.
+        $._declaration_name,
         // Event-object tokens are emitted only in expression positions;
         // their spellings use the ordinary identifier token in names/types.
         $.data,
@@ -914,7 +917,7 @@ module.exports = grammar({
                     // Never emitted: expose type/operand ambiguity to the scanner.
                     optional($._event_type_context),
                     field("type", $.type_specifier),
-                    repeat($._declaration_modifiers),
+                    optional($._declaration_name),
                     optional($._declaration_continuation),
                 ),
             ),

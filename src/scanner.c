@@ -14,6 +14,7 @@ enum TokenType {
     RESERVED_NAME,
     FIELD_START,
     FIELD_NAME,
+    DECLARATION_NAME,
     EVENT_DATA,
     EVENT_BUTTON,
     EVENT_CHANNEL,
@@ -375,6 +376,13 @@ static bool is_refused_field_name(const char *word, const bool *valid_symbols) {
     return valid_symbols[FIELD_NAME] || (valid_symbols[FIELD_START] && !IS_LISTED(word, FIELD_START_WORDS));
 }
 
+// Whether `word` is a declaration modifier where a declaration's or a
+// parameter's name goes, past its type: NLRC refuses it there.
+static bool is_refused_declaration_name(const char *word, const bool *valid_symbols) {
+    return valid_symbols[DECLARATION_NAME] && !valid_symbols[ERROR_SENTINEL] &&
+           IS_LISTED(word, DECLARATION_MODIFIERS);
+}
+
 // Whether a closing brace, a semicolon, a comment or the line's end follows
 // the reserved name just read: its field ends there, so the error stays the
 // name's alone.
@@ -605,7 +613,7 @@ static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *vali
             operand && !valid_symbols[EVENT_TYPE_CONTEXT] ? AUTOMATIC_SEMICOLON : LABEL_START;
         return true;
     }
-    if (is_refused_field_name(word, valid_symbols)) {
+    if (is_refused_field_name(word, valid_symbols) || is_refused_declaration_name(word, valid_symbols)) {
         lexer->mark_end(lexer);
         lexer->result_symbol = RESERVED_NAME;
         if (valid_symbols[FIELD_START]) {
@@ -876,6 +884,11 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
                 WordKind word = scan_word(lexer, value_continuation, event_symbols);
                 if (word == EVENT_WORD) {
                     return SEMICOLON_EVENT_TOKEN;
+                }
+                if (word == DECLARATION_MODIFIER && valid_symbols[DECLARATION_NAME] && !ahead->comment) {
+                    lexer->mark_end(lexer);
+                    lexer->result_symbol = RESERVED_NAME;
+                    return SEMICOLON_RESERVED_NAME;
                 }
                 return word == STATEMENT_KEYWORD ||
                        (word == VALUE_STATEMENT_KEYWORD && !value_continuation && !declaration_continuation) ||
