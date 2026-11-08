@@ -70,6 +70,28 @@ function sorted(words) {
     return [...words].sort();
 }
 
+// The statements whose keyword the compiler also reads as a value where an
+// operand is owed: a channel operation, a send, a buffer or level, a call,
+// BREAK and CONTINUE, and the waits that name none.
+const VALUE_STATEMENT_RULES = [
+    "devchan_operation_statement",
+    "send_string_statement",
+    "send_command_statement",
+    "send_level_statement",
+    "clear_buffer_statement",
+    "create_buffer_statement",
+    "create_multi_buffer_statement",
+    "create_level_statement",
+    "call_statement",
+    "system_call_statement",
+    "break_statement",
+    "continue_statement",
+    "cancel_all_wait_statement",
+    "cancel_all_wait_until_statement",
+    "pause_all_wait_statement",
+    "restart_all_wait_statement",
+];
+
 // The scanner's word lists, each read from the grammar's own rules.
 function scannerWords(grammar) {
     const rules = grammar.rules;
@@ -80,12 +102,36 @@ function scannerWords(grammar) {
             reserved.add(word);
         }
     }
-    const firstOf = (name) => sorted(first(rules, rules[name]).words);
+    const firstWords = (name) => {
+        if (!(name in rules)) {
+            throw new Error(`the grammar has no rule ${name}`);
+        }
+        return first(rules, rules[name]).words;
+    };
+    const firstOf = (name) => sorted(firstWords(name));
+    const keywordTypes = firstOf("intrinsic_type");
+    const modifiers = firstOf("_declaration_modifiers");
+    const values = new Set(
+        VALUE_STATEMENT_RULES.flatMap((name) => [...firstWords(name)]),
+    );
+    const notStatements = new Set([
+        ...keywordTypes,
+        ...modifiers,
+        ...values,
+        ...firstWords("expression"),
+    ]);
+    const statements = [
+        ...firstWords("source_file"),
+        ...firstWords("else_clause"),
+        ...firstWords("active_statement"),
+    ].filter((word) => !notStatements.has(word));
     return {
         RESERVED_WORDS: sorted(reserved),
-        KEYWORD_TYPES: firstOf("intrinsic_type"),
-        DECLARATION_MODIFIERS: firstOf("_declaration_modifiers"),
+        KEYWORD_TYPES: keywordTypes,
+        DECLARATION_MODIFIERS: modifiers,
         FIELD_START_WORDS: firstOf("field_declaration"),
+        STATEMENT_WORDS: sorted(new Set(statements)),
+        VALUE_STATEMENT_WORDS: sorted(values),
     };
 }
 
@@ -94,6 +140,10 @@ const COMMENTS = {
     KEYWORD_TYPES: "The words an intrinsic type spells.",
     DECLARATION_MODIFIERS: "The words a declaration modifier spells.",
     FIELD_START_WORDS: "The reserved words a field may begin with.",
+    STATEMENT_WORDS:
+        "The words a statement, section, event, arm or ELSE begins with, short of types, modifiers, values and value statements.",
+    VALUE_STATEMENT_WORDS:
+        "The words a statement begins with that the compiler also reads as a value.",
 };
 
 function scannerWordsHeader(grammar) {

@@ -691,17 +691,8 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
 
     // Operation words can also be identifier values (notably ON and OFF).
     // At an optional RETURN operand they continue the value, just like WORD.
-    static const char *value_statements[] = {
-        "on", "off", "to", "min_to", "total_off", "pulse",
-        "send_level", "send_string", "send_command", "clear_buffer", "create_buffer",
-        "create_multi_buffer", "create_level", "call", "system_call",
-        "break", "continue", "cancel_all_wait", "cancel_all_wait_until",
-        "pause_all_wait", "restart_all_wait",
-    };
-    for (unsigned i = 0; i < sizeof(value_statements) / sizeof(value_statements[0]); i++) {
-        if (strcmp(word, value_statements[i]) == 0) {
-            return VALUE_STATEMENT_KEYWORD;
-        }
+    if (IS_LISTED(word, VALUE_STATEMENT_WORDS)) {
+        return VALUE_STATEMENT_KEYWORD;
     }
 
     // Prefer a still-incomplete declaration over starting a new one.
@@ -718,23 +709,8 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
     // Control and section keywords can begin a following statement. Operand
     // spellings above and incomplete field names take priority. In particular,
     // `RETURN IF (a) ...` can still end a bare RETURN before the IF statement.
-    static const char *statements[] = {
-        "if", "else", "switch", "case", "default", "while", "long_while", "medium_while",
-        "for", "return", "select", "active",
-        "wait", "wait_until", "timed_wait_until", "cancel_wait", "cancel_wait_until",
-        "pause_wait", "restart_wait",
-        "program_name", "module_name", "define_device", "define_combine", "define_constant",
-        "define_type", "define_variable", "define_system_variable", "define_connect_level",
-        "define_latching", "define_mutually_exclusive", "define_toggling", "define_call",
-        "define_function", "define_library_function", "define_start", "define_event",
-        "define_program", "define_module",
-        "struct", "structure", "button_event", "channel_event", "level_event", "data_event",
-        "timeline_event", "custom_event", "push", "release",
-    };
-    for (unsigned i = 0; i < sizeof(statements) / sizeof(statements[0]); i++) {
-        if (strcmp(word, statements[i]) == 0) {
-            return STATEMENT_KEYWORD;
-        }
+    if (IS_LISTED(word, STATEMENT_WORDS)) {
+        return STATEMENT_KEYWORD;
     }
     return WORD;
 }
