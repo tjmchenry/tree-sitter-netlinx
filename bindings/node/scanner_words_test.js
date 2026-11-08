@@ -8,7 +8,7 @@ const { test } = require("node:test");
 const {
     scannerWords,
     scannerWordsHeader,
-    systemTypesBinding,
+    scannerWordsBinding,
     readGrammar,
     headerPath,
     bindingPath,
@@ -22,7 +22,7 @@ test("the scanner's word lists are the grammar's", () => {
     );
     assert.strictEqual(
         fs.readFileSync(bindingPath, "utf8"),
-        systemTypesBinding(),
+        scannerWordsBinding(readGrammar()),
         "bindings/rust/scanner_words.rs is stale: run `pnpm generate`",
     );
 });
