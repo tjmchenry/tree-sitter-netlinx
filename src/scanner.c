@@ -61,10 +61,12 @@ typedef enum {
 
 // A COMMENT_AHEAD token was the last one returned: the comment it announced
 // is the next token. A directive's keyword or a comment inside its argument
-// was: `argument` is what the directive still reads.
+// was: `argument` is what the directive still reads. A RESERVED_NAME that
+// ends its field, past its type or a comma, was: `after_reserved_name`.
 typedef struct {
     bool comment_ahead;
     uint8_t argument;
+    bool after_reserved_name;
 } Scanner;
 
 void *tree_sitter_netlinx_external_scanner_create() { return calloc(1, sizeof(Scanner)); }
@@ -75,13 +77,15 @@ unsigned tree_sitter_netlinx_external_scanner_serialize(void *payload, char *buf
     Scanner *scanner = payload;
     buffer[0] = (char)scanner->comment_ahead;
     buffer[1] = (char)scanner->argument;
-    return 2;
+    buffer[2] = (char)scanner->after_reserved_name;
+    return 3;
 }
 
 void tree_sitter_netlinx_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
     Scanner *scanner = payload;
     scanner->comment_ahead = length > 0 && buffer[0];
     scanner->argument = length > 1 ? (uint8_t)buffer[1] : ARGUMENT_NONE;
+    scanner->after_reserved_name = length > 2 && buffer[2];
 }
 
 static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -96,6 +100,10 @@ static bool is_word_start(int32_t c) {
 
 // Room for the longest word the scanner looks for, and its terminator.
 #define WORD_SIZE 32
+
+static bool is_line_end(int32_t c) {
+    return c == 0 || c == '\n' || c == '\r' || c == 0x2028 || c == 0x2029;
+}
 
 static int compare_words(const void *word, const void *listed) {
     return strcmp(word, *(const char *const *)listed);
@@ -358,6 +366,24 @@ static bool is_refused_field_name(const char *word, const bool *valid_symbols) {
     return valid_symbols[FIELD_NAME] || (valid_symbols[FIELD_START] && !IS_LISTED(word, FIELD_START_WORDS));
 }
 
+// Whether a closing brace, a semicolon, a comment or the line's end follows
+// the reserved name just read: its field ends there, so the error stays the
+// name's alone.
+static bool reserved_name_ends_its_field(TSLexer *lexer) {
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        skip(lexer);
+    }
+    if (lexer->lookahead == '/') {
+        skip(lexer);
+        return lexer->lookahead == '/' || lexer->lookahead == '*';
+    }
+    if (lexer->lookahead == '(') {
+        skip(lexer);
+        return lexer->lookahead == '*';
+    }
+    return lexer->lookahead == '}' || lexer->lookahead == ';' || is_line_end(lexer->lookahead);
+}
+
 // In name positions the event tokens are invalid and identifier lexing wins.
 // In expressions retain the named event token, including bare operands and
 // assignment targets, so system_variable and aliased identifier trees survive.
@@ -374,10 +400,6 @@ static bool scan_event_object(TSLexer *lexer, const bool *valid_symbols) {
     }
     char word[WORD_SIZE];
     return read_word(lexer, word) && finish_event_object(lexer, word, valid_symbols);
-}
-
-static bool is_line_end(int32_t c) {
-    return c == 0 || c == '\n' || c == '\r' || c == 0x2028 || c == 0x2029;
 }
 
 static bool is_word_char(int32_t c) {
@@ -542,7 +564,8 @@ static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
 // carry the label into an expression. Where an operand is owed it ends the
 // statement there, short of that operand; anywhere else the empty token
 // before it, which only a label start takes, ends the parse at the misplaced
-// label. A reserved word where a field's name goes is RESERVED_NAME.
+// label. A reserved word where a field's name goes is RESERVED_NAME, with the
+// semicolon after it where a field begins.
 static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool label_may_start) {
     lexer->mark_end(lexer);
     char word[WORD_SIZE];
@@ -564,6 +587,17 @@ static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *vali
     if (is_refused_field_name(word, valid_symbols)) {
         lexer->mark_end(lexer);
         lexer->result_symbol = RESERVED_NAME;
+        if (valid_symbols[FIELD_START]) {
+            while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+                advance(lexer);
+            }
+            if (lexer->lookahead == ';') {
+                advance(lexer);
+                lexer->mark_end(lexer);
+            }
+        } else {
+            scanner->after_reserved_name = reserved_name_ends_its_field(lexer);
+        }
         return true;
     }
     return finish_event_object(lexer, word, valid_symbols);
@@ -941,6 +975,8 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
     Scanner *scanner = payload;
     bool comment_ahead = scanner->comment_ahead;
     scanner->comment_ahead = false;
+    bool after_reserved_name = scanner->after_reserved_name;
+    scanner->after_reserved_name = false;
     bool error_mode = valid_symbols[ERROR_SENTINEL];
 
     if (comment_ahead) {
@@ -958,13 +994,28 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
         return lex_string(lexer, STRING_CONTINUATION);
     }
 
+    if (after_reserved_name && valid_symbols[AUTOMATIC_SEMICOLON]) {
+        lexer->result_symbol = AUTOMATIC_SEMICOLON;
+        lexer->mark_end(lexer);
+        while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+            skip(lexer);
+        }
+        if (lexer->lookahead == ';') {
+            advance(lexer);
+            lexer->mark_end(lexer);
+        }
+        return true;
+    }
+
     if (valid_symbols[AUTOMATIC_SEMICOLON] && !error_mode) {
         Ahead ahead = {false, false};
         switch (scan_automatic_semicolon(lexer, valid_symbols, &ahead)) {
             case SEMICOLON_YES:
                 return true;
             case SEMICOLON_EVENT_TOKEN:
+                return true;
             case SEMICOLON_RESERVED_NAME:
+                scanner->after_reserved_name = reserved_name_ends_its_field(lexer);
                 return true;
             case SEMICOLON_NO:
                 break;
