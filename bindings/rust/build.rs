@@ -15,6 +15,7 @@ fn main() {
     if scanner_path.exists() {
         c_config.file(&scanner_path);
         println!("cargo:rerun-if-changed={}", scanner_path.to_str().unwrap());
+        println!("cargo:rerun-if-changed={}", src_dir.join("scanner_words.h").to_str().unwrap());
     }
 
     c_config.compile("tree-sitter-netlinx");

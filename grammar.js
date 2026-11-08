@@ -63,8 +63,12 @@ module.exports = grammar({
         // Never emitted: past a field's keyword type, a word on a later line
         // is its declarator, not a field of its own.
         $._keyword_type_continuation,
-        // A keyword type where a field's name goes: a token no rule takes.
-        $.keyword_type_name,
+        // A reserved word where a field's name goes: a token no rule takes.
+        $.reserved_name,
+        // Never emitted: where a field begins, and where a field's name goes
+        // after a comma.
+        $._field_start,
+        $._field_name,
         // Event-object tokens are emitted only in expression positions;
         // their spellings use the ordinary identifier token in names/types.
         $.data,
@@ -633,32 +637,47 @@ module.exports = grammar({
         field_declaration_list: ($) =>
             seq("{", repeat1($.field_declaration), "}"),
 
+        // A keyword type's field ends without a declarator only at a semicolon
+        // the scanner places before a line that cannot continue it.
         field_declaration: ($) =>
             prec.right(
-                seq(
-                    choice(
-                        seq(
-                            repeat($._declaration_modifiers),
-                            field("type", $.intrinsic_type),
-                            repeat($._declaration_modifiers),
-                            optional($._keyword_type_continuation),
-                            optional($._field_declaration_declarator),
-                        ),
-                        seq(
-                            repeat($._declaration_modifiers),
-                            optional($._event_type_context),
-                            field("type", $._type_identifier),
-                            repeat($._declaration_modifiers),
-                            optional($._field_continuation),
-                            optional($._field_declaration_declarator),
+                choice(
+                    seq(
+                        repeat($._declaration_modifiers),
+                        optional($._field_start),
+                        field("type", $.intrinsic_type),
+                        choice(
+                            seq(
+                                optional($._keyword_type_continuation),
+                                $._field_declaration_declarator,
+                                $._semicolon,
+                            ),
+                            $._automatic_semicolon,
                         ),
                     ),
-                    $._semicolon,
+                    seq(
+                        repeat($._declaration_modifiers),
+                        optional($._field_start),
+                        optional($._event_type_context),
+                        field("type", $._type_identifier),
+                        optional($._field_continuation),
+                        optional($._field_declaration_declarator),
+                        $._semicolon,
+                    ),
                 ),
             ),
 
         _field_declaration_declarator: ($) =>
-            commaSep1(seq(field("declarator", $._field_declarator))),
+            seq(
+                field("declarator", $._field_declarator),
+                repeat(
+                    seq(
+                        ",",
+                        optional($._field_name),
+                        field("declarator", $._field_declarator),
+                    ),
+                ),
+            ),
 
         intrinsic_type: ($) => choice($.primitive_type, $.structured_type),
 

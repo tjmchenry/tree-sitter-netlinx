@@ -1948,7 +1948,7 @@ STRUCTURE TS
               type: (intrinsic_type
                 (primitive_type
                   (integer_keyword)))
-              (MISSING ";"))))))))
+              (MISSING _automatic_semicolon))))))))
 
 ==================
 Lone Words Ending Their Lines In A Structure Body

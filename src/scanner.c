@@ -1,4 +1,5 @@
 #include "tree_sitter/parser.h"
+#include "scanner_words.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +11,9 @@ enum TokenType {
     VALUE_CONTINUATION,
     FIELD_CONTINUATION,
     KEYWORD_TYPE_CONTINUATION,
-    KEYWORD_TYPE_NAME,
+    RESERVED_NAME,
+    FIELD_START,
+    FIELD_NAME,
     EVENT_DATA,
     EVENT_BUTTON,
     EVENT_CHANNEL,
@@ -90,6 +93,17 @@ static inline void move(TSLexer *lexer, bool skipped) { lexer->advance(lexer, sk
 static bool is_word_start(int32_t c) {
     return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
+
+// Room for the longest word the scanner looks for, and its terminator.
+#define WORD_SIZE 32
+
+static int compare_words(const void *word, const void *listed) {
+    return strcmp(word, *(const char *const *)listed);
+}
+
+// Whether `word` is one of `list`, which is sorted.
+#define IS_LISTED(word, list) \
+    (bsearch((word), (list), sizeof(list) / sizeof((list)[0]), sizeof((list)[0]), compare_words) != NULL)
 
 typedef enum {
     NOT_A_COMMENT,
@@ -319,12 +333,12 @@ static bool finish_event_object(TSLexer *lexer, const char *word, const bool *va
     return false;
 }
 
-// Reads a word of at most eight characters, lowercased. A longer word is
-// none of the words the callers look for.
-static bool read_short_word(TSLexer *lexer, char word[9]) {
+// Reads a word lowercased. A word too long for `word` is none of the words
+// the callers look for.
+static bool read_word(TSLexer *lexer, char word[WORD_SIZE]) {
     unsigned length = 0;
     while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
-        if (length == 8) {
+        if (length == WORD_SIZE - 1) {
             return false;
         }
         word[length++] = (char)towlower(lexer->lookahead);
@@ -332,6 +346,16 @@ static bool read_short_word(TSLexer *lexer, char word[9]) {
     }
     word[length] = '\0';
     return true;
+}
+
+// Whether `word` is refused where the parse stands: a reserved word where a
+// field's name goes after a comma, or one no field begins with where a field
+// begins.
+static bool is_refused_field_name(const char *word, const bool *valid_symbols) {
+    if (valid_symbols[ERROR_SENTINEL] || !IS_LISTED(word, RESERVED_WORDS)) {
+        return false;
+    }
+    return valid_symbols[FIELD_NAME] || (valid_symbols[FIELD_START] && !IS_LISTED(word, FIELD_START_WORDS));
 }
 
 // In name positions the event tokens are invalid and identifier lexing wins.
@@ -348,8 +372,8 @@ static bool scan_event_object(TSLexer *lexer, const bool *valid_symbols) {
     while (iswspace(lexer->lookahead)) {
         skip(lexer);
     }
-    char word[9];
-    return read_short_word(lexer, word) && finish_event_object(lexer, word, valid_symbols);
+    char word[WORD_SIZE];
+    return read_word(lexer, word) && finish_event_object(lexer, word, valid_symbols);
 }
 
 static bool is_line_end(int32_t c) {
@@ -518,11 +542,11 @@ static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
 // carry the label into an expression. Where an operand is owed it ends the
 // statement there, short of that operand; anywhere else the empty token
 // before it, which only a label start takes, ends the parse at the misplaced
-// label.
+// label. A reserved word where a field's name goes is RESERVED_NAME.
 static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool label_may_start) {
     lexer->mark_end(lexer);
-    char word[9];
-    if (!read_short_word(lexer, word)) {
+    char word[WORD_SIZE];
+    if (!read_word(lexer, word)) {
         return false;
     }
     if (strcmp(word, "include") == 0) {
@@ -537,11 +561,16 @@ static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *vali
             operand && !valid_symbols[EVENT_TYPE_CONTEXT] ? AUTOMATIC_SEMICOLON : LABEL_START;
         return true;
     }
+    if (is_refused_field_name(word, valid_symbols)) {
+        lexer->mark_end(lexer);
+        lexer->result_symbol = RESERVED_NAME;
+        return true;
+    }
     return finish_event_object(lexer, word, valid_symbols);
 }
 
 static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *event_symbols) {
-    char word[32];
+    char word[WORD_SIZE];
     unsigned length = 0;
     while (is_word_start(lexer->lookahead) || (lexer->lookahead >= '0' && lexer->lookahead <= '9')) {
         if (length == sizeof(word) - 1) {
@@ -602,13 +631,8 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
     if (strcmp(word, "not") == 0 || strcmp(word, "bnot") == 0) {
         return UNARY_WORD_OPERATOR;
     }
-    static const char *modifiers[] = {
-        "constant", "volatile", "non_volatile", "persistent", "local_var", "stack_var",
-    };
-    for (unsigned i = 0; i < sizeof(modifiers) / sizeof(modifiers[0]); i++) {
-        if (strcmp(word, modifiers[i]) == 0) {
-            return DECLARATION_MODIFIER;
-        }
+    if (IS_LISTED(word, DECLARATION_MODIFIERS)) {
+        return DECLARATION_MODIFIER;
     }
 
     // Operation words can also be identifier values (notably ON and OFF).
@@ -627,18 +651,14 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
     }
 
     // Prefer a still-incomplete declaration over starting a new one.
-    static const char *types[] = {
-        "char", "widechar", "integer", "sinteger", "long", "slong", "float", "double",
-        "variant", "variantarray", "dev", "devlev", "devchan",
-        "tdata", "tchannel", "tlevel", "tbutton", "ttimeline", "tcustom",
-        "url_struct", "dns_struct", "ip_address_struct", "dev_info_struct",
-        "clkmgr_timeserver_struct", "data_feed", "data_field", "data_record",
-        "wc_data_feed", "wc_data_field", "wc_data_record", "last_login_info",
+    static const char *const system_types[] = {
+        "clkmgr_timeserver_struct", "data_feed", "data_field", "data_record", "dev_info_struct",
+        "dns_struct", "ip_address_struct", "last_login_info", "tbutton", "tchannel", "tcustom",
+        "tdata", "tlevel", "ttimeline", "url_struct", "wc_data_feed", "wc_data_field",
+        "wc_data_record",
     };
-    for (unsigned i = 0; i < sizeof(types) / sizeof(types[0]); i++) {
-        if (strcmp(word, types[i]) == 0) {
-            return TYPE_WORD;
-        }
+    if (IS_LISTED(word, KEYWORD_TYPES) || IS_LISTED(word, system_types)) {
+        return TYPE_WORD;
     }
 
     // Control and section keywords can begin a following statement. Operand
@@ -712,7 +732,7 @@ typedef enum {
     SEMICOLON_NO,
     SEMICOLON_YES,
     SEMICOLON_EVENT_TOKEN, // result_symbol holds the event token found instead
-    SEMICOLON_KEYWORD_TYPE_NAME, // result_symbol holds KEYWORD_TYPE_NAME
+    SEMICOLON_RESERVED_NAME, // result_symbol holds RESERVED_NAME
 } SemicolonResult;
 
 // What follows the statement boundary: a comment first, or a quote first on
@@ -746,31 +766,16 @@ static bool word_can_be_declarator(TSLexer *lexer) {
     }
 }
 
-// Reads the word at the lookahead as KEYWORD_TYPE_NAME when it is a keyword
-// type, which no field's name may be.
-static bool lex_keyword_type_name(TSLexer *lexer) {
-    static const char *types[] = {
-        "char", "widechar", "integer", "sinteger", "long", "slong", "float", "double",
-        "variant", "variantarray", "dev", "devlev", "devchan",
-    };
-    char word[16];
-    unsigned length = 0;
-    while (is_word_char(lexer->lookahead)) {
-        if (length == sizeof(word) - 1) {
-            return false;
-        }
-        word[length++] = (char)towlower(lexer->lookahead);
-        advance(lexer);
+// Reads the word at the lookahead as RESERVED_NAME when it is a reserved word,
+// which no field's name may be.
+static bool lex_reserved_name(TSLexer *lexer) {
+    char word[WORD_SIZE];
+    if (!read_word(lexer, word) || !IS_LISTED(word, RESERVED_WORDS)) {
+        return false;
     }
-    word[length] = '\0';
-    for (unsigned i = 0; i < sizeof(types) / sizeof(types[0]); i++) {
-        if (strcmp(word, types[i]) == 0) {
-            lexer->mark_end(lexer);
-            lexer->result_symbol = KEYWORD_TYPE_NAME;
-            return true;
-        }
-    }
-    return false;
+    lexer->mark_end(lexer);
+    lexer->result_symbol = RESERVED_NAME;
+    return true;
 }
 
 // What a field's keyword type takes from the word or closing brace at the
@@ -780,8 +785,8 @@ static SemicolonResult after_keyword_type(TSLexer *lexer, bool may_lex) {
     if (lexer->lookahead == '}') {
         return SEMICOLON_NO;
     }
-    if (may_lex && lex_keyword_type_name(lexer)) {
-        return SEMICOLON_KEYWORD_TYPE_NAME;
+    if (may_lex && lex_reserved_name(lexer)) {
+        return SEMICOLON_RESERVED_NAME;
     }
     return word_can_be_declarator(lexer) ? SEMICOLON_NO : SEMICOLON_YES;
 }
@@ -842,12 +847,12 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
                 (declaration_continuation || value_continuation) && !ahead->comment ? valid_symbols : NULL;
             if (saw_whitespace && is_word_start(lexer->lookahead)) {
                 if (keyword_type) {
-                    return after_keyword_type(lexer, !ahead->comment) == SEMICOLON_KEYWORD_TYPE_NAME
-                        ? SEMICOLON_KEYWORD_TYPE_NAME
+                    return after_keyword_type(lexer, !ahead->comment) == SEMICOLON_RESERVED_NAME
+                        ? SEMICOLON_RESERVED_NAME
                         : SEMICOLON_NO;
                 }
                 if (field_continuation) {
-                    return SEMICOLON_NO;
+                    return !ahead->comment && lex_reserved_name(lexer) ? SEMICOLON_RESERVED_NAME : SEMICOLON_NO;
                 }
                 WordKind word = scan_word(lexer, value_continuation, event_symbols);
                 if (word == EVENT_WORD) {
@@ -959,7 +964,7 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
             case SEMICOLON_YES:
                 return true;
             case SEMICOLON_EVENT_TOKEN:
-            case SEMICOLON_KEYWORD_TYPE_NAME:
+            case SEMICOLON_RESERVED_NAME:
                 return true;
             case SEMICOLON_NO:
                 break;
