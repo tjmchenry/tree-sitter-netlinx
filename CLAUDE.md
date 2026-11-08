@@ -24,7 +24,6 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 **Grammar definition** — `grammar.js` is the source of truth. It imports supporting modules:
 
 - `keywords.js` — keyword definitions
-- `directives.js` — preprocessor directives
 - `netlinx.js` — system constants, types, variables and built-in functions, for highlighting
 - `g4api.js`, `snapi.js`, `unicodelib.js` — large library API definitions for highlighting
 
@@ -32,7 +31,7 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 
 **Generated files** (committed but never edit manually):
 
-- `src/parser.c`, `src/grammar.json`, `src/node-types.json`
+- `src/parser.c`, `src/grammar.json`, `src/node-types.json`, and `src/scanner_words.h` (from `scripts/scanner-words.js`)
 
 **Queries** (`queries/`):
 
@@ -46,6 +45,6 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 ## Design Decisions
 
 - **Permissive parsing**: The grammar intentionally accepts syntactically valid but semantically questionable code. Syntax correctness is the goal, not semantic validation.
-- **Preprocessor in expressions**: Preprocessor directives inside expressions produce error nodes — this is a known limitation documented in the README.
-- **Precedence**: The `PREC` object in `grammar.js` defines 20+ precedence levels. The conflicts array handles ~60 grammar ambiguities, primarily around preprocessor directives in various contexts.
+- **Preprocessor directives** are extras: the scanner reads each directive keyword and its argument as tokens between any two tokens, as it reads a comment. Every arm of a conditional is read together, as written.
+- **Precedence**: The `PREC` object in `grammar.js` defines 20+ precedence levels. The conflicts array handles 15 grammar ambiguities.
 - **Conventional commits**: Uses commitlint with `@commitlint/config-conventional`. Use `pnpm run commit` (git-cz) for interactive commit creation.

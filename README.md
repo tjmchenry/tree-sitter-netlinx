@@ -31,7 +31,6 @@
 
 - [What's Working :white_check_mark:](#whats-working-white_check_mark)
 - [Known Limitations :warning:](#known-limitations-warning)
-    - [Preprocessor Directives in Expressions](#preprocessor-directives-in-expressions)
 - [Install :zap:](#install-zap)
     - [Node.js (npm)](#nodejs-npm)
     - [Rust (Cargo)](#rust-cargo)
@@ -154,53 +153,11 @@
 
 Single-quoted string literals may span multiple lines — NetLinx permits this and the grammar honours it: a string runs to the next single-quote character anywhere in the file, as the compiler reads it. A string with no single quote after it ends with its line as an `unclosed_string` error, and a block comment the file ends inside is an `unclosed_comment` error.
 
-### Preprocessor Directives in Expressions
+### Conditional Arms Are Read Together
 
-The NetLinx language allows preprocessor directives to be used within expressions, like:
+Preprocessor directives are extras: the parser reads each directive and its argument wherever it stands, between any two tokens, without breaking the code around it. `(foo #IF_DEFINED BAR && baz #END_IF && foobar)` parses as one expression.
 
-```netlinx
-(foo #IF_DEFINED BAR && baz #END_IF && foobar)
-```
-
-While this is valid NetLinx code that compiles correctly, tree-sitter has limitations when parsing these constructs due to the nature of preprocessor directives operating at a different level than normal syntax.
-
-When encountering preprocessor directives within expressions, the parser will:
-
-1. **Maintain the overall expression structure** - The parenthesized expression remains intact
-2. **Generate some error nodes** - The preprocessor directives are marked as errors
-3. **Preserve correct syntax highlighting** - Despite the errors, tokens are still correctly identified
-4. **Keep all identifiers and operators** - Variable names and operators remain properly connected
-
-**Example Parse Tree**
-
-```
-(source_file
-  (expression_statement
-    (parenthesized_expression
-      (ERROR
-        (identifier) // <- foo
-        (preproc_if_defined_keyword))
-      (binary_expression
-        left: (binary_expression
-          left: (identifier) // <- BAR
-          right: (identifier))  // <- baz
-        (ERROR
-          (preproc_end_if_keyword))
-        right: (identifier))))) // <- foobar
-```
-
-**Implications**
-
-- **Editor Experience**: Syntax highlighting and code navigation should work normally
-- **Error Reports**: Your editor may show these areas as errors, which can be safely ignored
-- **Alternative Approach**: For cleaner parsing, consider restructuring complex conditional expressions to avoid embedding preprocessor directives within expressions, like:
-    ```
-    #IF_DEFINED BAR
-      (foo && baz && foobar)
-    #ELSE
-      (foo && foobar)
-    #END_IF
-    ```
+The parser reads every arm of an `#IF_DEFINED` … `#END_IF` together, as written, because which arm compiles depends on defines it does not know. Arms that each complete the code alone can show error nodes in the raw tree, though either arm compiles. Two examples are a label whose statement each arm supplies, and two strings each arm supplies with no comma between them. Tools that need the code a build compiles preprocess first.
 
 ## Install :zap:
 
