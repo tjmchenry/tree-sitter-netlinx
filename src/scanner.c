@@ -9,6 +9,7 @@ enum TokenType {
     DECLARATION_CONTINUATION,
     VALUE_CONTINUATION,
     FIELD_CONTINUATION,
+    KEYWORD_TYPE_CONTINUATION,
     EVENT_DATA,
     EVENT_BUTTON,
     EVENT_CHANNEL,
@@ -718,6 +719,29 @@ typedef struct {
     bool quote;
 } Ahead;
 
+// Whether the word at the lookahead is a declarator's name standing alone:
+// nothing but a subscript, a parameter list, a comma, a comment, a closing
+// brace or its line's end follows it. A word another token follows starts a
+// field of its own.
+static bool word_stands_alone(TSLexer *lexer) {
+    while (is_word_char(lexer->lookahead)) {
+        skip(lexer);
+    }
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
+        skip(lexer);
+    }
+    switch (lexer->lookahead) {
+        case '[':
+        case '(':
+        case ',':
+        case '/':
+        case '}':
+            return true;
+        default:
+            return is_line_end(lexer->lookahead);
+    }
+}
+
 // Whether a semicolon belongs at the current position. Once a comment has
 // been passed the scan only looks: mark_end stays at the boundary, so no
 // other token can be returned over that comment.
@@ -725,6 +749,7 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
     bool declaration_continuation = valid_symbols[DECLARATION_CONTINUATION];
     bool value_continuation = valid_symbols[VALUE_CONTINUATION];
     bool field_continuation = valid_symbols[FIELD_CONTINUATION];
+    bool keyword_type = valid_symbols[KEYWORD_TYPE_CONTINUATION];
     lexer->result_symbol = AUTOMATIC_SEMICOLON;
     lexer->mark_end(lexer);
     bool saw_whitespace = false;
@@ -743,7 +768,9 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
             first = false;
 
             if (result == ACCEPT && lexer->lookahead != ',' && lexer->lookahead != '=') {
-                return SEMICOLON_YES;
+                return keyword_type && is_word_start(lexer->lookahead) && word_stands_alone(lexer)
+                    ? SEMICOLON_NO
+                    : SEMICOLON_YES;
             }
         }
 
@@ -769,7 +796,7 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
             const bool *event_symbols =
                 (declaration_continuation || value_continuation) && !ahead->comment ? valid_symbols : NULL;
             if (saw_whitespace && is_word_start(lexer->lookahead)) {
-                if (field_continuation) {
+                if (field_continuation || keyword_type) {
                     return SEMICOLON_NO;
                 }
                 WordKind word = scan_word(lexer, value_continuation, event_symbols);
@@ -803,6 +830,9 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
     }
     if (result == PAREN) {
         return SEMICOLON_YES;
+    }
+    if (keyword_type && is_word_start(lexer->lookahead)) {
+        return word_stands_alone(lexer) ? SEMICOLON_NO : SEMICOLON_YES;
     }
 
     // Don't insert a semicolon before these characters

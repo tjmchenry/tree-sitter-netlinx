@@ -2373,8 +2373,28 @@
                     }
                   },
                   {
-                    "type": "SYMBOL",
-                    "name": "_field_declaration_declarator"
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_keyword_type_continuation"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "_field_declaration_declarator"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
                   }
                 ]
               },
@@ -7762,6 +7782,10 @@
     {
       "type": "SYMBOL",
       "name": "_field_continuation"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_keyword_type_continuation"
     },
     {
       "type": "SYMBOL",

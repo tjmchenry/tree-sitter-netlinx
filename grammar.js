@@ -60,6 +60,9 @@ module.exports = grammar({
         $._declaration_continuation,
         $._value_continuation,
         $._field_continuation,
+        // Never emitted: past a field's keyword type, a word on a later line
+        // is its declarator, not a field of its own.
+        $._keyword_type_continuation,
         // Event-object tokens are emitted only in expression positions;
         // their spellings use the ordinary identifier token in names/types.
         $.data,
@@ -632,13 +635,12 @@ module.exports = grammar({
             prec.right(
                 seq(
                     choice(
-                        // A keyword type is never a field alone: its
-                        // declarator may follow on a later line.
                         seq(
                             repeat($._declaration_modifiers),
                             field("type", $.intrinsic_type),
                             repeat($._declaration_modifiers),
-                            $._field_declaration_declarator,
+                            optional($._keyword_type_continuation),
+                            optional($._field_declaration_declarator),
                         ),
                         seq(
                             repeat($._declaration_modifiers),
