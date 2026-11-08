@@ -1730,3 +1730,35 @@ STRUCTURE TS
               type: (type_identifier))
             (field_declaration
               type: (type_identifier))))))))
+
+==================
+A Keyword Type Before A Parse Error In A Structure Body
+==================
+
+DEFINE_TYPE
+STRUCTURE _sPayload
+{
+    INTEGER ???
+    UntypedFallback ???
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (UNEXPECTED '?')))
+            (ERROR
+              (identifier)
+              (UNEXPECTED '?'))))))))
