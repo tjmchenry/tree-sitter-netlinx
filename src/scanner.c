@@ -385,17 +385,17 @@ static bool is_refused_declaration_name(const char *word, const bool *valid_symb
 
 // Whether a closing brace, a semicolon, a comment or the line's end follows
 // the reserved name just read: its field ends there, so the error stays the
-// name's alone.
+// name's alone. It looks without skipping, so the name keeps its own bytes.
 static bool reserved_name_ends_its_field(TSLexer *lexer) {
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-        skip(lexer);
+        advance(lexer);
     }
     if (lexer->lookahead == '/') {
-        skip(lexer);
+        advance(lexer);
         return lexer->lookahead == '/' || lexer->lookahead == '*';
     }
     if (lexer->lookahead == '(') {
-        skip(lexer);
+        advance(lexer);
         return lexer->lookahead == '*';
     }
     return lexer->lookahead == '}' || lexer->lookahead == ';' || is_line_end(lexer->lookahead);
