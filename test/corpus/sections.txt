@@ -196,3 +196,89 @@ DEFINE_FUNCTION f()
           parameters: (parameter_list)
           body: (compound_statement)))))
   (ERROR))
+
+================================================================================
+A Block Stands In DEFINE_START And DEFINE_PROGRAM
+================================================================================
+
+DEFINE_START
+{
+    n = 1
+}
+DEFINE_PROGRAM
+{
+    n = 2
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_start_section
+      (define_start_keyword)
+      (compound_statement
+        (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal))))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (compound_statement
+        (expression_statement
+          (assignment_expression
+            left: (identifier)
+            right: (number_literal)))))))
+
+================================================================================
+A Block Anywhere Else Is An Error
+================================================================================
+
+{
+}
+DEFINE_VARIABLE
+INTEGER n
+{
+}
+DEFINE_CONSTANT
+{
+}
+DEFINE_EVENT
+{
+}
+DEFINE_FUNCTION f()
+{
+}
+{
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (ERROR)
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))))
+  (ERROR)
+  (section
+    (define_constant_section
+      (define_constant_keyword)))
+  (ERROR)
+  (section
+    (define_event_section
+      (define_event_keyword)))
+  (ERROR)
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list)
+          body: (compound_statement)))))
+  (ERROR))

@@ -1284,30 +1284,34 @@ probe() a = 1 ON[dv,1] SEND_STRING dv,'hello' b = 2
 Same-line statement keyword and block after a bare identifier
 ================================================================================
 
+DEFINE_START
 foo IF (a) { a = 1 }
 foo { a = 1 }
 
 --------------------------------------------------------------------------------
 
 (source_file
-  (expression_statement
-    (identifier))
-  (if_statement
-    (if_keyword)
-    (parenthesized_expression
-      (identifier))
-    (compound_statement
+  (section
+    (define_start_section
+      (define_start_keyword)
       (expression_statement
-        (assignment_expression
-          (identifier)
-          (number_literal)))))
-  (expression_statement
-    (identifier))
-  (compound_statement
-    (expression_statement
-      (assignment_expression
-        (identifier)
-        (number_literal)))))
+        (identifier))
+      (if_statement
+        (if_keyword)
+        (parenthesized_expression
+          (identifier))
+        (compound_statement
+          (expression_statement
+            (assignment_expression
+              (identifier)
+              (number_literal)))))
+      (expression_statement
+        (identifier))
+      (compound_statement
+        (expression_statement
+          (assignment_expression
+            (identifier)
+            (number_literal)))))))
 
 ================================================================================
 Same-line bare RETURN before a statement keyword
