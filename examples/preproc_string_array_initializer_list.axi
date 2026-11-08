@@ -5,7 +5,7 @@ constant char FOO[][50]     =   {
     'foo',
     'foo',
     'foo',
-    'foo'
+    'foo',
     #END_IF
 
     #IF_DEFINED BAZ

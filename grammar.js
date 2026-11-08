@@ -6,7 +6,6 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-const directives = require("./directives");
 const keywords = require("./keyword-nodes");
 
 const PREC = {
@@ -57,10 +56,9 @@ module.exports = grammar({
     externals: ($) => [
         $._automatic_semicolon,
         // Scanner context only, never emitted. A type still needs its
-        // declarator; RETURN and #DEFINE may still take an optional value.
+        // declarator; RETURN may still take an optional value.
         $._declaration_continuation,
         $._value_continuation,
-        $._preproc_continuation,
         $._field_continuation,
         // Event-object tokens are emitted only in expression positions;
         // their spellings use the ordinary identifier token in names/types.
@@ -89,6 +87,24 @@ module.exports = grammar({
         // Empty: before an ACTIVE where no label may start. Only a label
         // start takes it.
         $._label_start,
+        // Never emitted: an arm stays open past its statement, so error
+        // recovery reads a second statement as the arm's and the first as
+        // the error, where NLRC reports it.
+        $._arm_continuation,
+        // A directive's keyword, then the argument it reads, each a token of
+        // its own: an extra, as a comment is.
+        $.preproc_include_keyword,
+        $.preproc_define_keyword,
+        $.preproc_warn_keyword,
+        $.preproc_disable_warning_keyword,
+        $.preproc_if_defined_keyword,
+        $.preproc_if_not_defined_keyword,
+        $.preproc_else_keyword,
+        $.preproc_end_if_keyword,
+        $.preproc_name,
+        $.preproc_string,
+        $.preproc_unclosed_string,
+        $.preproc_number,
         // Valid only while the parser recovers from an error.
         $._error_sentinel,
     ],
@@ -103,41 +119,6 @@ module.exports = grammar({
         [$.channel_event_devchan_reference, $.devchan_expression],
         [$.push_event_devchan_reference, $.devchan_expression],
         [$.release_event_devchan_reference, $.devchan_expression],
-        [$.initializer_list],
-        [
-            $.preproc_if_defined_in_initializer_list,
-            $.preproc_if_defined_in_initializer_list_no_comma,
-        ],
-        [
-            $.preproc_if_not_defined_in_initializer_list,
-            $.preproc_if_not_defined_in_initializer_list_no_comma,
-        ],
-        [
-            $.preproc_else_in_initializer_list,
-            $.preproc_else_in_initializer_list_no_comma,
-        ],
-        [$.preproc_if_defined_in_button_event_declarator],
-        [$.preproc_else_in_button_event_declarator],
-        [$.preproc_if_defined_in_button_event_block],
-        [$.preproc_else_in_button_event_block],
-        [$.preproc_if_defined_in_data_event_declarator],
-        [$.preproc_else_in_data_event_declarator],
-        [$.preproc_if_defined_in_data_event_block],
-        [$.preproc_else_in_data_event_block],
-        [$.preproc_if_defined_in_channel_event_declarator],
-        [$.preproc_else_in_channel_event_declarator],
-        [$.preproc_if_defined_in_channel_event_block],
-        [$.preproc_else_in_channel_event_block],
-        [$.preproc_if_defined_in_timeline_event_declarator],
-        [$.preproc_else_in_timeline_event_declarator],
-        [$.preproc_if_defined_in_level_event_declarator],
-        [$.preproc_else_in_level_event_declarator],
-        [$.preproc_if_defined_in_custom_event_declarator],
-        [$.preproc_else_in_custom_event_declarator],
-        [$.preproc_if_defined_in_push_event_declarator],
-        [$.preproc_else_in_push_event_declarator],
-        [$.preproc_if_defined_in_release_event_declarator],
-        [$.preproc_else_in_release_event_declarator],
         [$.wait_statement, $.expression],
         [$.wait_until_statement, $.expression],
         [$.timed_wait_until_statement, $.expression],
@@ -146,7 +127,24 @@ module.exports = grammar({
         [$.comma_expression, $.argument_list],
     ],
 
-    extras: ($) => [/\s/, $.comment, $._comment_ahead],
+    extras: ($) => [
+        /\s/,
+        $.comment,
+        $._comment_ahead,
+        $.preproc_include_keyword,
+        $.preproc_define_keyword,
+        $.preproc_warn_keyword,
+        $.preproc_disable_warning_keyword,
+        $.preproc_if_defined_keyword,
+        $.preproc_if_not_defined_keyword,
+        $.preproc_else_keyword,
+        $.preproc_end_if_keyword,
+        $.preproc_name,
+        $.preproc_arg,
+        $.preproc_string,
+        $.preproc_unclosed_string,
+        $.preproc_number,
+    ],
 
     inline: ($) => [
         $._type_identifier,
@@ -198,14 +196,6 @@ module.exports = grammar({
 
                 // Statements
                 $._top_level_statement,
-
-                // Preprocessor
-                $.preproc_if_defined,
-                $.preproc_if_not_defined,
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
             ),
 
         _block_item: ($) =>
@@ -222,14 +212,6 @@ module.exports = grammar({
                 // Statements
                 $.case_statement,
                 $.statement,
-
-                // Preprocessor
-                $.preproc_if_defined,
-                $.preproc_if_not_defined,
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
             ),
 
         // Include all keyword nodes
@@ -250,139 +232,6 @@ module.exports = grammar({
                     optional(field("parameters", $.parameter_list)),
                 ),
             ),
-
-        // Preprocessor
-        preproc_include: ($) =>
-            seq(
-                // Two tokens, not /#?include/i: a word token that can start
-                // with `#` is never a keyword.
-                choice(
-                    alias(
-                        preprocessor(directives.include),
-                        $.preproc_include_keyword,
-                    ),
-                    alias(
-                        new RegExp(directives.include, "i"),
-                        $.preproc_include_keyword,
-                    ),
-                ),
-                field("path", choice($.string_literal)),
-                $._semicolon,
-            ),
-
-        preproc_define: ($) =>
-            seq(
-                alias(
-                    preprocessor(directives.define),
-                    $.preproc_define_keyword,
-                ),
-                field("name", $.identifier),
-                optional($._preproc_continuation),
-                field("value", optional($.preproc_arg)),
-                $._semicolon,
-            ),
-
-        preproc_warn: ($) =>
-            seq(
-                alias(preprocessor(directives.warn), $.preproc_warn_keyword),
-                field("message", $.string_literal),
-                $._semicolon,
-            ),
-
-        preproc_disable_warning: ($) =>
-            seq(
-                alias(
-                    preprocessor(directives.disable_warning),
-                    $.preproc_disable_warning_keyword,
-                ),
-                field("code", $.number_literal),
-                $._semicolon,
-            ),
-
-        ...preprocIf("", ($) => $._top_level_item),
-        ...preprocIf(
-            "_in_field_declaration_list",
-            ($) => $._field_declaration_list_item,
-        ),
-
-        ...preprocIf("_in_initializer_list", ($) =>
-            choice(
-                seq(
-                    optional(","),
-                    choice($.expression, $.initializer_list),
-                    optional(","),
-                ),
-                ",",
-            ),
-        ),
-
-        ...preprocIf(
-            "_in_initializer_list_no_comma",
-            ($) => choice($.expression, $.initializer_list),
-            -1,
-        ),
-
-        ...preprocIf("_in_button_event_declarator", ($) =>
-            repeat1($.button_event_declarator),
-        ),
-
-        ...preprocIf("_in_button_event_block", ($) =>
-            repeat1($._button_event_block_item),
-        ),
-
-        ...preprocIf("_in_data_event_declarator", ($) =>
-            repeat1($.data_event_declarator),
-        ),
-
-        ...preprocIf("_in_data_event_block", ($) =>
-            repeat1($._data_event_block_item),
-        ),
-
-        ...preprocIf("_in_channel_event_declarator", ($) =>
-            repeat1($.channel_event_declarator),
-        ),
-
-        ...preprocIf("_in_channel_event_block", ($) =>
-            repeat1($._channel_event_block_item),
-        ),
-
-        ...preprocIf("_in_timeline_event_declarator", ($) =>
-            repeat1($.timeline_event_declarator),
-        ),
-
-        ...preprocIf("_in_level_event_declarator", ($) =>
-            repeat1($.level_event_declarator),
-        ),
-
-        ...preprocIf("_in_custom_event_declarator", ($) =>
-            repeat1($.custom_event_declarator),
-        ),
-
-        ...preprocIf("_in_push_event_declarator", ($) =>
-            repeat1($.push_event_declarator),
-        ),
-
-        ...preprocIf("_in_release_event_declarator", ($) =>
-            repeat1($.release_event_declarator),
-        ),
-
-        // A branch may open with the content of the arm whose label stands
-        // before the conditional, and close on a label whose content follows
-        // the conditional.
-        ...preprocIf(
-            "_in_select_block",
-            ($) => $._select_block_item,
-            PREC.DIRECTIVE,
-            ($, items) =>
-                seq(
-                    repeat($._select_directive),
-                    optional($._active_content),
-                    items,
-                    optional(alias($._active_label, $.active_statement)),
-                ),
-        ),
-
-        preproc_directive: (_) => /#[a-zA-Z0-9]\w*/,
 
         // Main Grammar
 
@@ -505,28 +354,8 @@ module.exports = grammar({
 
         data_event_definition: ($) =>
             seq(
-                $._data_event_declarator_list,
+                repeat1($.data_event_declarator),
                 field("body", $.data_event_block),
-            ),
-
-        _data_event_declarator_list: ($) =>
-            seq(
-                $.data_event_declarator,
-                repeat(
-                    choice(
-                        $.data_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_data_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_data_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
             ),
 
         data_event_declarator: ($) =>
@@ -537,25 +366,7 @@ module.exports = grammar({
 
         data_event_device_reference: ($) => seq("[", $.expression, "]"),
 
-        data_event_block: ($) =>
-            seq("{", repeat($._data_event_block_item), "}"),
-
-        _data_event_block_item: ($) =>
-            choice(
-                $.data_event_handler,
-                alias(
-                    $.preproc_if_defined_in_data_event_block,
-                    $.preproc_if_defined,
-                ),
-                alias(
-                    $.preproc_if_not_defined_in_data_event_block,
-                    $.preproc_if_not_defined,
-                ),
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
-            ),
+        data_event_block: ($) => seq("{", repeat($.data_event_handler), "}"),
 
         data_event_handler: ($) =>
             seq(
@@ -576,26 +387,9 @@ module.exports = grammar({
             ),
 
         timeline_event_definition: ($) =>
-            seq($._timeline_event_declarator_list, field("body", $.statement)),
-
-        _timeline_event_declarator_list: ($) =>
             seq(
-                $.timeline_event_declarator,
-                repeat(
-                    choice(
-                        $.timeline_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_timeline_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_timeline_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
+                repeat1($.timeline_event_declarator),
+                field("body", $.statement),
             ),
 
         timeline_event_declarator: ($) =>
@@ -608,28 +402,8 @@ module.exports = grammar({
 
         button_event_definition: ($) =>
             seq(
-                $._button_event_declarator_list,
+                repeat1($.button_event_declarator),
                 field("body", $.button_event_block),
-            ),
-
-        _button_event_declarator_list: ($) =>
-            seq(
-                $.button_event_declarator,
-                repeat(
-                    choice(
-                        $.button_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_button_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_button_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
             ),
 
         button_event_declarator: ($) =>
@@ -642,24 +416,7 @@ module.exports = grammar({
             choice($.devchan_expression, seq("[", $.expression, "]")),
 
         button_event_block: ($) =>
-            seq("{", repeat($._button_event_block_item), "}"),
-
-        _button_event_block_item: ($) =>
-            choice(
-                $.button_event_handler,
-                alias(
-                    $.preproc_if_defined_in_button_event_block,
-                    $.preproc_if_defined,
-                ),
-                alias(
-                    $.preproc_if_not_defined_in_button_event_block,
-                    $.preproc_if_not_defined,
-                ),
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
-            ),
+            seq("{", repeat($.button_event_handler), "}"),
 
         button_event_handler: ($) =>
             seq(
@@ -689,27 +446,7 @@ module.exports = grammar({
         button_event_hold_repeat: ($) => $.repeat_keyword,
 
         level_event_definition: ($) =>
-            seq($._level_event_declarator_list, field("body", $.statement)),
-
-        _level_event_declarator_list: ($) =>
-            seq(
-                $.level_event_declarator,
-                repeat(
-                    choice(
-                        $.level_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_level_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_level_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
-            ),
+            seq(repeat1($.level_event_declarator), field("body", $.statement)),
 
         level_event_declarator: ($) =>
             seq(
@@ -722,28 +459,8 @@ module.exports = grammar({
 
         channel_event_definition: ($) =>
             seq(
-                $._channel_event_declarator_list,
+                repeat1($.channel_event_declarator),
                 field("body", $.channel_event_block),
-            ),
-
-        _channel_event_declarator_list: ($) =>
-            seq(
-                $.channel_event_declarator,
-                repeat(
-                    choice(
-                        $.channel_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_channel_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_channel_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
             ),
 
         channel_event_declarator: ($) =>
@@ -756,24 +473,7 @@ module.exports = grammar({
             choice($.devchan_expression, seq("[", $.expression, "]")),
 
         channel_event_block: ($) =>
-            seq("{", repeat($._channel_event_block_item), "}"),
-
-        _channel_event_block_item: ($) =>
-            choice(
-                $.channel_event_handler,
-                alias(
-                    $.preproc_if_defined_in_channel_event_block,
-                    $.preproc_if_defined,
-                ),
-                alias(
-                    $.preproc_if_not_defined_in_channel_event_block,
-                    $.preproc_if_not_defined,
-                ),
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
-            ),
+            seq("{", repeat($.channel_event_handler), "}"),
 
         channel_event_handler: ($) =>
             seq(
@@ -785,27 +485,7 @@ module.exports = grammar({
         channel_event_type: ($) => choice($.on_keyword, $.off_keyword),
 
         custom_event_definition: ($) =>
-            seq($._custom_event_declarator_list, field("body", $.statement)),
-
-        _custom_event_declarator_list: ($) =>
-            seq(
-                $.custom_event_declarator,
-                repeat(
-                    choice(
-                        $.custom_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_custom_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_custom_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
-            ),
+            seq(repeat1($.custom_event_declarator), field("body", $.statement)),
 
         custom_event_declarator: ($) =>
             seq(
@@ -838,28 +518,8 @@ module.exports = grammar({
 
         push_event_definition: ($) =>
             seq(
-                $._push_event_declarator_list,
+                repeat1($.push_event_declarator),
                 field("body", $.compound_statement),
-            ),
-
-        _push_event_declarator_list: ($) =>
-            seq(
-                $.push_event_declarator,
-                repeat(
-                    choice(
-                        $.push_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_push_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_push_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
             ),
 
         push_event_declarator: ($) =>
@@ -873,28 +533,8 @@ module.exports = grammar({
 
         release_event_definition: ($) =>
             seq(
-                $._release_event_declarator_list,
+                repeat1($.release_event_declarator),
                 field("body", $.compound_statement),
-            ),
-
-        _release_event_declarator_list: ($) =>
-            seq(
-                $.release_event_declarator,
-                repeat(
-                    choice(
-                        $.release_event_declarator,
-                        alias(
-                            $.preproc_if_defined_in_release_event_declarator,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_release_event_declarator,
-                            $.preproc_if_not_defined,
-                        ),
-                        $.preproc_define,
-                        $.preproc_include,
-                    ),
-                ),
             ),
 
         release_event_declarator: ($) =>
@@ -986,33 +626,29 @@ module.exports = grammar({
             ),
 
         field_declaration_list: ($) =>
-            seq("{", repeat1($._field_declaration_list_item), "}"),
-
-        _field_declaration_list_item: ($) =>
-            choice(
-                $.field_declaration,
-                $.preproc_define,
-                $.preproc_warn,
-                $.preproc_disable_warning,
-                alias(
-                    $.preproc_if_defined_in_field_declaration_list,
-                    $.preproc_if_defined,
-                ),
-                alias(
-                    $.preproc_if_not_defined_in_field_declaration_list,
-                    $.preproc_if_not_defined,
-                ),
-            ),
+            seq("{", repeat1($.field_declaration), "}"),
 
         field_declaration: ($) =>
             prec.right(
                 seq(
-                    $._declaration_specifiers,
-                    optional($._field_continuation),
-
-                    // This may not need to be optional. But leaving it for now
-                    // as it provides some flexibility
-                    optional($._field_declaration_declarator),
+                    choice(
+                        // A keyword type is never a field alone: its
+                        // declarator may follow on a later line.
+                        seq(
+                            repeat($._declaration_modifiers),
+                            field("type", $.intrinsic_type),
+                            repeat($._declaration_modifiers),
+                            $._field_declaration_declarator,
+                        ),
+                        seq(
+                            repeat($._declaration_modifiers),
+                            optional($._event_type_context),
+                            field("type", $._type_identifier),
+                            repeat($._declaration_modifiers),
+                            optional($._field_continuation),
+                            optional($._field_declaration_declarator),
+                        ),
+                    ),
                     $._semicolon,
                 ),
             ),
@@ -1501,81 +1137,23 @@ module.exports = grammar({
         select_statement: ($) =>
             seq($.select_keyword, field("body", $.select_block)),
 
-        select_block: ($) =>
-            seq(
-                "{",
-                repeat($._select_directive),
-                repeat($._select_block_item),
-                "}",
-            ),
-
-        // A label stands without content only directly before a conditional,
-        // which may hold or cut off that content. Content after a conditional
-        // continues the arm whose label the conditional holds or follows.
-        _select_block_item: ($) =>
-            choice(
-                $.active_statement,
-                seq(
-                    optional(alias($._active_label, $.active_statement)),
-                    choice(
-                        alias(
-                            $.preproc_if_defined_in_select_block,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_select_block,
-                            $.preproc_if_not_defined,
-                        ),
-                    ),
-                    repeat($._select_directive),
-                    optional($._active_content),
-                ),
-            ),
+        select_block: ($) => seq("{", repeat($.active_statement), "}"),
 
         // An arm holds one statement or a run of declarations.
         active_statement: ($) =>
-            seq(
-                $._active_label,
-                choice(
-                    seq(
-                        field("body", $.statement),
-                        repeat($._select_directive),
-                    ),
-                    $._active_declarations,
-                    $.arm_content,
-                ),
-            ),
-
-        _active_label: ($) =>
             seq(
                 optional($._label_start),
                 $.active_keyword,
                 field("condition", $.parenthesized_expression),
                 ":",
-                repeat($._select_directive),
-            ),
-
-        _active_content: ($) =>
-            choice(
-                seq($.statement, repeat($._select_directive)),
-                $._active_declarations,
-            ),
-
-        _active_declarations: ($) =>
-            seq(
-                $.declaration,
-                repeat(choice($.declaration, $._select_directive)),
-            ),
-
-        // A directive never ends an arm: one that follows an active_statement's
-        // label or content is part of that node, and any other stands in the
-        // block or branch.
-        _select_directive: ($) =>
-            choice(
-                $.preproc_define,
-                $.preproc_include,
-                $.preproc_warn,
-                $.preproc_disable_warning,
+                choice(
+                    seq(
+                        field("body", $.statement),
+                        optional($._arm_continuation),
+                    ),
+                    repeat1($.declaration),
+                    $.arm_content,
+                ),
             ),
 
         return_statement: ($) =>
@@ -2136,45 +1714,8 @@ module.exports = grammar({
         initializer_list: ($) =>
             seq(
                 "{",
-                repeat(
-                    choice(
-                        seq(choice($.expression, $.initializer_list), ","),
-                        alias(
-                            $.preproc_if_defined_in_initializer_list,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_initializer_list,
-                            $.preproc_if_not_defined,
-                        ),
-                        alias(
-                            $.preproc_if_defined_in_initializer_list_no_comma,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_initializer_list_no_comma,
-                            $.preproc_if_not_defined,
-                        ),
-                        seq(
-                            choice($.expression, $.initializer_list),
-                            optional(","),
-                        ),
-                    ),
-                ),
-                optional(
-                    choice(
-                        $.expression,
-                        $.initializer_list,
-                        alias(
-                            $.preproc_if_defined_in_initializer_list_no_comma,
-                            $.preproc_if_defined,
-                        ),
-                        alias(
-                            $.preproc_if_not_defined_in_initializer_list_no_comma,
-                            $.preproc_if_not_defined,
-                        ),
-                    ),
-                ),
+                commaSep(choice($.expression, $.initializer_list)),
+                optional(","),
                 "}",
             ),
 
@@ -2256,114 +1797,6 @@ module.exports = grammar({
 });
 
 /**
- * Creates preprocessor conditional rules
- *
- * @param {string} suffix
- * @param {RuleBuilder<string>} content
- * @param {number} precedence
- * @param {((
- *   $: GrammarSymbols<string>,
- *   items: Rule,
- * ) => Rule) | null} around builds a branch from its run of `content`
- *
- * @returns {RuleBuilders<string, string>}
- */
-function preprocIf(
-    suffix,
-    content,
-    precedence = PREC.DIRECTIVE,
-    around = null,
-) {
-    /**
-     *
-     * @param {GrammarSymbols<string>} $
-     *
-     * @returns {ChoiceRule}
-     */
-    function alternativeBlock($) {
-        return choice(
-            suffix
-                ? alias($["preproc_else" + suffix], $.preproc_else)
-                : $.preproc_else,
-        );
-    }
-
-    /**
-     *
-     * @param {GrammarSymbols<string>} $
-     *
-     * @returns {Rule}
-     */
-    function branch($) {
-        const items = repeat(content($));
-        return around ? around($, items) : items;
-    }
-
-    return {
-        ["preproc_if_defined" + suffix]: ($) =>
-            prec.dynamic(
-                precedence,
-                seq(
-                    alias(
-                        preprocessor(directives.if_defined),
-                        $.preproc_if_defined_keyword,
-                    ),
-                    field("name", $.identifier),
-                    optional("\n"),
-                    branch($),
-                    field("alternative", optional(alternativeBlock($))),
-                    alias(
-                        preprocessor(directives.end_if),
-                        $.preproc_end_if_keyword,
-                    ),
-                ),
-            ),
-
-        ["preproc_if_not_defined" + suffix]: ($) =>
-            prec.dynamic(
-                precedence,
-                seq(
-                    alias(
-                        preprocessor(directives.if_not_defined),
-                        $.preproc_if_not_defined_keyword,
-                    ),
-                    field("name", $.identifier),
-                    optional("\n"),
-                    branch($),
-                    field("alternative", optional(alternativeBlock($))),
-                    alias(
-                        preprocessor(directives.end_if),
-                        $.preproc_end_if_keyword,
-                    ),
-                ),
-            ),
-
-        ["preproc_else" + suffix]: ($) =>
-            prec.dynamic(
-                precedence,
-                seq(
-                    alias(
-                        preprocessor(directives.else),
-                        $.preproc_else_keyword,
-                    ),
-                    branch($),
-                ),
-            ),
-    };
-}
-
-/**
- * Creates a preprocessor regex rule
- *
- * @param {RegExp | Rule | string} command
- *
- * @returns {AliasRule}
- */
-function preprocessor(command) {
-    return alias(new RegExp("#" + command, "i"), "#" + command);
-}
-
-/**
  * Creates a rule to optionally match one or more of the rules separated by a comma
  *
  * @param {Rule} rule
@@ -2386,7 +1819,5 @@ function commaSep1(rule) {
 }
 
 module.exports.PREC = PREC;
-module.exports.preprocIf = preprocIf;
-module.exports.preprocessor = preprocessor;
 module.exports.commaSep = commaSep;
 module.exports.commaSep1 = commaSep1;

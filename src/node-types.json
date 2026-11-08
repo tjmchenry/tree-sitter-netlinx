@@ -333,22 +333,6 @@
         {
           "type": "declaration",
           "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
         }
       ]
     }
@@ -666,30 +650,6 @@
         {
           "type": "button_event_handler",
           "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
         }
       ]
     }
@@ -741,22 +701,6 @@
       "types": [
         {
           "type": "button_event_declarator",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
           "named": true
         }
       ]
@@ -1215,30 +1159,6 @@
         {
           "type": "channel_event_handler",
           "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
         }
       ]
     }
@@ -1290,22 +1210,6 @@
       "types": [
         {
           "type": "channel_event_declarator",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
           "named": true
         }
       ]
@@ -1462,30 +1366,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "statement",
           "named": true
         },
@@ -1616,22 +1496,6 @@
         {
           "type": "custom_event_declarator",
           "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
         }
       ]
     }
@@ -1703,30 +1567,6 @@
         {
           "type": "data_event_handler",
           "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
         }
       ]
     }
@@ -1778,22 +1618,6 @@
       "types": [
         {
           "type": "data_event_declarator",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
           "named": true
         }
       ]
@@ -2066,30 +1890,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -2242,30 +2042,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -2424,30 +2200,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -2603,30 +2355,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -2779,30 +2507,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -3003,30 +2707,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -3216,30 +2896,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -3392,30 +3048,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -3574,30 +3206,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -3750,30 +3358,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -3932,30 +3516,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -4111,30 +3671,6 @@
           "named": true
         },
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
           "type": "restart_all_wait_statement",
           "named": true
         },
@@ -4287,30 +3823,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -4685,7 +4197,11 @@
         "required": true,
         "types": [
           {
-            "type": "type_specifier",
+            "type": "intrinsic_type",
+            "named": true
+          },
+          {
+            "type": "type_identifier",
             "named": true
           }
         ]
@@ -4716,26 +4232,6 @@
       "types": [
         {
           "type": "field_declaration",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         }
       ]
@@ -5171,14 +4667,6 @@
         {
           "type": "initializer_list",
           "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
         }
       ]
     }
@@ -5249,22 +4737,6 @@
       "types": [
         {
           "type": "level_event_declarator",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
           "named": true
         }
       ]
@@ -5512,563 +4984,6 @@
     }
   },
   {
-    "type": "preproc_define",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      },
-      "value": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "preproc_arg",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "preproc_define_keyword",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_disable_warning",
-    "named": true,
-    "fields": {
-      "code": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "number_literal",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "preproc_disable_warning_keyword",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_else",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "active_statement",
-          "named": true
-        },
-        {
-          "type": "button_event_declarator",
-          "named": true
-        },
-        {
-          "type": "button_event_handler",
-          "named": true
-        },
-        {
-          "type": "case_statement",
-          "named": true
-        },
-        {
-          "type": "channel_event_declarator",
-          "named": true
-        },
-        {
-          "type": "channel_event_handler",
-          "named": true
-        },
-        {
-          "type": "custom_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_handler",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "event_definition",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_declaration",
-          "named": true
-        },
-        {
-          "type": "initializer_list",
-          "named": true
-        },
-        {
-          "type": "level_event_declarator",
-          "named": true
-        },
-        {
-          "type": "module_name",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_else_keyword",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
-          "type": "program_name",
-          "named": true
-        },
-        {
-          "type": "push_event_declarator",
-          "named": true
-        },
-        {
-          "type": "release_event_declarator",
-          "named": true
-        },
-        {
-          "type": "section",
-          "named": true
-        },
-        {
-          "type": "statement",
-          "named": true
-        },
-        {
-          "type": "timeline_event_declarator",
-          "named": true
-        },
-        {
-          "type": "type_definition",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_if_defined",
-    "named": true,
-    "fields": {
-      "alternative": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "preproc_else",
-            "named": true
-          }
-        ]
-      },
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "active_statement",
-          "named": true
-        },
-        {
-          "type": "button_event_declarator",
-          "named": true
-        },
-        {
-          "type": "button_event_handler",
-          "named": true
-        },
-        {
-          "type": "case_statement",
-          "named": true
-        },
-        {
-          "type": "channel_event_declarator",
-          "named": true
-        },
-        {
-          "type": "channel_event_handler",
-          "named": true
-        },
-        {
-          "type": "custom_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_handler",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "event_definition",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_declaration",
-          "named": true
-        },
-        {
-          "type": "initializer_list",
-          "named": true
-        },
-        {
-          "type": "level_event_declarator",
-          "named": true
-        },
-        {
-          "type": "module_name",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_end_if_keyword",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined_keyword",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
-          "type": "program_name",
-          "named": true
-        },
-        {
-          "type": "push_event_declarator",
-          "named": true
-        },
-        {
-          "type": "release_event_declarator",
-          "named": true
-        },
-        {
-          "type": "section",
-          "named": true
-        },
-        {
-          "type": "statement",
-          "named": true
-        },
-        {
-          "type": "timeline_event_declarator",
-          "named": true
-        },
-        {
-          "type": "type_definition",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_if_not_defined",
-    "named": true,
-    "fields": {
-      "alternative": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "preproc_else",
-            "named": true
-          }
-        ]
-      },
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "active_statement",
-          "named": true
-        },
-        {
-          "type": "button_event_declarator",
-          "named": true
-        },
-        {
-          "type": "button_event_handler",
-          "named": true
-        },
-        {
-          "type": "case_statement",
-          "named": true
-        },
-        {
-          "type": "channel_event_declarator",
-          "named": true
-        },
-        {
-          "type": "channel_event_handler",
-          "named": true
-        },
-        {
-          "type": "custom_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_declarator",
-          "named": true
-        },
-        {
-          "type": "data_event_handler",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "event_definition",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_declaration",
-          "named": true
-        },
-        {
-          "type": "initializer_list",
-          "named": true
-        },
-        {
-          "type": "level_event_declarator",
-          "named": true
-        },
-        {
-          "type": "module_name",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_end_if_keyword",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined_keyword",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
-          "type": "program_name",
-          "named": true
-        },
-        {
-          "type": "push_event_declarator",
-          "named": true
-        },
-        {
-          "type": "release_event_declarator",
-          "named": true
-        },
-        {
-          "type": "section",
-          "named": true
-        },
-        {
-          "type": "statement",
-          "named": true
-        },
-        {
-          "type": "timeline_event_declarator",
-          "named": true
-        },
-        {
-          "type": "type_definition",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_include",
-    "named": true,
-    "fields": {
-      "path": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "string_literal",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "preproc_include_keyword",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "preproc_warn",
-    "named": true,
-    "fields": {
-      "message": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "string_literal",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "preproc_warn_keyword",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "primitive_type",
     "named": true,
     "fields": {},
@@ -6184,22 +5099,6 @@
       "required": true,
       "types": [
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
           "type": "push_event_declarator",
           "named": true
         }
@@ -6266,22 +5165,6 @@
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
         {
           "type": "release_event_declarator",
           "named": true
@@ -6457,38 +5340,6 @@
       "types": [
         {
           "type": "active_statement",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
-          "named": true
-        },
-        {
-          "type": "statement",
           "named": true
         }
       ]
@@ -6743,30 +5594,6 @@
         },
         {
           "type": "pause_wait_statement",
-          "named": true
-        },
-        {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_disable_warning",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
-          "type": "preproc_warn",
           "named": true
         },
         {
@@ -7313,22 +6140,6 @@
       "required": true,
       "types": [
         {
-          "type": "preproc_define",
-          "named": true
-        },
-        {
-          "type": "preproc_if_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_if_not_defined",
-          "named": true
-        },
-        {
-          "type": "preproc_include",
-          "named": true
-        },
-        {
           "type": "timeline_event_declarator",
           "named": true
         }
@@ -7841,10 +6652,6 @@
     }
   },
   {
-    "type": "\n",
-    "named": false
-  },
-  {
     "type": "!",
     "named": false
   },
@@ -8307,39 +7114,68 @@
   },
   {
     "type": "preproc_arg",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_define_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_disable_warning_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_else_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_end_if_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_if_defined_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_if_not_defined_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_include_keyword",
-    "named": true
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "preproc_name",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "preproc_number",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "preproc_string",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "preproc_unclosed_string",
+    "named": true,
+    "extra": true
   },
   {
     "type": "preproc_warn_keyword",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "program_name_keyword",

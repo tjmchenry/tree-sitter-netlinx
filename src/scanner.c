@@ -8,7 +8,6 @@ enum TokenType {
     AUTOMATIC_SEMICOLON,
     DECLARATION_CONTINUATION,
     VALUE_CONTINUATION,
-    PREPROC_CONTINUATION,
     FIELD_CONTINUATION,
     EVENT_DATA,
     EVENT_BUTTON,
@@ -26,13 +25,41 @@ enum TokenType {
     COMMENT_AHEAD,
     ARM_CONTENT,
     LABEL_START,
+    ARM_CONTINUATION,
+    PREPROC_INCLUDE_KEYWORD,
+    PREPROC_DEFINE_KEYWORD,
+    PREPROC_WARN_KEYWORD,
+    PREPROC_DISABLE_WARNING_KEYWORD,
+    PREPROC_IF_DEFINED_KEYWORD,
+    PREPROC_IF_NOT_DEFINED_KEYWORD,
+    PREPROC_ELSE_KEYWORD,
+    PREPROC_END_IF_KEYWORD,
+    PREPROC_NAME,
+    PREPROC_STRING,
+    PREPROC_UNCLOSED_STRING,
+    PREPROC_NUMBER,
     ERROR_SENTINEL,
 };
 
+// The argument a directive's keyword leaves owed, read as the next tokens.
+typedef enum {
+    ARGUMENT_NONE,
+    // A word: the flag a conditional tests.
+    ARGUMENT_NAME,
+    // A word, the name a #DEFINE defines, then its value on that word's line.
+    ARGUMENT_DEFINED,
+    // A #DEFINE's value.
+    ARGUMENT_VALUE,
+    ARGUMENT_STRING,
+    ARGUMENT_NUMBER,
+} Argument;
+
 // A COMMENT_AHEAD token was the last one returned: the comment it announced
-// is the next token.
+// is the next token. A directive's keyword or a comment inside its argument
+// was: `argument` is what the directive still reads.
 typedef struct {
     bool comment_ahead;
+    uint8_t argument;
 } Scanner;
 
 void *tree_sitter_netlinx_external_scanner_create() { return calloc(1, sizeof(Scanner)); }
@@ -40,12 +67,16 @@ void *tree_sitter_netlinx_external_scanner_create() { return calloc(1, sizeof(Sc
 void tree_sitter_netlinx_external_scanner_destroy(void *payload) { free(payload); }
 
 unsigned tree_sitter_netlinx_external_scanner_serialize(void *payload, char *buffer) {
-    buffer[0] = (char)((Scanner *)payload)->comment_ahead;
-    return 1;
+    Scanner *scanner = payload;
+    buffer[0] = (char)scanner->comment_ahead;
+    buffer[1] = (char)scanner->argument;
+    return 2;
 }
 
 void tree_sitter_netlinx_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
-    ((Scanner *)payload)->comment_ahead = length > 0 && buffer[0];
+    Scanner *scanner = payload;
+    scanner->comment_ahead = length > 0 && buffer[0];
+    scanner->argument = length > 1 ? (uint8_t)buffer[1] : ARGUMENT_NONE;
 }
 
 static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
@@ -319,18 +350,182 @@ static bool scan_event_object(TSLexer *lexer, const bool *valid_symbols) {
     return read_short_word(lexer, word) && finish_event_object(lexer, word, valid_symbols);
 }
 
-// ACTIVE is reserved, but where no label may start it would lex as an
-// identifier and carry the label into an expression. Where an operand is
-// owed it ends the statement there, short of that operand; anywhere else the
-// empty token before it, which only a label start takes, ends the parse at
-// the misplaced label.
-static bool scan_misplaced_label(TSLexer *lexer, const bool *valid_symbols) {
+static bool is_line_end(int32_t c) {
+    return c == 0 || c == '\n' || c == '\r' || c == 0x2028 || c == 0x2029;
+}
+
+static bool is_word_char(int32_t c) {
+    return is_word_start(c) || (c >= '0' && c <= '9');
+}
+
+// Whether `argument` follows, past whitespace and comments: a token of its
+// kind is next.
+static bool argument_follows(TSLexer *lexer, Argument argument) {
+    for (;;) {
+        while (iswspace(lexer->lookahead)) {
+            advance(lexer);
+        }
+        if (lexer->lookahead != '/' && lexer->lookahead != '(') {
+            break;
+        }
+        CommentKind kind = scan_comment(lexer, false, NULL);
+        if (kind != LINE_COMMENT && kind != BLOCK_COMMENT) {
+            return false;
+        }
+    }
+    switch (argument) {
+        case ARGUMENT_NAME:
+        case ARGUMENT_DEFINED:
+            return is_word_start(lexer->lookahead);
+        case ARGUMENT_STRING:
+            return lexer->lookahead == '\'';
+        case ARGUMENT_NUMBER:
+            return iswdigit(lexer->lookahead);
+        default:
+            return false;
+    }
+}
+
+// Whether a #DEFINE's value, or a block comment before it, follows on the
+// line.
+static bool value_follows(TSLexer *lexer) {
+    while (iswspace(lexer->lookahead) && !is_line_end(lexer->lookahead)) {
+        advance(lexer);
+    }
+    if (is_line_end(lexer->lookahead)) {
+        return false;
+    }
+    if (lexer->lookahead == '/') {
+        advance(lexer);
+        return lexer->lookahead != '/';
+    }
+    return true;
+}
+
+// A directive's keyword and the argument it owes.
+static const struct {
+    const char *word;
+    enum TokenType token;
+    Argument argument;
+} DIRECTIVES[] = {
+    {"if_defined", PREPROC_IF_DEFINED_KEYWORD, ARGUMENT_NAME},
+    {"if_not_defined", PREPROC_IF_NOT_DEFINED_KEYWORD, ARGUMENT_NAME},
+    {"else", PREPROC_ELSE_KEYWORD, ARGUMENT_NONE},
+    {"end_if", PREPROC_END_IF_KEYWORD, ARGUMENT_NONE},
+    {"define", PREPROC_DEFINE_KEYWORD, ARGUMENT_DEFINED},
+    {"include", PREPROC_INCLUDE_KEYWORD, ARGUMENT_STRING},
+    {"warn", PREPROC_WARN_KEYWORD, ARGUMENT_STRING},
+    {"disable_warning", PREPROC_DISABLE_WARNING_KEYWORD, ARGUMENT_NUMBER},
+};
+
+// The directive keyword `word` names, lowercase, ends here: its token, with
+// the argument it owes when that argument follows.
+static bool finish_directive_keyword(Scanner *scanner, TSLexer *lexer, const char *word) {
+    for (unsigned i = 0; i < sizeof(DIRECTIVES) / sizeof(DIRECTIVES[0]); i++) {
+        if (strcmp(word, DIRECTIVES[i].word) == 0) {
+            lexer->mark_end(lexer);
+            lexer->result_symbol = DIRECTIVES[i].token;
+            Argument argument = DIRECTIVES[i].argument;
+            scanner->argument =
+                argument != ARGUMENT_NONE && argument_follows(lexer, argument) ? argument : ARGUMENT_NONE;
+            return true;
+        }
+    }
+    return false;
+}
+
+// A directive's keyword: the lookahead is `#`.
+static bool lex_directive_keyword(Scanner *scanner, TSLexer *lexer) {
+    advance(lexer);
+    char word[16];
+    unsigned length = 0;
+    while (is_word_char(lexer->lookahead)) {
+        if (length == sizeof(word) - 1) {
+            return false;
+        }
+        word[length++] = (char)towlower(lexer->lookahead);
+        advance(lexer);
+    }
+    word[length] = '\0';
+    return finish_directive_keyword(scanner, lexer, word);
+}
+
+// What a directive's keyword owes: its argument, or a comment before it.
+static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
+    Argument argument = scanner->argument;
+    scanner->argument = ARGUMENT_NONE;
+    if (argument == ARGUMENT_VALUE) {
+        while (iswspace(lexer->lookahead) && !is_line_end(lexer->lookahead)) {
+            skip(lexer);
+        }
+    } else {
+        while (iswspace(lexer->lookahead)) {
+            skip(lexer);
+        }
+    }
+    if (lexer->lookahead == '/' || lexer->lookahead == '(') {
+        switch (scan_comment(lexer, false, NULL)) {
+            case LINE_COMMENT:
+            case BLOCK_COMMENT:
+                lexer->mark_end(lexer);
+                lexer->result_symbol = COMMENT;
+                if (argument != ARGUMENT_VALUE || value_follows(lexer)) {
+                    scanner->argument = argument;
+                }
+                return true;
+            case OPEN_COMMENT:
+                lexer->mark_end(lexer);
+                lexer->result_symbol = UNCLOSED_COMMENT;
+                return true;
+            case NOT_A_COMMENT:
+                return argument == ARGUMENT_VALUE && lex_define_value(lexer, true);
+        }
+    }
+    switch (argument) {
+        case ARGUMENT_NAME:
+        case ARGUMENT_DEFINED:
+            while (is_word_char(lexer->lookahead)) {
+                advance(lexer);
+            }
+            lexer->mark_end(lexer);
+            lexer->result_symbol = PREPROC_NAME;
+            if (argument == ARGUMENT_DEFINED && value_follows(lexer)) {
+                scanner->argument = ARGUMENT_VALUE;
+            }
+            return true;
+        case ARGUMENT_VALUE:
+            return !is_line_end(lexer->lookahead) && lex_define_value(lexer, false);
+        case ARGUMENT_STRING:
+            lexer->result_symbol = scan_quoted(lexer, false, true) ? PREPROC_STRING : PREPROC_UNCLOSED_STRING;
+            return true;
+        case ARGUMENT_NUMBER:
+            while (iswdigit(lexer->lookahead)) {
+                advance(lexer);
+            }
+            lexer->mark_end(lexer);
+            lexer->result_symbol = PREPROC_NUMBER;
+            return true;
+        default:
+            return false;
+    }
+}
+
+// The whole word INCLUDE starts a directive wherever it stands. ACTIVE is
+// reserved, but where no label may start it would lex as an identifier and
+// carry the label into an expression. Where an operand is owed it ends the
+// statement there, short of that operand; anywhere else the empty token
+// before it, which only a label start takes, ends the parse at the misplaced
+// label.
+static bool scan_leading_word(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols, bool label_may_start) {
     lexer->mark_end(lexer);
     char word[9];
     if (!read_short_word(lexer, word)) {
         return false;
     }
-    if (strcmp(word, "active") == 0) {
+    if (strcmp(word, "include") == 0) {
+        return finish_directive_keyword(scanner, lexer, word);
+    }
+    if (!label_may_start && strcmp(word, "active") == 0) {
         bool operand = false;
         for (unsigned i = EVENT_DATA; i <= EVENT_CUSTOM; i++) {
             operand |= valid_symbols[i];
@@ -516,14 +711,11 @@ typedef enum {
     SEMICOLON_EVENT_TOKEN, // result_symbol holds the event token found instead
 } SemicolonResult;
 
-// What follows the statement boundary: a comment first, a quote first on the
-// same line, or a #DEFINE's value first on the same line (its first character
-// already read when `value_started`).
+// What follows the statement boundary: a comment first, or a quote first on
+// the same line.
 typedef struct {
     bool comment;
     bool quote;
-    bool value;
-    bool value_started;
 } Ahead;
 
 // Whether a semicolon belongs at the current position. Once a comment has
@@ -532,7 +724,6 @@ typedef struct {
 static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *valid_symbols, Ahead *ahead) {
     bool declaration_continuation = valid_symbols[DECLARATION_CONTINUATION];
     bool value_continuation = valid_symbols[VALUE_CONTINUATION];
-    bool preproc_continuation = valid_symbols[PREPROC_CONTINUATION];
     bool field_continuation = valid_symbols[FIELD_CONTINUATION];
     lexer->result_symbol = AUTOMATIC_SEMICOLON;
     lexer->mark_end(lexer);
@@ -547,7 +738,6 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
         if (lexer->lookahead == '/' || lexer->lookahead == '(') {
             WhitespaceResult result = scan_whitespace_and_comments(lexer, false, first ? &ahead->comment : NULL);
             if (result == REJECT || result == PAREN) {
-                ahead->value = ahead->value_started = first && preproc_continuation;
                 return SEMICOLON_NO;
             }
             first = false;
@@ -573,11 +763,6 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
             ahead->quote = first && lexer->lookahead == '\'';
             // NLRC also separates statements on one line. Parentheses,
             // brackets and symbolic operators still belong to the expression.
-            // A macro argument consumes the rest of its line, even IF, etc.
-            if (preproc_continuation) {
-                ahead->value = first;
-                return SEMICOLON_NO;
-            }
             if (lexer->lookahead == '{') {
                 return value_continuation ? SEMICOLON_NO : SEMICOLON_YES;
             }
@@ -680,12 +865,16 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
         return lex_comment(lexer);
     }
 
+    if (scanner->argument != ARGUMENT_NONE) {
+        return scan_argument(scanner, lexer);
+    }
+
     if (!error_mode && valid_symbols[STRING_CONTINUATION] && lexer->lookahead == '\'') {
         return lex_string(lexer, STRING_CONTINUATION);
     }
 
     if (valid_symbols[AUTOMATIC_SEMICOLON] && !error_mode) {
-        Ahead ahead = {false, false, false, false};
+        Ahead ahead = {false, false};
         switch (scan_automatic_semicolon(lexer, valid_symbols, &ahead)) {
             case SEMICOLON_YES:
                 return true;
@@ -699,8 +888,8 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
             lexer->result_symbol = COMMENT_AHEAD;
             return true;
         }
-        if (ahead.value && valid_symbols[PREPROC_ARG]) {
-            return lex_define_value(lexer, ahead.value_started);
+        if (lexer->lookahead == '#') {
+            return lex_directive_keyword(scanner, lexer);
         }
         return ahead.quote && valid_symbols[STRING_PART] && lex_string(lexer, STRING_PART);
     }
@@ -714,8 +903,8 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
     if (lexer->lookahead == '\'') {
         return (valid_symbols[STRING_PART] || error_mode) && lex_string(lexer, STRING_PART);
     }
-    if (!valid_symbols[LABEL_START] && !error_mode) {
-        return scan_misplaced_label(lexer, valid_symbols);
+    if (lexer->lookahead == '#') {
+        return lex_directive_keyword(scanner, lexer);
     }
-    return scan_event_object(lexer, valid_symbols);
+    return scan_leading_word(scanner, lexer, valid_symbols, valid_symbols[LABEL_START] || error_mode);
 }

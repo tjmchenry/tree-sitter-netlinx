@@ -168,11 +168,6 @@
 (struct_specifier
   name: (type_identifier) @type.custom)
 
-;; Field types in struct declarations
-(field_declaration
-  type: (type_specifier
-    (type_identifier) @type.custom))
-
 ;; Custom types in local variable declarations with storage specifiers
 (declaration
   (storage_class_specifier)
@@ -193,14 +188,6 @@
 
 ;; The same in a SELECT arm, and after a conditional in a SELECT
 (active_statement
-  (declaration
-    (storage_class_specifier)
-    .
-    (_) @type
-    .
-    (identifier)))
-
-(select_block
   (declaration
     (storage_class_specifier)
     .
@@ -451,6 +438,10 @@
 (preproc_if_not_defined_keyword) @preprocessor
 (preproc_else_keyword) @preprocessor
 (preproc_end_if_keyword) @preprocessor
+(preproc_name) @constant
+(preproc_string) @string
+(preproc_unclosed_string) @string
+(preproc_number) @number
 
 ;; Preproc Arguments
 ;; Highlight all preproc_args initially as constants

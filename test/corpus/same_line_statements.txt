@@ -1232,10 +1232,9 @@ a = 1 b = 2
 --------------------------------------------------------------------------------
 
 (source_file
-  (preproc_define
-    (preproc_define_keyword)
-    (identifier)
-    (preproc_arg))
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
   (section
     (define_program_section
       (define_program_keyword)
@@ -1350,10 +1349,9 @@ a = 1 b = 2
 --------------------------------------------------------------------------------
 
 (source_file
-  (preproc_define
-    (preproc_define_keyword)
-    (identifier)
-    (preproc_arg))
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
   (section
     (define_program_section
       (define_program_keyword)

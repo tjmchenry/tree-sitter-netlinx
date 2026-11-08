@@ -315,13 +315,11 @@ A comment after a define's value is a comment
 --------------------------------------------------------------------------------
 
 (source_file
-      (preproc_define
-        (preproc_define_keyword)
-        (identifier)
-        (preproc_arg))
-      (comment)
-      (preproc_define
-        (preproc_define_keyword)
-        (identifier)
-        (preproc_arg))
-      (comment))
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
+  (comment)
+  (preproc_define_keyword)
+  (preproc_name)
+  (preproc_arg)
+  (comment))
