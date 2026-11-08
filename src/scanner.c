@@ -10,6 +10,7 @@ enum TokenType {
     VALUE_CONTINUATION,
     FIELD_CONTINUATION,
     KEYWORD_TYPE_CONTINUATION,
+    KEYWORD_TYPE_NAME,
     EVENT_DATA,
     EVENT_BUTTON,
     EVENT_CHANNEL,
@@ -711,6 +712,7 @@ typedef enum {
     SEMICOLON_NO,
     SEMICOLON_YES,
     SEMICOLON_EVENT_TOKEN, // result_symbol holds the event token found instead
+    SEMICOLON_KEYWORD_TYPE_NAME, // result_symbol holds KEYWORD_TYPE_NAME
 } SemicolonResult;
 
 // What follows the statement boundary: a comment first, or a quote first on
@@ -721,9 +723,9 @@ typedef struct {
 } Ahead;
 
 // Whether the word at the lookahead can be a keyword type's declarator: a
-// subscript, a parameter list, a comma, a comment, a closing brace, another
-// word or its line's end follows it. Anything else ends the keyword type's
-// field, so a parse error stays on its own line.
+// subscript, a parameter list, a comma, a semicolon, a comment, a closing
+// brace, another word or its line's end follows it. Anything else ends the
+// keyword type's field, so a parse error stays on its own line.
 static bool word_can_be_declarator(TSLexer *lexer) {
     while (is_word_char(lexer->lookahead)) {
         skip(lexer);
@@ -735,12 +737,53 @@ static bool word_can_be_declarator(TSLexer *lexer) {
         case '[':
         case '(':
         case ',':
+        case ';':
         case '/':
         case '}':
             return true;
         default:
             return is_word_start(lexer->lookahead) || is_line_end(lexer->lookahead);
     }
+}
+
+// Reads the word at the lookahead as KEYWORD_TYPE_NAME when it is a keyword
+// type, which no field's name may be.
+static bool lex_keyword_type_name(TSLexer *lexer) {
+    static const char *types[] = {
+        "char", "widechar", "integer", "sinteger", "long", "slong", "float", "double",
+        "variant", "variantarray", "dev", "devlev", "devchan",
+    };
+    char word[16];
+    unsigned length = 0;
+    while (is_word_char(lexer->lookahead)) {
+        if (length == sizeof(word) - 1) {
+            return false;
+        }
+        word[length++] = (char)towlower(lexer->lookahead);
+        advance(lexer);
+    }
+    word[length] = '\0';
+    for (unsigned i = 0; i < sizeof(types) / sizeof(types[0]); i++) {
+        if (strcmp(word, types[i]) == 0) {
+            lexer->mark_end(lexer);
+            lexer->result_symbol = KEYWORD_TYPE_NAME;
+            return true;
+        }
+    }
+    return false;
+}
+
+// What a field's keyword type takes from the word or closing brace at the
+// lookahead. A keyword type is never a field alone: before a closing brace
+// no semicolon ends it. `may_lex` is false once a comment has been passed.
+static SemicolonResult after_keyword_type(TSLexer *lexer, bool may_lex) {
+    if (lexer->lookahead == '}') {
+        return SEMICOLON_NO;
+    }
+    if (may_lex && lex_keyword_type_name(lexer)) {
+        return SEMICOLON_KEYWORD_TYPE_NAME;
+    }
+    return word_can_be_declarator(lexer) ? SEMICOLON_NO : SEMICOLON_YES;
 }
 
 // Whether a semicolon belongs at the current position. Once a comment has
@@ -769,14 +812,15 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
             first = false;
 
             if (result == ACCEPT && lexer->lookahead != ',' && lexer->lookahead != '=') {
-                return keyword_type && is_word_start(lexer->lookahead) && word_can_be_declarator(lexer)
-                    ? SEMICOLON_NO
-                    : SEMICOLON_YES;
+                if (keyword_type && (lexer->lookahead == '}' || is_word_start(lexer->lookahead))) {
+                    return after_keyword_type(lexer, false);
+                }
+                return SEMICOLON_YES;
             }
         }
 
         if (lexer->lookahead == '}') {
-            return SEMICOLON_YES; // Before closing brace - insert a semicolon
+            return keyword_type ? SEMICOLON_NO : SEMICOLON_YES;
         }
 
         if (lexer->is_at_included_range_start(lexer)) {
@@ -797,7 +841,12 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
             const bool *event_symbols =
                 (declaration_continuation || value_continuation) && !ahead->comment ? valid_symbols : NULL;
             if (saw_whitespace && is_word_start(lexer->lookahead)) {
-                if (field_continuation || keyword_type) {
+                if (keyword_type) {
+                    return after_keyword_type(lexer, !ahead->comment) == SEMICOLON_KEYWORD_TYPE_NAME
+                        ? SEMICOLON_KEYWORD_TYPE_NAME
+                        : SEMICOLON_NO;
+                }
+                if (field_continuation) {
                     return SEMICOLON_NO;
                 }
                 WordKind word = scan_word(lexer, value_continuation, event_symbols);
@@ -832,8 +881,8 @@ static SemicolonResult scan_automatic_semicolon(TSLexer *lexer, const bool *vali
     if (result == PAREN) {
         return SEMICOLON_YES;
     }
-    if (keyword_type && is_word_start(lexer->lookahead)) {
-        return word_can_be_declarator(lexer) ? SEMICOLON_NO : SEMICOLON_YES;
+    if (keyword_type && (lexer->lookahead == '}' || is_word_start(lexer->lookahead))) {
+        return after_keyword_type(lexer, !ahead->comment);
     }
 
     // Don't insert a semicolon before these characters
@@ -910,6 +959,7 @@ bool tree_sitter_netlinx_external_scanner_scan(void *payload, TSLexer *lexer, co
             case SEMICOLON_YES:
                 return true;
             case SEMICOLON_EVENT_TOKEN:
+            case SEMICOLON_KEYWORD_TYPE_NAME:
                 return true;
             case SEMICOLON_NO:
                 break;

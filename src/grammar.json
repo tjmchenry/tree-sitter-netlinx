@@ -7789,6 +7789,10 @@
     },
     {
       "type": "SYMBOL",
+      "name": "keyword_type_name"
+    },
+    {
+      "type": "SYMBOL",
       "name": "data"
     },
     {

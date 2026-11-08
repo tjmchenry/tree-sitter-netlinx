@@ -63,6 +63,8 @@ module.exports = grammar({
         // Never emitted: past a field's keyword type, a word on a later line
         // is its declarator, not a field of its own.
         $._keyword_type_continuation,
+        // A keyword type where a field's name goes: a token no rule takes.
+        $.keyword_type_name,
         // Event-object tokens are emitted only in expression positions;
         // their spellings use the ordinary identifier token in names/types.
         $.data,
