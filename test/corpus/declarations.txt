@@ -1757,7 +1757,7 @@ STRUCTURE TU
                 (primitive_type
                   (integer_keyword)))
               (ERROR
-                (keyword_type_name))
+                (reserved_name))
               declarator: (field_identifier)))))
       (type_definition
         (struct_specifier
@@ -1769,8 +1769,153 @@ STRUCTURE TU
                 (primitive_type
                   (integer_keyword)))
               (ERROR
-                (keyword_type_name))
+                (reserved_name))
               declarator: (field_identifier))))))))
+
+==================
+A Reserved Word Is No Field's Name
+==================
+
+DEFINE_TYPE
+STRUCTURE TA
+{
+    INTEGER IF m
+}
+STRUCTURE TB
+{
+    TS AWAKE m
+}
+STRUCTURE TC
+{
+    INTEGER k, ON m
+}
+STRUCTURE TD
+{
+    INTEGER k
+    DEFINE_PROGRAM
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (field_identifier)))))
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (type_identifier)
+              (ERROR
+                (reserved_name))
+              declarator: (field_identifier)))))
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier)
+              (ERROR
+                (reserved_name))
+              declarator: (field_identifier)))))
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (ERROR
+              (reserved_name))))))))
+
+==================
+A Modifier After A Field's Type Is A Reserved Name
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER CONSTANT m
+    TU VOLATILE n
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (field_identifier))
+            (field_declaration
+              type: (type_identifier)
+              (ERROR
+                (reserved_name))
+              declarator: (field_identifier))))))))
+
+==================
+A Keyword Type Alone Before A Semicolon Is An Error
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER m
+    INTEGER;
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (MISSING field_identifier))))))))
 
 ==================
 A Keyword Type Alone Before A Closing Brace Is An Error
