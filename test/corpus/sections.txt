@@ -148,3 +148,51 @@ define_program
             (binary_expression
               (identifier)
               (identifier))))))))
+
+================================================================================
+A Lone Semicolon Where No Statement Or Declaration Goes Is An Error
+================================================================================
+
+;
+DEFINE_DEVICE
+;
+DEFINE_TYPE
+;
+DEFINE_LATCHING
+;
+DEFINE_EVENT
+;
+DEFINE_FUNCTION f()
+{
+}
+;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (ERROR)
+  (section
+    (define_device_section
+      (define_device_keyword)))
+  (ERROR)
+  (section
+    (define_type_section
+      (define_type_keyword)))
+  (ERROR)
+  (section
+    (define_latching_section
+      (define_latching_keyword)))
+  (ERROR)
+  (section
+    (define_event_section
+      (define_event_keyword)))
+  (ERROR)
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list)
+          body: (compound_statement)))))
+  (ERROR))

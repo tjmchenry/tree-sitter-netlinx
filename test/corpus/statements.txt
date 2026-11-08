@@ -2475,3 +2475,152 @@ FOR (i = 1, j = 31; i <= 3; i++, j--)
         (assignment_expression
           left: (identifier)
           right: (identifier))))))
+
+================================================================================
+A Lone Semicolon Is An Empty Statement Where A Statement Or Declaration Goes
+================================================================================
+
+DEFINE_CONSTANT
+;
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER m;
+    ;
+}
+DEFINE_VARIABLE
+INTEGER n;
+;
+DEFINE_START
+;
+n = 1;;
+DEFINE_EVENT
+BUTTON_EVENT[dvT, 1]
+{
+    PUSH: ;
+}
+TIMELINE_EVENT[TL1] ;
+DEFINE_FUNCTION f()
+{
+    ;
+    IF (n) ; ELSE ;
+    WHILE (n) ;
+    WAIT 10 ;
+    SWITCH (n) { CASE 1: ; }
+    SELECT
+    {
+        ACTIVE (n): ;
+    }
+}
+DEFINE_PROGRAM
+;
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_constant_section
+      (define_constant_keyword)
+      (empty_statement)))
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))
+            (empty_statement))))))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))
+      (empty_statement)))
+  (section
+    (define_start_section
+      (define_start_keyword)
+      (empty_statement)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (empty_statement)))
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (button_event_definition
+          (button_event_declarator
+            (button_event_keyword)
+            devchan: (button_event_devchan_reference
+              (devchan_expression
+                device: (identifier)
+                channel: (number_literal))))
+          body: (button_event_block
+            (button_event_handler
+              type: (button_event_type
+                (push_keyword))
+              body: (empty_statement)))))
+      (event_definition
+        (timeline_event_definition
+          (timeline_event_declarator
+            (timeline_event_keyword)
+            id: (timeline_event_id_reference
+              (identifier)))
+          body: (empty_statement)))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list)
+          body: (compound_statement
+            (empty_statement)
+            (if_statement
+              (if_keyword)
+              condition: (parenthesized_expression
+                (identifier))
+              consequence: (empty_statement)
+              alternative: (else_clause
+                (else_keyword)
+                (empty_statement)))
+            (while_statement
+              (while_keyword)
+              condition: (parenthesized_expression
+                (identifier))
+              body: (empty_statement))
+            (wait_statement
+              (wait_keyword)
+              time: (number_literal)
+              body: (empty_statement))
+            (switch_statement
+              (switch_keyword)
+              condition: (parenthesized_expression
+                (identifier))
+              body: (compound_statement
+                (case_statement
+                  (case_keyword)
+                  value: (number_literal)
+                  (empty_statement))))
+            (select_statement
+              (select_keyword)
+              body: (select_block
+                (active_statement
+                  (active_keyword)
+                  condition: (parenthesized_expression
+                    (identifier))
+                  body: (empty_statement)))))))))
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (empty_statement))))
