@@ -120,13 +120,13 @@ nY = 2
       (expression_statement
         (assignment_expression
           left: (identifier)
-          right: (number_literal)))
-      (preproc_define_keyword)
-      (preproc_name)
-      (comment)
-      (ERROR)
-      (preproc_include_keyword)
-      (preproc_string))))
+          right: (number_literal)))))
+  (preproc_define_keyword)
+  (preproc_name)
+  (comment)
+  (ERROR)
+  (preproc_include_keyword)
+  (preproc_string))
 
 ==================
 Code After A Directive On Its Line
