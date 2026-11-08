@@ -866,11 +866,12 @@ INTEGER IF }
             (primitive_type
               (integer_keyword)))
           (field_identifier))
-        (ERROR
+        (field_declaration
           (intrinsic_type
             (primitive_type
               (integer_keyword)))
-          (reserved_name))))))
+          (ERROR
+            (reserved_name)))))))
 
 ================================================================================
 Regression event names remain module field and member names
