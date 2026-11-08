@@ -1550,7 +1550,7 @@ IF (a) { a = 3 b = 4 }
               (number_literal))))))))
 
 ================================================================================
-Same-line declaration modifiers continue their declaration and start one after RETURN
+A modifier after a declaration's type is refused, and one after RETURN starts a declaration
 ================================================================================
 
 INTEGER CONSTANT a
@@ -1563,8 +1563,8 @@ DEFINE_FUNCTION probe() { RETURN LOCAL_VAR INTEGER x }
     (intrinsic_type
       (primitive_type
         (integer_keyword)))
-    (type_qualifier
-      (constant_keyword))
+    (ERROR
+      (reserved_name))
     (identifier))
   (section
     (define_function_section

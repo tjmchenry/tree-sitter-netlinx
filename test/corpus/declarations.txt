@@ -798,7 +798,7 @@ Function Param Qualifiers
 // Type qualifier before type
 DEFINE_FUNCTION INTEGER MyFunc(CONSTANT INTEGER param1) {}
 
-// Type qualifier after type
+// A qualifier after the type is refused
 DEFINE_FUNCTION INTEGER MyFunc(INTEGER CONSTANT param1) {}
 
 // Multiple qualifiers
@@ -844,8 +844,8 @@ DEFINE_FUNCTION INTEGER MyFunc(CONSTANT CHAR buffer[]) {}
               (intrinsic_type
                 (primitive_type
                   (integer_keyword)))
-              (type_qualifier
-                (constant_keyword))
+              (ERROR
+                (reserved_name))
               (identifier)))
           (compound_statement)))))
   (comment)
@@ -2016,6 +2016,133 @@ STRUCTURE TS
               (ERROR
                 (reserved_name))
               declarator: (field_identifier))))))))
+
+==================
+A Modifier After A Declaration's Type Is A Reserved Name
+==================
+
+DEFINE_VARIABLE
+INTEGER CONSTANT nC = 1
+TS VOLATILE tV
+DEFINE_FUNCTION INTEGER fn1(INTEGER CONSTANT p)
+{
+    LOCAL_VAR INTEGER VOLATILE nV
+    STACK_VAR INTEGER STACK_VAR nS
+    RETURN p
+}
+
+---
+
+
+(source_file
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (ERROR
+          (reserved_name))
+        declarator: (init_declarator
+          declarator: (identifier)
+          value: (number_literal)))
+      (declaration
+        type: (type_identifier)
+        (ERROR
+          (reserved_name))
+        declarator: (identifier))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          return_type: (intrinsic_type
+            (primitive_type
+              (integer_keyword)))
+          name: (identifier)
+          parameters: (parameter_list
+            (parameter_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (identifier)))
+          body: (compound_statement
+            (declaration
+              (storage_class_specifier
+                (local_var_keyword))
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (identifier))
+            (declaration
+              (storage_class_specifier
+                (stack_var_keyword))
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (identifier))
+            (return_statement
+              (return_keyword)
+              (identifier))))))))
+
+==================
+A Modifier On The Line After A Declaration's Type Is A Reserved Name
+==================
+
+DEFINE_VARIABLE
+INTEGER
+CONSTANT nC = 1
+DEFINE_FUNCTION fn1(INTEGER p)
+{
+    LOCAL_VAR INTEGER
+    VOLATILE nV
+}
+
+---
+
+
+(source_file
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        (ERROR
+          (reserved_name))
+        declarator: (init_declarator
+          declarator: (identifier)
+          value: (number_literal)))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list
+            (parameter_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (identifier)))
+          body: (compound_statement
+            (declaration
+              (storage_class_specifier
+                (local_var_keyword))
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (reserved_name))
+              declarator: (identifier))))))))
 
 ==================
 A Keyword Type Alone Before A Semicolon Is An Error
