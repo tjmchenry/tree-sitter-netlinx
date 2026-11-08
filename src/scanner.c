@@ -691,13 +691,7 @@ static WordKind scan_word(TSLexer *lexer, bool value_continuation, const bool *e
     }
 
     // Prefer a still-incomplete declaration over starting a new one.
-    static const char *const system_types[] = {
-        "clkmgr_timeserver_struct", "data_feed", "data_field", "data_record", "dev_info_struct",
-        "dns_struct", "ip_address_struct", "last_login_info", "tbutton", "tchannel", "tcustom",
-        "tdata", "tlevel", "ttimeline", "url_struct", "wc_data_feed", "wc_data_field",
-        "wc_data_record",
-    };
-    if (IS_LISTED(word, KEYWORD_TYPES) || IS_LISTED(word, system_types)) {
+    if (IS_LISTED(word, KEYWORD_TYPES) || IS_LISTED(word, SYSTEM_TYPES)) {
         return TYPE_WORD;
     }
 
