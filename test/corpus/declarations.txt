@@ -1706,7 +1706,81 @@ DEFINE_TYPE
 STRUCTURE TS
 {
     INTEGER
+    m;
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              declarator: (field_identifier))))))))
+
+==================
+A Keyword Type Is No Field's Name
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER
     INTEGER m
+}
+STRUCTURE TU
+{
+    INTEGER INTEGER m
+}
+
+---
+
+(source_file
+  (section
+    (define_type_section
+      (define_type_keyword)
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (keyword_type_name))
+              declarator: (field_identifier)))))
+      (type_definition
+        (struct_specifier
+          (structure_keyword)
+          name: (type_identifier)
+          body: (field_declaration_list
+            (field_declaration
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (ERROR
+                (keyword_type_name))
+              declarator: (field_identifier))))))))
+
+==================
+A Keyword Type Alone Before A Closing Brace Is An Error
+==================
+
+DEFINE_TYPE
+STRUCTURE TS
+{
+    INTEGER m
+    INTEGER
 }
 
 ---
@@ -1726,7 +1800,10 @@ STRUCTURE TS
                   (integer_keyword)))
               declarator: (field_identifier))
             (field_declaration
-              type: (type_identifier))))))))
+              type: (intrinsic_type
+                (primitive_type
+                  (integer_keyword)))
+              (MISSING ";"))))))))
 
 ==================
 Lone Words Ending Their Lines In A Structure Body
