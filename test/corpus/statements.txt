@@ -2475,3 +2475,49 @@ FOR (i = 1, j = 31; i <= 3; i++, j--)
         (assignment_expression
           left: (identifier)
           right: (identifier))))))
+
+================================================================================
+A Second ELSE Is An Error, Never A Name
+================================================================================
+
+DEFINE_FUNCTION f()
+{
+    IF (a)
+        b()
+    ELSE
+        c()
+    ELSE
+        d()
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list)
+          body: (compound_statement
+            (if_statement
+              (if_keyword)
+              condition: (parenthesized_expression
+                (identifier))
+              consequence: (expression_statement
+                (call_expression
+                  function: (identifier)
+                  arguments: (argument_list)))
+              alternative: (else_clause
+                (else_keyword)
+                (expression_statement
+                  (call_expression
+                    function: (identifier)
+                    arguments: (argument_list)))))
+            (ERROR
+              (else_keyword))
+            (expression_statement
+              (call_expression
+                function: (identifier)
+                arguments: (argument_list)))))))))

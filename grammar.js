@@ -184,6 +184,11 @@ module.exports = grammar({
 
     word: ($) => $.identifier,
 
+    // Where no rule takes a reserved word, it is an error, never a name.
+    reserved: {
+        global: ($) => [$.else_keyword],
+    },
+
     rules: {
         // A section runs to the next section keyword, so a bare item stands
         // only before the first section, as an included file's items do.

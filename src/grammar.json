@@ -8046,5 +8046,12 @@
     "_type_declarator",
     "_abstract_declarator"
   ],
-  "reserved": {}
+  "reserved": {
+    "global": [
+      {
+        "type": "SYMBOL",
+        "name": "else_keyword"
+      }
+    ]
+  }
 }
