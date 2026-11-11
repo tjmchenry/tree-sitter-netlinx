@@ -6,7 +6,7 @@
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #endif
 
-#define LANGUAGE_VERSION 14
+#define LANGUAGE_VERSION 15
 #define STATE_COUNT 2130
 #define LARGE_STATE_COUNT 600
 #define SYMBOL_COUNT 386
@@ -17,7 +17,7 @@
 #define MAX_ALIAS_SEQUENCE_LENGTH 7
 #define MAX_RESERVED_WORD_SET_SIZE 0
 #define PRODUCTION_ID_COUNT 123
-#define SUPERTYPE_COUNT 0
+#define SUPERTYPE_COUNT 6
 
 enum ts_symbol_identifiers {
   sym_identifier = 1,
@@ -5527,6 +5527,95 @@ static const TSStateId ts_primary_state_ids[STATE_COUNT] = {
   [2129] = 2071,
 };
 
+static const TSSymbol ts_supertype_symbols[SUPERTYPE_COUNT] = {
+  sym__abstract_declarator,
+  sym__declarator,
+  sym__field_declarator,
+  sym_expression,
+  sym_statement,
+  sym_type_specifier,
+};
+
+static const TSMapSlice ts_supertype_map_slices[] = {
+  [sym__abstract_declarator] = {.index = 0, .length = 1},
+  [sym__declarator] = {.index = 1, .length = 4},
+  [sym__field_declarator] = {.index = 5, .length = 8},
+  [sym_expression] = {.index = 13, .length = 16},
+  [sym_statement] = {.index = 29, .length = 31},
+  [sym_type_specifier] = {.index = 60, .length = 2},
+};
+
+static const TSSymbol ts_supertype_map_entries[] = {
+  [0] =
+    sym_abstract_array_declarator,
+  [1] =
+    sym_array_declarator,
+    sym_function_declarator,
+    sym_identifier,
+    sym_parenthesized_declarator,
+  [5] =
+    alias_sym_field_identifier,
+    sym__function_declaration_declarator,
+    sym_array_declarator,
+    sym_array_field_declarator,
+    sym_function_declarator,
+    sym_function_field_declarator,
+    sym_parenthesized_declarator,
+    sym_parenthesized_field_declarator,
+  [13] =
+    sym_binary_expression,
+    sym_call_expression,
+    sym_compiler_variable,
+    sym_devchan_expression,
+    sym_devchan_range_expression,
+    sym_device_literal,
+    sym_field_expression,
+    sym_identifier,
+    sym_number_literal,
+    sym_parenthesized_expression,
+    sym_string_expression,
+    sym_string_literal,
+    sym_subscript_expression,
+    sym_system_variable,
+    sym_unary_expression,
+    sym_update_expression,
+  [29] =
+    sym_break_statement,
+    sym_call_statement,
+    sym_cancel_all_wait_statement,
+    sym_cancel_all_wait_until_statement,
+    sym_cancel_wait_statement,
+    sym_cancel_wait_until_statement,
+    sym_clear_buffer_statement,
+    sym_compound_statement,
+    sym_continue_statement,
+    sym_create_buffer_statement,
+    sym_create_level_statement,
+    sym_create_multi_buffer_statement,
+    sym_devchan_operation_statement,
+    sym_expression_statement,
+    sym_for_statement,
+    sym_if_statement,
+    sym_pause_all_wait_statement,
+    sym_pause_wait_statement,
+    sym_restart_all_wait_statement,
+    sym_restart_wait_statement,
+    sym_return_statement,
+    sym_select_statement,
+    sym_send_command_statement,
+    sym_send_level_statement,
+    sym_send_string_statement,
+    sym_switch_statement,
+    sym_system_call_statement,
+    sym_timed_wait_until_statement,
+    sym_wait_statement,
+    sym_wait_until_statement,
+    sym_while_statement,
+  [60] =
+    alias_sym_type_identifier,
+    sym_intrinsic_type,
+};
+
 static bool ts_lex(TSLexer *lexer, TSStateId state) {
   START_LEXER();
   eof = lexer->eof(lexer);
@@ -8728,7 +8817,7 @@ static bool ts_lex_keywords(TSLexer *lexer, TSStateId state) {
   }
 }
 
-static const TSLexMode ts_lex_modes[STATE_COUNT] = {
+static const TSLexerMode ts_lex_modes[STATE_COUNT] = {
   [0] = {.lex_state = 0, .external_lex_state = 1},
   [1] = {.lex_state = 0, .external_lex_state = 2},
   [2] = {.lex_state = 0, .external_lex_state = 2},
@@ -169780,6 +169869,7 @@ TS_PUBLIC const TSLanguage *tree_sitter_netlinx(void) {
     .state_count = STATE_COUNT,
     .large_state_count = LARGE_STATE_COUNT,
     .production_id_count = PRODUCTION_ID_COUNT,
+    .supertype_count = SUPERTYPE_COUNT,
     .field_count = FIELD_COUNT,
     .max_alias_sequence_length = MAX_ALIAS_SEQUENCE_LENGTH,
     .parse_table = &ts_parse_table[0][0],
@@ -169790,6 +169880,9 @@ TS_PUBLIC const TSLanguage *tree_sitter_netlinx(void) {
     .field_names = ts_field_names,
     .field_map_slices = ts_field_map_slices,
     .field_map_entries = ts_field_map_entries,
+    .supertype_map_slices = ts_supertype_map_slices,
+    .supertype_map_entries = ts_supertype_map_entries,
+    .supertype_symbols = ts_supertype_symbols,
     .symbol_metadata = ts_symbol_metadata,
     .public_symbol_map = ts_symbol_map,
     .alias_map = ts_non_terminal_alias_map,
@@ -169808,6 +169901,13 @@ TS_PUBLIC const TSLanguage *tree_sitter_netlinx(void) {
       tree_sitter_netlinx_external_scanner_deserialize,
     },
     .primary_state_ids = ts_primary_state_ids,
+    .name = "netlinx",
+    .max_reserved_word_set_size = 0,
+    .metadata = {
+      .major_version = 1,
+      .minor_version = 0,
+      .patch_version = 4,
+    },
   };
   return &language;
 }

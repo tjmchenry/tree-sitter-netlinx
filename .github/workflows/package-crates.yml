@@ -86,7 +86,7 @@ jobs:
           while read -r grammar; do
             grammar_dir=$(dirname "$grammar")
             cd "$grammar_dir"
-            tree-sitter generate --abi 14
+            tree-sitter generate --abi 15
             cd - > /dev/null
           done < <(find . -name grammar.js -not -path './node_modules/*' -not -path './.build/*')
         # env:

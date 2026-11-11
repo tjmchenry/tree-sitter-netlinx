@@ -93,7 +93,7 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       generate: true
-      abi-version: "14"
+      abi-version: "15"
       attestations: true
       release-body: ${{ needs.generate_changelog.outputs.release_notes }}
 
@@ -149,7 +149,7 @@ jobs:
       NPM_TOKEN: ${{secrets.NPM_TOKEN}}
     with:
       generate: true
-      abi-version: "14"
+      abi-version: "15"
 
   crates:
     name: Publish Crates package
@@ -161,7 +161,7 @@ jobs:
       CARGO_REGISTRY_TOKEN: ${{secrets.CARGO_REGISTRY_TOKEN}}
     with:
       generate: false
-      abi-version: "14"
+      abi-version: "15"
 
   pypi:
     name: Publish PyPI package
@@ -173,4 +173,4 @@ jobs:
       PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
     with:
       generate: true
-      abi-version: "14"
+      abi-version: "15"

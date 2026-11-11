@@ -10,7 +10,7 @@ Tree-sitter grammar for the AMX NetLinx programming language. Generates parsers 
 
 ```bash
 pnpm install              # Install dependencies (Node 22.15.0 via .nvmrc)
-pnpm run generate         # Regenerate parser from grammar.js (tree-sitter generate --abi 14)
+pnpm run generate         # Regenerate parser from grammar.js (tree-sitter generate --abi 15)
 pnpm test                 # Run test corpus (tree-sitter test)
 pnpm run test-node        # Run Node.js binding tests
 pnpm run lint             # ESLint
