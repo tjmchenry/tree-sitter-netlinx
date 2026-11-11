@@ -893,6 +893,7 @@ x.Data
             (string_part))
           (identifier)
           (argument_list)))))
+  (MISSING section_keyword)
   (type_definition
     (struct_specifier
       (structure_keyword)

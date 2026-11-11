@@ -282,3 +282,121 @@ DEFINE_FUNCTION f()
           parameters: (parameter_list)
           body: (compound_statement)))))
   (ERROR))
+
+================================================================================
+Bare Items Stand Only Before The First Section
+================================================================================
+
+INTEGER nShared
+nShared = 1
+DEFINE_VARIABLE
+INTEGER n
+DEFINE_EVENT
+BUTTON_EVENT[dv,1] { PUSH: { } }
+BUTTON_EVENT[dv,2] { PUSH: { } }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (declaration
+    type: (intrinsic_type
+      (primitive_type
+        (integer_keyword)))
+    declarator: (identifier))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (number_literal)))
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))))
+  (section
+    (define_event_section
+      (define_event_keyword)
+      (event_definition
+        (button_event_definition
+          (button_event_declarator
+            (button_event_keyword)
+            devchan: (button_event_devchan_reference
+              (devchan_expression
+                device: (identifier)
+                channel: (number_literal))))
+          body: (button_event_block
+            (button_event_handler
+              type: (button_event_type
+                (push_keyword))
+              body: (compound_statement)))))
+      (event_definition
+        (button_event_definition
+          (button_event_declarator
+            (button_event_keyword)
+            devchan: (button_event_devchan_reference
+              (devchan_expression
+                device: (identifier)
+                channel: (number_literal))))
+          body: (button_event_block
+            (button_event_handler
+              type: (button_event_type
+                (push_keyword))
+              body: (compound_statement))))))))
+
+================================================================================
+Code After A Definition Section Has No Section Keyword
+================================================================================
+
+DEFINE_VARIABLE
+INTEGER a
+DEFINE_FUNCTION f()
+{
+    a = 1
+}
+INTEGER b
+b = 2
+DEFINE_START
+a = 3
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_variable_section
+      (define_variable_keyword)
+      (declaration
+        type: (intrinsic_type
+          (primitive_type
+            (integer_keyword)))
+        declarator: (identifier))))
+  (section
+    (define_function_section
+      (define_function
+        (define_function_keyword)
+        (function_definition
+          name: (identifier)
+          parameters: (parameter_list)
+          body: (compound_statement
+            (expression_statement
+              (assignment_expression
+                left: (identifier)
+                right: (number_literal))))))))
+  keyword: (MISSING section_keyword)
+  (declaration
+    type: (intrinsic_type
+      (primitive_type
+        (integer_keyword)))
+    declarator: (identifier))
+  (expression_statement
+    (assignment_expression
+      left: (identifier)
+      right: (number_literal)))
+  (section
+    (define_start_section
+      (define_start_keyword)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))

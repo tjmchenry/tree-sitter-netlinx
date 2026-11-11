@@ -5459,7 +5459,18 @@
     "type": "source_file",
     "named": true,
     "root": true,
-    "fields": {},
+    "fields": {
+      "keyword": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "section_keyword",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
@@ -7163,6 +7174,10 @@
   },
   {
     "type": "rshift",
+    "named": true
+  },
+  {
+    "type": "section_keyword",
     "named": true
   },
   {

@@ -1234,6 +1234,7 @@ calculator = GetCalculator()
               (return_keyword)
               (number_literal)))))))
   (comment)
+  (MISSING section_keyword)
   (declaration
     (intrinsic_type
       (primitive_type

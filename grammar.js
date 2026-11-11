@@ -119,6 +119,9 @@ module.exports = grammar({
         $.preproc_number,
         // Valid only while the parser recovers from an error.
         $._error_sentinel,
+        // Never emitted: what error recovery inserts before code that a
+        // closed section leaves outside any section.
+        $.section_keyword,
     ],
 
     conflicts: ($) => [
@@ -182,20 +185,28 @@ module.exports = grammar({
     word: ($) => $.identifier,
 
     rules: {
-        source_file: ($) => repeat($._top_level_item),
-
-        _top_level_item: ($) =>
-            choice(
-                // Sections (each wraps its keyword + body)
-                $.section,
-
-                // Headers
-                $.program_name,
-                $.module_name,
-
-                // Items that may appear outside any section
-                $._section_body_item,
+        // A section runs to the next section keyword, so a bare item stands
+        // only before the first section, as an included file's items do.
+        source_file: ($) =>
+            seq(
+                repeat(choice($._header, $._section_body_item)),
+                optional(
+                    seq(
+                        $.section,
+                        repeat(
+                            choice(
+                                $._header,
+                                $.section,
+                                seq($._unheaded, repeat1($._section_body_item)),
+                            ),
+                        ),
+                    ),
+                ),
             ),
+
+        _header: ($) => choice($.program_name, $.module_name),
+
+        _unheaded: ($) => field("keyword", $.section_keyword),
 
         // Items that can appear inside a DEFINE_* section body.
         // Kept as a hidden rule so it doesn't create extra nodes.

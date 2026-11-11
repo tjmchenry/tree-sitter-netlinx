@@ -249,7 +249,7 @@ The parser will accept patterns that the NetLinx compiler might reject:
 
 The parser deliberately prioritizes syntactic flexibility over strict semantic validation:
 
-- **Section-Independent Parsing**: Declarations can appear anywhere in the code, even outside their semantically correct sections. The parser doesn't enforce section-specific constraints that the NetLinx compiler would apply.
+- **Section-Independent Parsing**: Declarations can appear in any section, even one where they don't belong semantically, and before the first section, as an included file's do. After the first section, code outside any section is an error. The parser doesn't enforce section-specific constraints that the NetLinx compiler would apply.
 
 - **Context-Free Analysis**: Device definitions, constants, and variables are parsed based on their syntactic structure rather than their semantic context. For example, device definitions in a `DEFINE_DEVICE` section are parsed as standard assignment expressions.
 

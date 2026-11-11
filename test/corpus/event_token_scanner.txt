@@ -60,6 +60,7 @@ DEFINE_FUNCTION OperandBeforeStatement() {
                 (system_variable
                   (data))
                 (field_identifier))))))))
+  (MISSING section_keyword)
   (expression_statement
     (field_expression
       (system_variable
