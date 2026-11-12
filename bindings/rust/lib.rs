@@ -35,6 +35,7 @@ pub const LANGUAGE: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_netli
 pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
 
 include!("scanner_words.rs");
+include!("node_kind_count.rs");
 
 // NOTE: uncomment these to include any queries that this grammar contains:
 
@@ -52,5 +53,15 @@ mod tests {
         parser
             .set_language(&super::LANGUAGE.into())
             .expect("Error loading Netlinx parser");
+    }
+
+    #[test]
+    fn node_kind_count_is_the_languages() {
+        let language: tree_sitter::Language = super::LANGUAGE.into();
+        assert_eq!(
+            super::NODE_KIND_COUNT,
+            language.node_kind_count(),
+            "bindings/rust/node_kind_count.rs is stale: run `pnpm generate`"
+        );
     }
 }

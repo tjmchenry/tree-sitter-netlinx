@@ -23,6 +23,10 @@ include = [
 [lib]
 path = "bindings/rust/lib.rs"
 
+[[example]]
+name = "print-node-kind-count"
+path = "bindings/rust/print_node_kind_count.rs"
+
 [dependencies]
 tree-sitter-language = "0.1"
 
