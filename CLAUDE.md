@@ -46,5 +46,5 @@ After any change to `grammar.js` or its imported modules, run `pnpm run generate
 
 - **Permissive parsing**: The grammar intentionally accepts syntactically valid but semantically questionable code. Syntax correctness is the goal, not semantic validation.
 - **Preprocessor directives** are extras: the scanner reads each directive keyword and its argument as tokens between any two tokens, as it reads a comment. Every arm of a conditional is read together, as written.
-- **Precedence**: The `PREC` object in `grammar.js` defines 20+ precedence levels. The conflicts array handles 15 grammar ambiguities.
+- **Precedence**: The `PREC` object in `grammar.js` defines 20+ precedence levels. The conflicts array handles 14 grammar ambiguities.
 - **Conventional commits**: Uses commitlint with `@commitlint/config-conventional`. Use `pnpm run commit` (git-cz) for interactive commit creation.
