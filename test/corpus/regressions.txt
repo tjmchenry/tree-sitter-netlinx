@@ -1312,3 +1312,65 @@ DEFINE_FUNCTION SLONG probe() { RETURN IF(a //\
                     (identifier)
                     (comment)))
                 (number_literal)))))))))
+
+================================================================================
+Device literal chain of five parts nests to the left
+================================================================================
+
+DEFINE_PROGRAM
+x = 1:2:3:4:5
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (device_literal
+            device: (device_literal
+              device: (number_literal)
+              port: (number_literal)
+              system: (number_literal))
+            port: (number_literal)
+            system: (number_literal)))))))
+
+================================================================================
+CASE typed onto a device literal
+================================================================================
+
+DEFINE_PROGRAM
+SWITCH (n)
+{
+  CASE 1:10001:1:0
+  {
+    x = 1
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (switch_statement
+        (switch_keyword)
+        condition: (parenthesized_expression
+          (identifier))
+        body: (compound_statement
+          (case_statement
+            (case_keyword)
+            value: (device_literal
+              device: (number_literal)
+              port: (number_literal)
+              system: (number_literal))
+            (expression_statement
+              (number_literal))
+            (compound_statement
+              (expression_statement
+                (assignment_expression
+                  left: (identifier)
+                  right: (number_literal))))))))))
