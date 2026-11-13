@@ -129,7 +129,6 @@ module.exports = grammar({
         [$.type_specifier, $.expression],
         [$.string_expression],
         [$.type_specifier, $._top_level_expression_statement],
-        [$.device_literal],
         [$.button_event_devchan_reference, $.devchan_expression],
         [$.channel_event_devchan_reference, $.devchan_expression],
         [$.push_event_devchan_reference, $.devchan_expression],
@@ -1753,12 +1752,17 @@ module.exports = grammar({
         device_literal: ($) =>
             prec.dynamic(
                 PREC.FIELD + 30,
-                seq(
-                    field("device", $.expression),
-                    ":",
-                    field("port", $.expression),
-                    ":",
-                    field("system", $.expression),
+                // Left-associative: a chain of more than three parts nests to
+                // the left, so the parse never forks over where an inner device
+                // literal ends.
+                prec.left(
+                    seq(
+                        field("device", $.expression),
+                        ":",
+                        field("port", $.expression),
+                        ":",
+                        field("system", $.expression),
+                    ),
                 ),
             ),
 

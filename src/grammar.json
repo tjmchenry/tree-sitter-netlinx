@@ -7538,41 +7538,45 @@
       "type": "PREC_DYNAMIC",
       "value": 46,
       "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "FIELD",
-            "name": "device",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
+        "type": "PREC_LEFT",
+        "value": 0,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "device",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "FIELD",
+              "name": "port",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "FIELD",
+              "name": "system",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
+              }
             }
-          },
-          {
-            "type": "STRING",
-            "value": ":"
-          },
-          {
-            "type": "FIELD",
-            "name": "port",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          },
-          {
-            "type": "STRING",
-            "value": ":"
-          },
-          {
-            "type": "FIELD",
-            "name": "system",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
-          }
-        ]
+          ]
+        }
       }
     },
     "string_literal": {
@@ -7823,9 +7827,6 @@
     [
       "type_specifier",
       "_top_level_expression_statement"
-    ],
-    [
-      "device_literal"
     ],
     [
       "button_event_devchan_reference",
