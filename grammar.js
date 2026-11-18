@@ -89,7 +89,8 @@ module.exports = grammar({
         $.string_part,
         $._string_continuation,
         $.unclosed_string,
-        // A #DEFINE's value: the rest of its line up to a comment.
+        // A #DEFINE's value, a token for each stretch of it between comments
+        // and line ends, or the lone `\` that ends its name.
         $.preproc_arg,
         // Empty: a comment follows that no semicolon goes before.
         $._comment_ahead,

@@ -7,6 +7,19 @@
 //       ^ constant
 //                   ^ number
 
+#define CONTINUED 7 \
+value_line
+// <- constant
+#define WRAPPED 7 (* c \
+NOT_THE_VALUE *) 8
+// <- comment
+//    ^ comment
+//               ^ number
+#define LINE_WRAPPED 7 // c \
+NOT_THE_VALUE
+// <- comment
+//    ^ comment
+
 #if_defined DEBUG_MODE
 // ^ preprocessor
 //           ^ constant

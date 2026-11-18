@@ -1,4 +1,5 @@
 * text=auto eol=lf
+test/corpus/define_line_ends.txt -text
 
 src/*.json linguist-generated
 src/parser.c linguist-generated

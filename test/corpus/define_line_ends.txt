@@ -1,0 +1,167 @@
+====================================
+A CRLF Define Continues As An LF One
+====================================
+
+DEFINE_PROGRAM
+#DEFINE X \
+)
+#DEFINE Y 7 // c \
+#DEFINE Z
+#DEFINE W 7 (* c \
+#DEFINE V
+#DEFINE U 7 \
+
+#DEFINE T
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=================================================================================
+A Lone CR On A Define's Line Is Text, And A Backslash Before It Continues Nothing
+=================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X (* c \8
+nX = 1
+#DEFINE Y // c \8
+nY = 2
+#DEFINE Z 7 \8
+nZ = 3
+#DEFINE A 7#DEFINE B
+#DEFINE C 7 (* c#DEFINE D
+#DEFINE E7
+nA = 4
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================================================
+A Backslash Before CRs And An LF Continues Nothing
+==================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+8
+#DEFINE Y // c \
+#DEFINE Z
+#DEFINE W (* c \
+#DEFINE V
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (number_literal))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+================================================================================
+A CRLF Continuing Line Of Only A Backslash Is The Define's And Continues Nothing
+================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+\
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))

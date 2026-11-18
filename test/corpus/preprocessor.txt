@@ -1458,3 +1458,916 @@ release[dvTP, 2]
             (number_literal))))
       (preproc_end_if_keyword)
       (compound_statement))))
+
+==========================================================================================================
+A Define's Line Comment Ending In A Backslash Continues It, And What Opens On The Next Line Closes Nowhere
+==========================================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 // c \
+(* a
+#DEFINE Z
+*)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================================================================================
+A Block Comment Opened On A Define's Continued Line Does Not Reach Past The Define
+==================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 // c \
+/* a
+#DEFINE Z
+*/
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==========================================================================
+A Quote Opened On A Define's Continued Line Does Not Reach Past The Define
+==========================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+'a
+#DEFINE Z
+'
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR
+        (unclosed_string))
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==============================================================
+An Unclosed Comment Ending In A Backslash Continues The Define
+==============================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 (* c \
+(* a
+#DEFINE Z
+*)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+======================================================
+A Closed Comment Then A Backslash Continues The Define
+======================================================
+
+DEFINE_PROGRAM
+#DEFINE X (* c *) \
+(* a
+#DEFINE Z
+*)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=============================================
+A Value Then A Backslash Continues The Define
+=============================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+(* a
+#DEFINE Z
+*)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=========================================
+A Define Continued Twice Holds Both Lines
+=========================================
+
+DEFINE_PROGRAM
+#DEFINE X // c \
+(* a \
+/* b
+#DEFINE Z
+*)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (ERROR)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=====================================================
+A Backslash Before A Blank Line Ends The Define There
+=====================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===========================================
+A Backslash After A Space Continues Nothing
+===========================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \ 
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===========================================
+A Backslash Ending A Name Continues Nothing
+===========================================
+
+DEFINE_PROGRAM
+#DEFINE X\
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===========================================================================
+A Continuing Line Of Only A Backslash Is The Define's And Continues Nothing
+===========================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+\
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==========================================================================
+A Backslash After A Line Comment Before A Blank Line Ends The Define There
+==========================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 // c \
+
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================================================================
+A Define's Value Holds Quotes And Non-ASCII Bytes As Ordinary Text
+==================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 'abc
+#DEFINE Y 'a//b'
+#DEFINE Z 'a(*b'
+#DEFINE W fläg
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+====================================================================================
+Block Comments In A Define's Value Do Not Nest, And Each Ends Only At Its Own Closer
+====================================================================================
+
+DEFINE_PROGRAM
+#DEFINE A (* a (* b *) 5 *) 7
+#DEFINE B (* a */ 7
+nX = 1
+#DEFINE C /* a *) 7
+nX = 1
+#DEFINE D /* a /* b */ 5 */ 7
+#DEFINE E (* // *) 7
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==============================================================
+A Closed Comment In A Define's Value Leaves The Value Going On
+==============================================================
+
+DEFINE_PROGRAM
+#DEFINE X /* a */ 7
+#DEFINE Y 1(* a *)2
+#DEFINE Z 7 (* a *) 8 // c
+#DEFINE W 7 /* a
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+========================================================
+A Final Backslash Continues A Define's Value, Repeatedly
+========================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+#DEFINE Y
+#DEFINE W 7 \
++ 1
+#DEFINE V 7\
+1
+#DEFINE U 1 \
+2 \
+#DEFINE T
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+================================================
+A Backslash After A Comment Continues The Define
+================================================
+
+DEFINE_PROGRAM
+#DEFINE A 7 // c \
+#DEFINE B
+#DEFINE C 7 (* c \
+#DEFINE D
+#DEFINE E 7 (* c *) \
+#DEFINE F
+#DEFINE G 7 (* c *) // d \
+#DEFINE H
+#DEFINE I 7 \
+(* a \
+#DEFINE J
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=======================================================================
+A Comment Continued Onto A Define's Next Line Holds What The Line Holds
+=======================================================================
+
+DEFINE_PROGRAM
+#DEFINE X (* c \
+*) 7
+#DEFINE Y // c \
+)
+#DEFINE Z 7 \
+8 // c \
+9
+#DEFINE W (* c \
+d \
+*) 7 \
+8
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+============================================================
+A Backslash After A Name Then Text Leaves The Next Line Code
+============================================================
+
+DEFINE_PROGRAM
+#DEFINE X\Y
+#IF_DEFINED X
+#END_IF
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_if_defined_keyword)
+      (preproc_name)
+      (preproc_end_if_keyword)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+======================================================================================
+A Backslash After A Name And A Space, Or After Value Text Touching The Name, Continues
+======================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X \
+)
+#DEFINE Y+\
+)
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=========================================================================================
+A Line Of Spaces And Tabs After A Backslash Ends The Define There, And VT And FF Are Text
+=========================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+   
+#DEFINE Z
+nX = 1
+#DEFINE Y // c \
+	
+#DEFINE W
+nY = 2
+#DEFINE V 7 \
+
+#DEFINE U
+nZ = 3
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+============================================================
+A Continuing Line Of A Blank And A Backslash Is The Define's
+============================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 \
+ \
+#DEFINE Z
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+==================================================================================
+A Comment Continued Onto A Line Of Only A Backslash Holds It And Continues Nothing
+==================================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 // c \
+\
+#DEFINE Z
+nX = 1
+#DEFINE Y 7 (* c \
+\
+#DEFINE W
+nY = 2
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal)))
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_define_keyword)
+      (preproc_name)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===========================================================
+A Slash Or Paren Alone Before A Comment Is A Define's Value
+===========================================================
+
+DEFINE_PROGRAM
+#DEFINE X / (* c *) 2
+#DEFINE Y ( // c
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (comment)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+=======================================================================
+Unicode Line Separators And Blanks Are Ordinary Text On A Define's Line
+=======================================================================
+
+DEFINE_PROGRAM
+#DEFINE X 7 8
+#DEFINE Y (* a b *) 8
+#DEFINE W 7 \
+ 
+#DEFINE V 7 \
+ 
+#DEFINE U 
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (comment)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))
+
+===========================================================
+A Define's Tokens Hold Their Text, Not The Blanks Beside It
+:cst
+===========================================================
+
+DEFINE_PROGRAM
+#DEFINE X  7 (* c *)  8  // c
+#DEFINE Y 7 \
+  9
+nX = 1
+
+---
+
+1:0  - 6:0    source_file
+1:0  - 5:6      section
+1:0  - 5:6        define_program_section
+1:0  - 1:14         define_program_keyword `DEFINE_PROGRAM`
+2:0  - 2:7          preproc_define_keyword `#DEFINE`
+2:8  - 2:9          preproc_name `X`
+2:11 - 2:12         preproc_arg `7`
+2:13 - 2:20         comment `(* c *)`
+2:22 - 2:23         preproc_arg `8`
+2:25 - 2:29         comment `// c`
+3:0  - 3:7          preproc_define_keyword `#DEFINE`
+3:8  - 3:9          preproc_name `Y`
+3:10 - 3:13         preproc_arg `7 \\`
+4:2  - 4:3          preproc_arg `9`
+5:0  - 5:6          expression_statement
+5:0  - 5:6            assignment_expression
+5:0  - 5:2              left: identifier `nX`
+5:3  - 5:4              "="
+5:5  - 5:6              right: number_literal `1`
+
+=============================================
+VT And FF After A Define's Name Are Its Value
+=============================================
+
+DEFINE_PROGRAM
+#DEFINE X
+#DEFINE Y
+nX = 1
+
+---
+
+(source_file
+  (section
+    (define_program_section
+      (define_program_keyword)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (preproc_define_keyword)
+      (preproc_name)
+      (preproc_arg)
+      (expression_statement
+        (assignment_expression
+          left: (identifier)
+          right: (number_literal))))))

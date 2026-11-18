@@ -54,12 +54,14 @@ typedef enum {
     ARGUMENT_NAME,
     // A word, the name a #DEFINE defines, then its value on that word's line.
     ARGUMENT_DEFINED,
-    // A #DEFINE's value.
+    // The rest of a #DEFINE's line: its value and comments.
     ARGUMENT_VALUE,
     ARGUMENT_STRING,
     ARGUMENT_NUMBER,
-    // The comment a #DEFINE's value stops at.
-    ARGUMENT_COMMENT,
+    // The next line, which a #DEFINE's final `\` continued it onto.
+    ARGUMENT_CONTINUED,
+    // The lone `\` that ends a #DEFINE's name, continuing nothing.
+    ARGUMENT_LONE,
 } Argument;
 
 // A COMMENT_AHEAD token was the last one returned: the comment it announced
@@ -129,9 +131,7 @@ typedef enum {
 // opener, and a closer ends the comment it balances. The lookahead is '(' or
 // '/'; when it opens no comment, only that character has been consumed, and
 // it stays in the token. A newline inside a block comment sets `newline`.
-// With `line_bounded`, as on a #DEFINE's line, a block comment its line leaves
-// open ends with the line.
-static CommentKind scan_comment(TSLexer *lexer, bool skipped, bool *newline, bool line_bounded) {
+static CommentKind scan_comment(TSLexer *lexer, bool skipped, bool *newline) {
     int32_t opener = lexer->lookahead;
     advance(lexer);
     if (opener == '/' && lexer->lookahead == '/') {
@@ -147,9 +147,6 @@ static CommentKind scan_comment(TSLexer *lexer, bool skipped, bool *newline, boo
     unsigned depth = 1;
     while (lexer->lookahead != 0) {
         int32_t c = lexer->lookahead;
-        if (line_bounded && is_line_end(c)) {
-            return BLOCK_COMMENT;
-        }
         if (c == '\n' && newline) {
             *newline = true;
         }
@@ -198,7 +195,7 @@ static bool scan_quoted(TSLexer *lexer, bool skipped, bool mark) {
 }
 
 static bool lex_comment(TSLexer *lexer) {
-    switch (scan_comment(lexer, false, NULL, false)) {
+    switch (scan_comment(lexer, false, NULL)) {
         case LINE_COMMENT:
         case BLOCK_COMMENT:
             lexer->mark_end(lexer);
@@ -219,40 +216,120 @@ static bool lex_string(TSLexer *lexer, enum TokenType closed) {
     return true;
 }
 
-// A #DEFINE's value: the rest of its line up to a comment, and the next line
-// too after a final `\`. The lookahead is the value's first character, or
-// the one after it when `started`. Stopping at a comment sets `at_comment`.
-static bool lex_define_value(TSLexer *lexer, bool started, bool *at_comment) {
+// A #DEFINE's line ends at the file's end, an LF, or a CR before an LF, which
+// this moves past. Any other CR is text, as are VT, FF and non-ASCII bytes.
+static bool ends_define_line(TSLexer *lexer) {
+    if (lexer->lookahead == '\r') {
+        advance(lexer);
+        return lexer->lookahead == '\n';
+    }
+    return lexer->lookahead == 0 || lexer->lookahead == '\n';
+}
+
+static bool is_define_blank(int32_t c) {
+    return c == ' ' || c == '\t';
+}
+
+static void move_blanks(TSLexer *lexer, bool skipped) {
+    while (is_define_blank(lexer->lookahead)) {
+        move(lexer, skipped);
+    }
+}
+
+// At the LF ending a #DEFINE's line with a `\`: whether the next line, which
+// the define takes whatever it holds, holds more than blanks. The lexer ends
+// up past what it looked at, so the token must be marked first.
+static bool text_follows(TSLexer *lexer) {
+    advance(lexer);
+    move_blanks(lexer, false);
+    return !ends_define_line(lexer);
+}
+
+// A comment on a #DEFINE's line, by the pre-processor's rules: block comments
+// do not nest and end only at their own closer, and a comment its line leaves
+// open ends there unless a `\` right before the LF, not the first character of
+// a continued line, continues it onto the next line. With the token marked,
+// BLOCK_COMMENT closed and LINE_COMMENT ended the define; NOT_A_COMMENT has
+// consumed only the lookahead.
+static CommentKind scan_define_comment(TSLexer *lexer) {
+    int32_t opener = lexer->lookahead;
+    advance(lexer);
+    int32_t closer = 0;
+    if (lexer->lookahead == '*') {
+        closer = opener == '(' ? ')' : '/';
+    } else if (opener != '/' || lexer->lookahead != '/') {
+        return NOT_A_COMMENT;
+    }
+    advance(lexer);
+    int32_t last = 0;
+    bool line_start = false;
+    bool lone = false;
+    for (;;) {
+        int32_t c = lexer->lookahead;
+        if (c == 0 || c == '\n' || c == '\r') {
+            lexer->mark_end(lexer);
+            if (!ends_define_line(lexer)) {
+                last = '\r';
+                line_start = false;
+                continue;
+            }
+            if (lexer->lookahead == '\n' && last == '\\' && !lone) {
+                advance(lexer);
+                last = 0;
+                line_start = true;
+                continue;
+            }
+            return LINE_COMMENT;
+        }
+        advance(lexer);
+        if (c == '*' && closer != 0 && lexer->lookahead == closer) {
+            advance(lexer);
+            lexer->mark_end(lexer);
+            return BLOCK_COMMENT;
+        }
+        last = c;
+        lone = line_start;
+        line_start = false;
+    }
+}
+
+// A #DEFINE's value on one line, up to a comment or the line's end. The
+// lookahead is the value's first character, or the one after it when
+// `started`; `first` when that character starts the line's text after the
+// name or the continued line, where a `\` continues nothing. Returns what the
+// define reads next.
+static Argument lex_define_value(TSLexer *lexer, bool started, bool first) {
+    lexer->result_symbol = PREPROC_ARG;
     if (started) {
         lexer->mark_end(lexer);
     }
     for (;;) {
         int32_t c = lexer->lookahead;
-        if (c == 0 || c == '\n' || c == '\r') {
-            break;
+        if (c == 0 || c == '\n') {
+            return ARGUMENT_NONE;
         }
         advance(lexer);
+        if (c == '\r' && lexer->lookahead == '\n') {
+            return ARGUMENT_NONE;
+        }
         if ((c == '/' || c == '(') &&
             (lexer->lookahead == '*' || (c == '/' && lexer->lookahead == '/'))) {
-            *at_comment = true;
-            break;
+            return ARGUMENT_VALUE;
         }
-        if (c == '\\') {
-            lexer->mark_end(lexer);
-            if (lexer->lookahead == '\r') {
-                advance(lexer);
-            }
-            if (lexer->lookahead == '\n') {
-                advance(lexer);
-            }
-            continue;
-        }
-        if (!iswspace(c)) {
+        if (!is_define_blank(c)) {
             lexer->mark_end(lexer);
         }
+        if (c == '\\' && (lexer->lookahead == '\n' || lexer->lookahead == '\r')) {
+            if (!ends_define_line(lexer)) {
+                lexer->mark_end(lexer);
+            } else if (lexer->lookahead == '\n' && !first && text_follows(lexer)) {
+                return ARGUMENT_CONTINUED;
+            } else {
+                return ARGUMENT_NONE;
+            }
+        }
+        first = false;
     }
-    lexer->result_symbol = PREPROC_ARG;
-    return true;
 }
 
 // Look ahead without consuming the next token: mark_end remains at the
@@ -275,7 +352,7 @@ static bool scan_parentheses(TSLexer *lexer) {
     unsigned depth = 0;
     while (lexer->lookahead != 0) {
         if (lexer->lookahead == '(') {
-            if (scan_comment(lexer, false, NULL, false) == NOT_A_COMMENT) {
+            if (scan_comment(lexer, false, NULL) == NOT_A_COMMENT) {
                 depth++;
             }
             continue;
@@ -295,7 +372,7 @@ static bool scan_parentheses(TSLexer *lexer) {
             continue;
         }
         if (lexer->lookahead == '/') {
-            scan_comment(lexer, false, NULL, false);
+            scan_comment(lexer, false, NULL);
             continue;
         }
         if (lexer->lookahead == ')') {
@@ -320,7 +397,7 @@ static bool event_object_is_type(TSLexer *lexer) {
             advance(lexer);
         }
         if (lexer->lookahead == '/' || lexer->lookahead == '(') {
-            if (scan_comment(lexer, false, NULL, false) != BLOCK_COMMENT) {
+            if (scan_comment(lexer, false, NULL) != BLOCK_COMMENT) {
                 return false;
             }
             continue;
@@ -432,7 +509,7 @@ static bool argument_follows(TSLexer *lexer, Argument argument) {
         if (lexer->lookahead != '/' && lexer->lookahead != '(') {
             break;
         }
-        CommentKind kind = scan_comment(lexer, false, NULL, false);
+        CommentKind kind = scan_comment(lexer, false, NULL);
         if (kind != LINE_COMMENT && kind != BLOCK_COMMENT) {
             return false;
         }
@@ -450,20 +527,10 @@ static bool argument_follows(TSLexer *lexer, Argument argument) {
     }
 }
 
-// Whether a #DEFINE's value, or a block comment before it, follows on the
-// line.
+// Whether a #DEFINE's value, or a comment, follows on the line.
 static bool value_follows(TSLexer *lexer) {
-    while (iswspace(lexer->lookahead) && !is_line_end(lexer->lookahead)) {
-        advance(lexer);
-    }
-    if (is_line_end(lexer->lookahead)) {
-        return false;
-    }
-    if (lexer->lookahead == '/') {
-        advance(lexer);
-        return lexer->lookahead != '/';
-    }
-    return true;
+    move_blanks(lexer, false);
+    return !ends_define_line(lexer);
 }
 
 // A directive's keyword and the argument it owes.
@@ -514,43 +581,85 @@ static bool lex_directive_keyword(Scanner *scanner, TSLexer *lexer) {
     return finish_directive_keyword(scanner, lexer, word);
 }
 
+// The rest of a #DEFINE's line past its blanks: a comment, or value.
+// `segment_start` on a continued line.
+static bool scan_define_line(Scanner *scanner, TSLexer *lexer, bool segment_start) {
+    bool first = segment_start && !is_define_blank(lexer->lookahead);
+    move_blanks(lexer, true);
+    if (lexer->lookahead == 0 || lexer->lookahead == '\n') {
+        return false;
+    }
+    bool started = false;
+    if (lexer->lookahead == '\r') {
+        advance(lexer);
+        if (lexer->lookahead == '\n') {
+            return false;
+        }
+        started = true;
+    } else if (lexer->lookahead == '/' || lexer->lookahead == '(') {
+        switch (scan_define_comment(lexer)) {
+            case BLOCK_COMMENT:
+                lexer->result_symbol = COMMENT;
+                if (value_follows(lexer)) {
+                    scanner->argument = ARGUMENT_VALUE;
+                }
+                return true;
+            case NOT_A_COMMENT:
+                started = true;
+                break;
+            default:
+                lexer->result_symbol = COMMENT;
+                return true;
+        }
+    }
+    scanner->argument = lex_define_value(lexer, started, first && !started);
+    return true;
+}
+
 // What a directive's keyword owes: its argument, or a comment before it.
 static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
     Argument argument = scanner->argument;
     scanner->argument = ARGUMENT_NONE;
-    bool on_define_line = argument == ARGUMENT_VALUE || argument == ARGUMENT_COMMENT;
-    bool at_comment = false;
-    if (on_define_line) {
-        while (iswspace(lexer->lookahead) && !is_line_end(lexer->lookahead)) {
+    switch (argument) {
+        case ARGUMENT_VALUE:
+            return scan_define_line(scanner, lexer, false);
+        case ARGUMENT_CONTINUED:
+            if (lexer->lookahead == '\r') {
+                skip(lexer);
+            }
+            if (lexer->lookahead != '\n') {
+                return false;
+            }
             skip(lexer);
-        }
-    } else {
-        while (iswspace(lexer->lookahead)) {
-            skip(lexer);
-        }
+            return scan_define_line(scanner, lexer, true);
+        case ARGUMENT_LONE:
+            if (lexer->lookahead != '\\') {
+                return false;
+            }
+            advance(lexer);
+            lexer->mark_end(lexer);
+            lexer->result_symbol = PREPROC_ARG;
+            return true;
+        default:
+            break;
+    }
+    while (iswspace(lexer->lookahead)) {
+        skip(lexer);
     }
     if (lexer->lookahead == '/' || lexer->lookahead == '(') {
-        bool newline = false;
-        switch (scan_comment(lexer, false, &newline, on_define_line)) {
+        switch (scan_comment(lexer, false, NULL)) {
             case LINE_COMMENT:
             case BLOCK_COMMENT:
                 lexer->mark_end(lexer);
                 lexer->result_symbol = COMMENT;
-                if (argument == ARGUMENT_VALUE ? !newline && value_follows(lexer) : argument != ARGUMENT_COMMENT) {
-                    scanner->argument = argument;
-                }
+                scanner->argument = argument;
                 return true;
             case OPEN_COMMENT:
                 lexer->mark_end(lexer);
                 lexer->result_symbol = UNCLOSED_COMMENT;
                 return true;
             case NOT_A_COMMENT:
-                if (argument != ARGUMENT_VALUE) {
-                    return false;
-                }
-                lex_define_value(lexer, true, &at_comment);
-                scanner->argument = at_comment ? ARGUMENT_COMMENT : ARGUMENT_NONE;
-                return true;
+                return false;
         }
     }
     switch (argument) {
@@ -561,16 +670,15 @@ static bool scan_argument(Scanner *scanner, TSLexer *lexer) {
             }
             lexer->mark_end(lexer);
             lexer->result_symbol = PREPROC_NAME;
-            if (argument == ARGUMENT_DEFINED && value_follows(lexer)) {
+            if (argument != ARGUMENT_DEFINED) {
+                return true;
+            }
+            if (lexer->lookahead == '\\') {
+                advance(lexer);
+                scanner->argument = ends_define_line(lexer) ? ARGUMENT_LONE : ARGUMENT_VALUE;
+            } else if (value_follows(lexer)) {
                 scanner->argument = ARGUMENT_VALUE;
             }
-            return true;
-        case ARGUMENT_VALUE:
-            if (is_line_end(lexer->lookahead)) {
-                return false;
-            }
-            lex_define_value(lexer, false, &at_comment);
-            scanner->argument = at_comment ? ARGUMENT_COMMENT : ARGUMENT_NONE;
             return true;
         case ARGUMENT_STRING:
             lexer->result_symbol = scan_quoted(lexer, false, true) ? PREPROC_STRING : PREPROC_UNCLOSED_STRING;
@@ -737,7 +845,7 @@ static WhitespaceResult scan_whitespace_and_comments(TSLexer *lexer, bool consum
         }
         bool paren = lexer->lookahead == '(';
         bool newline = false;
-        CommentKind kind = scan_comment(lexer, true, &newline, false);
+        CommentKind kind = scan_comment(lexer, true, &newline);
         if (kind == NOT_A_COMMENT) {
             return paren ? PAREN : REJECT;
         }
